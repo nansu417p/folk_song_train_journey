@@ -76,12 +76,17 @@ function App() {
   const [globalMood, setGlobalMood] = useState('neutral');
   const [ticketData, setTicketData] = useState(null); 
   
-  // ★ AI 封面專屬全域狀態
+  // AI 封面狀態
   const [coverData, setCoverData] = useState(null); 
   const [coverStatus, setCoverStatus] = useState('idle'); 
   const [generatedCoverImg, setGeneratedCoverImg] = useState(null);
 
-  // ★ 純 JS 音樂引擎
+  // ★ 新增：一日歌手 (FaceSwap) 狀態
+  const [swappedData, setSwappedData] = useState(null); 
+  const [faceswapStatus, setFaceswapStatus] = useState('idle'); // 'idle', 'generating', 'done'
+  const [generatedSwappedImg, setGeneratedSwappedImg] = useState(null);
+
+  // 純 JS 音樂引擎
   const globalAudioRef = useRef(null);
   const [currentTrackName, setCurrentTrackName] = useState('bg_music.mp3');
   const [isPlaying, setIsPlaying] = useState(false);
@@ -137,7 +142,7 @@ function App() {
     }
   };
 
-  // ★ 背景生圖 API 呼叫函數
+  // 背景生圖 API (封面)
   const handleStartGenerateCover = async (payload) => {
     setCoverStatus('generating');
     setGeneratedCoverImg(null);
@@ -156,6 +161,26 @@ function App() {
     } catch (error) {
       alert(`繪製錯誤: ${error.message}`);
       setCoverStatus('idle');
+    }
+  };
+
+  // ★ 新增：背景生圖 API (換臉)
+  const handleStartFaceSwap = async (payload) => {
+    setFaceswapStatus('generating');
+    setGeneratedSwappedImg(null);
+    try {
+      const response = await fetch(`${API_URL}/reactor/image`, { 
+        method: "POST", 
+        headers: { "Content-Type": "application/json", "ngrok-skip-browser-warning": "69420" }, 
+        body: JSON.stringify(payload) 
+      });
+      if (!response.ok) throw new Error(`換臉 API 錯誤`);
+      const data = await response.json();
+      setGeneratedSwappedImg(`data:image/png;base64,${data.image}`);
+      setFaceswapStatus('done');
+    } catch (error) {
+      alert(`融合失敗: ${error.message}`);
+      setFaceswapStatus('idle');
     }
   };
 
@@ -186,6 +211,12 @@ function App() {
   const handleModeSelect = (mode) => {
     if (mode.locked) return;
     
+    // ★ 擋攔：如果選到一日歌手，且目前的歌曲沒有臉，禁止進入
+    if (mode.id === 'faceswap' && mainSong && !mainSong.hasFace) {
+      alert("此歌曲的經典封面沒有人臉，無法進行換臉喔！");
+      return;
+    }
+
     if (mode.id === 'ar') pauseMusic();
     
     setActiveMode(mode.id);
@@ -249,13 +280,16 @@ function App() {
              </button>
           </div>
           
-          {/* 傳入 coverData 與 coverStatus 供火車大廳顯示 */}
+          {/* ★ 傳入所有收集品與生成狀態 */}
           <TrainPage 
             onSelectMode={handleModeSelect} 
             onBack={handleBackToHome} 
             ticket={ticketData} 
             cover={coverData} 
             coverStatus={coverStatus} 
+            swapped={swappedData}
+            faceswapStatus={faceswapStatus}
+            mainSong={mainSong}
           />
         </div>
       </section>
@@ -304,7 +338,6 @@ function App() {
              </div>
           )}
 
-          {/* ★ 確保所有 props 都正確傳遞給 AiCoverGame_zimage */}
           {activeMode === 'ai-zimage' && (
              <div className="w-full h-full flex flex-col items-center justify-center relative">
                <UnifiedBackButton onClick={handleLeaveGame} />
@@ -321,7 +354,7 @@ function App() {
                    }}
                    onCoverGenerated={(img) => {
                      setCoverData({ image: img, title: mainSong.title });
-                     setCoverStatus('idle'); // 領取後重置狀態
+                     setCoverStatus('idle'); 
                      handleLeaveGame();
                    }}
                  />
@@ -329,10 +362,28 @@ function App() {
              </div>
           )}
 
+          {/* ★ 傳入 FaceSwap 所需的道具 */}
           {activeMode === 'faceswap' && (
-            <div className="w-full h-full relative">
+            <div className="w-full h-full relative flex flex-col items-center justify-center">
               <UnifiedBackButton onClick={handleLeaveGame} />
-              <FaceSwapGame onBack={handleLeaveGame} />
+              {!mainSong ? <RequireMainSongPrompt /> : (
+                <FaceSwapGame 
+                  song={mainSong} 
+                  onHome={handleLeaveGame} 
+                  faceswapStatus={faceswapStatus}
+                  generatedSwappedImg={generatedSwappedImg}
+                  onStartGenerate={handleStartFaceSwap}
+                  onSetMockSwap={(url) => {
+                    setGeneratedSwappedImg(url);
+                    setFaceswapStatus('done');
+                  }}
+                  onSwapGenerated={(img) => {
+                    setSwappedData({ image: img, title: mainSong.title });
+                    setFaceswapStatus('idle');
+                    handleLeaveGame();
+                  }}
+                />
+              )}
             </div>
           )}
 

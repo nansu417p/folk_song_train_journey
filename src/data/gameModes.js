@@ -34,6 +34,14 @@ export const gameModes = [
     color: "bg-folk-red",
     icon: "📝"
   },
+  // ★ 新增：跟著唱車廂
+  {
+    id: 'sing-along',
+    title: "民歌傳唱",
+    description: "用聲音點亮回憶",
+    color: "bg-purple-600",
+    icon: "🎤"
+  },
   {
     id: 'capsule',
     title: "民歌回憶",

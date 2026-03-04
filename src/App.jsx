@@ -11,6 +11,7 @@ import AiCoverGame_zimage from './components/Games/AiCoverGame/AiCoverGame_zimag
 import FaceSwapGame from './components/Games/FaceSwapGame/FaceSwapGame'; 
 import ArGame from './components/Games/ArGame/ArGame'; 
 import LyricsGame from './components/Games/LyricsGame/LyricsGame';
+import SingAlongGame from './components/Games/SingAlongGame/SingAlongGame'; // ★ 引入新遊戲
 import CapsuleGame from './components/Games/CapsuleGame/CapsuleGame'; 
 
 const API_URL = "https://cory-uninduced-ozell.ngrok-free.dev"; 
@@ -86,7 +87,6 @@ function App() {
   const [faceswapStatus, setFaceswapStatus] = useState('idle'); 
   const [generatedSwappedImg, setGeneratedSwappedImg] = useState(null);
 
-  // ★ 新增：歌詞本收集品狀態
   const [lyricsData, setLyricsData] = useState(null);
 
   const globalAudioRef = useRef(null);
@@ -214,7 +214,8 @@ function App() {
       alert("此歌曲的經典封面沒有人臉，無法進行換臉喔！");
       return;
     }
-    if (mode.id === 'ar' || mode.id === 'lyrics') {
+    // ★ 進入 AR, 拼貼歌詞, 或跟著唱 時，暫停背景音樂
+    if (mode.id === 'ar' || mode.id === 'lyrics' || mode.id === 'sing-along') {
       pauseMusic();
     }
     
@@ -287,7 +288,7 @@ function App() {
             coverStatus={coverStatus} 
             swapped={swappedData}
             faceswapStatus={faceswapStatus}
-            lyrics={lyricsData}       // ★ 傳入歌詞收集品
+            lyrics={lyricsData}
             mainSong={mainSong}
           />
         </div>
@@ -304,36 +305,13 @@ function App() {
 
           {activeMode === 'mood-train' && (
              <div className="w-full h-full">
-               <MoodTrainGame 
-                 onBack={handleLeaveGame} 
-                 onMoodDetected={(mood) => setGlobalMood(mood)} 
-                 onTicketGenerated={(img, finalMood) => {
-                   setTicketData({ image: img, mood: finalMood });
-                   handleLeaveGame(); 
-                 }}
-               />
+               <MoodTrainGame onBack={handleLeaveGame} onMoodDetected={(mood) => setGlobalMood(mood)} onTicketGenerated={(img, finalMood) => { setTicketData({ image: img, mood: finalMood }); handleLeaveGame(); }} />
              </div>
           )}
 
           {activeMode === 'ar' && (
              <div className="w-full h-full">
-               <ArGame 
-                 onBack={() => {
-                   const fallbackFileName = mainSong ? mainSong.audioFileName : 'bg_music.mp3';
-                   playTrack(fallbackFileName);
-                   handleLeaveGame();
-                 }} 
-                 onPreviewSong={(song) => {
-                   const fileName = song.audioFileName || song.audioFile;
-                   playTrack(fileName);
-                 }}
-                 onConfirmSong={(song) => {
-                   setMainSong(song);
-                   const fileName = song.audioFileName || song.audioFile;
-                   playTrack(fileName); 
-                   handleLeaveGame(); 
-                 }}
-               />
+               <ArGame onBack={() => { playTrack(mainSong ? mainSong.audioFileName : 'bg_music.mp3'); handleLeaveGame(); }} onPreviewSong={(song) => { playTrack(song.audioFileName || song.audioFile); }} onConfirmSong={(song) => { setMainSong(song); playTrack(song.audioFileName || song.audioFile); handleLeaveGame(); }} />
              </div>
           )}
 
@@ -341,22 +319,7 @@ function App() {
              <div className="w-full h-full flex flex-col items-center justify-center relative">
                <UnifiedBackButton onClick={handleLeaveGame} />
                {!mainSong ? <RequireMainSongPrompt /> : (
-                 <AiCoverGame_zimage 
-                   song={mainSong} 
-                   onHome={handleLeaveGame} 
-                   coverStatus={coverStatus}
-                   generatedCoverImg={generatedCoverImg}
-                   onStartGenerate={handleStartGenerateCover}
-                   onSetMockCover={(url) => { 
-                     setGeneratedCoverImg(url); 
-                     setCoverStatus('done'); 
-                   }}
-                   onCoverGenerated={(img) => {
-                     setCoverData({ image: img, title: mainSong.title });
-                     setCoverStatus('idle'); 
-                     handleLeaveGame();
-                   }}
-                 />
+                 <AiCoverGame_zimage song={mainSong} onHome={handleLeaveGame} coverStatus={coverStatus} generatedCoverImg={generatedCoverImg} onStartGenerate={handleStartGenerateCover} onSetMockCover={(url) => { setGeneratedCoverImg(url); setCoverStatus('done'); }} onCoverGenerated={(img) => { setCoverData({ image: img, title: mainSong.title }); setCoverStatus('idle'); handleLeaveGame(); }} />
                )}
              </div>
           )}
@@ -365,22 +328,7 @@ function App() {
             <div className="w-full h-full relative flex flex-col items-center justify-center">
               <UnifiedBackButton onClick={handleLeaveGame} />
               {!mainSong ? <RequireMainSongPrompt /> : (
-                <FaceSwapGame 
-                  song={mainSong} 
-                  onHome={handleLeaveGame} 
-                  faceswapStatus={faceswapStatus}
-                  generatedSwappedImg={generatedSwappedImg}
-                  onStartGenerate={handleStartFaceSwap}
-                  onSetMockSwap={(url) => {
-                    setGeneratedSwappedImg(url);
-                    setFaceswapStatus('done');
-                  }}
-                  onSwapGenerated={(img) => {
-                    setSwappedData({ image: img, title: mainSong.title });
-                    setFaceswapStatus('idle');
-                    handleLeaveGame();
-                  }}
-                />
+                <FaceSwapGame song={mainSong} onHome={handleLeaveGame} faceswapStatus={faceswapStatus} generatedSwappedImg={generatedSwappedImg} onStartGenerate={handleStartFaceSwap} onSetMockSwap={(url) => { setGeneratedSwappedImg(url); setFaceswapStatus('done'); }} onSwapGenerated={(img) => { setSwappedData({ image: img, title: mainSong.title }); setFaceswapStatus('idle'); handleLeaveGame(); }} />
               )}
             </div>
           )}
@@ -388,12 +336,16 @@ function App() {
           {activeMode === 'lyrics' && (
             <div className="w-full h-full flex flex-col items-center justify-center relative">
               {!mainSong ? <RequireMainSongPrompt /> : (
-                <LyricsGame 
-                  song={mainSong} 
-                  onRestart={() => handleModeSelect({ id: 'ar' })} 
-                  onHome={handleLeaveGame} 
-                  onLyricsGenerated={(data) => setLyricsData(data)} // ★ 接收歌詞收集品資料
-                />
+                <LyricsGame song={mainSong} onRestart={() => handleModeSelect({ id: 'ar' })} onHome={handleLeaveGame} onLyricsGenerated={(data) => setLyricsData(data)} />
+              )}
+            </div>
+          )}
+
+          {/* ★ 新增：跟著唱 (Sing Along) 車廂 */}
+          {activeMode === 'sing-along' && (
+            <div className="w-full h-full flex flex-col items-center justify-center relative">
+              {!mainSong ? <RequireMainSongPrompt /> : (
+                <SingAlongGame song={mainSong} onHome={handleLeaveGame} />
               )}
             </div>
           )}

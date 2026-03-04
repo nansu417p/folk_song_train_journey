@@ -76,17 +76,14 @@ function App() {
   const [globalMood, setGlobalMood] = useState('neutral');
   const [ticketData, setTicketData] = useState(null); 
   
-  // AI 封面狀態
   const [coverData, setCoverData] = useState(null); 
   const [coverStatus, setCoverStatus] = useState('idle'); 
   const [generatedCoverImg, setGeneratedCoverImg] = useState(null);
 
-  // ★ 新增：一日歌手 (FaceSwap) 狀態
   const [swappedData, setSwappedData] = useState(null); 
-  const [faceswapStatus, setFaceswapStatus] = useState('idle'); // 'idle', 'generating', 'done'
+  const [faceswapStatus, setFaceswapStatus] = useState('idle'); 
   const [generatedSwappedImg, setGeneratedSwappedImg] = useState(null);
 
-  // 純 JS 音樂引擎
   const globalAudioRef = useRef(null);
   const [currentTrackName, setCurrentTrackName] = useState('bg_music.mp3');
   const [isPlaying, setIsPlaying] = useState(false);
@@ -142,7 +139,6 @@ function App() {
     }
   };
 
-  // 背景生圖 API (封面)
   const handleStartGenerateCover = async (payload) => {
     setCoverStatus('generating');
     setGeneratedCoverImg(null);
@@ -164,7 +160,6 @@ function App() {
     }
   };
 
-  // ★ 新增：背景生圖 API (換臉)
   const handleStartFaceSwap = async (payload) => {
     setFaceswapStatus('generating');
     setGeneratedSwappedImg(null);
@@ -184,6 +179,7 @@ function App() {
     }
   };
 
+  // ★ 恢復原本的 ref 實體滾動架構
   const homeSectionRef = useRef(null);
   const trainSectionRef = useRef(null);
   const gameSectionRef = useRef(null);
@@ -210,17 +206,17 @@ function App() {
 
   const handleModeSelect = (mode) => {
     if (mode.locked) return;
-    
-    // ★ 擋攔：如果選到一日歌手，且目前的歌曲沒有臉，禁止進入
     if (mode.id === 'faceswap' && mainSong && !mainSong.hasFace) {
       alert("此歌曲的經典封面沒有人臉，無法進行換臉喔！");
       return;
     }
-
-    if (mode.id === 'ar') pauseMusic();
+    if (mode.id === 'ar' || mode.id === 'lyrics') {
+      pauseMusic();
+    }
     
     setActiveMode(mode.id);
     setZimageSong(null); setLyricsGameSong(null); setCapsuleSong(null);
+    
     setTimeout(() => scrollTo(gameSectionRef), 100);
   };
 
@@ -244,7 +240,8 @@ function App() {
   );
 
   return (
-    <div className="w-full min-h-screen bg-[#EAEAEA] text-folk-dark font-serif overflow-x-hidden flex flex-col">
+    // ★ 鎖定外層滾動，只能靠按鈕觸發 scrollTo
+    <div className="w-full h-screen overflow-hidden bg-[#EAEAEA] text-folk-dark font-serif flex flex-col">
       
       <section ref={homeSectionRef} className="h-screen w-full relative shrink-0 overflow-hidden bg-[#EAEAEA]">
         <div className="absolute inset-0 bg-cover bg-center z-0" style={{ backgroundImage: "url('/home-bg.jpg')" }}></div>
@@ -280,7 +277,6 @@ function App() {
              </button>
           </div>
           
-          {/* ★ 傳入所有收集品與生成狀態 */}
           <TrainPage 
             onSelectMode={handleModeSelect} 
             onBack={handleBackToHome} 
@@ -362,7 +358,6 @@ function App() {
              </div>
           )}
 
-          {/* ★ 傳入 FaceSwap 所需的道具 */}
           {activeMode === 'faceswap' && (
             <div className="w-full h-full relative flex flex-col items-center justify-center">
               <UnifiedBackButton onClick={handleLeaveGame} />
@@ -389,7 +384,6 @@ function App() {
 
           {activeMode === 'lyrics' && (
             <div className="w-full h-full flex flex-col items-center justify-center relative">
-              <UnifiedBackButton onClick={handleLeaveGame} />
               {!mainSong ? <RequireMainSongPrompt /> : (
                 <LyricsGame song={mainSong} onRestart={() => handleModeSelect({ id: 'ar' })} onHome={handleLeaveGame} />
               )}

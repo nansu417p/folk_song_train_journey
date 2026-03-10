@@ -2,7 +2,10 @@ import React, { useEffect, useRef, useState } from 'react';
 import Webcam from 'react-webcam';
 import { FilesetResolver, HandLandmarker } from '@mediapipe/tasks-vision';
 import { folkSongs } from '../../../data/folkSongs';
-import CassetteUI from '../../Shared/CassetteUI'; // ★ 引入統一卡帶元件
+import CassetteUI from '../../Shared/CassetteUI'; 
+
+// ★ 載入收音機圖片 (請確保路徑正確)
+const radioPlayerUrl = '/images/cassette_player.png'; 
 
 const ArGame = ({ onConfirmSong, onPreviewSong }) => {
   const webcamRef = useRef(null);
@@ -16,13 +19,11 @@ const ArGame = ({ onConfirmSong, onPreviewSong }) => {
   
   const elementsDataRef = useRef(
     folkSongs.map((song, index) => {
-      const colors = ["bg-[#D64F3E]", "bg-[#2A9D8F]", "bg-[#E9C46A]", "bg-[#F4A261]", "bg-[#264653]"];
       const angle = Math.random() * Math.PI * 2;
       const speed = 0.25; 
       return {
         id: song.id,
         title: song.title,
-        color: colors[index % colors.length],
         x: 15 + Math.random() * 70,
         y: 15 + Math.random() * 40,
         vx: Math.cos(angle) * speed, 
@@ -121,7 +122,8 @@ const ArGame = ({ onConfirmSong, onPreviewSong }) => {
         }
       }
 
-      const isInPlayerZone = (fX > 35 && fX < 65 && fY > 75);
+      // ★ 判斷手指是否落入下方的收音機區域
+      const isInPlayerZone = (fX > 30 && fX < 70 && fY > 70);
       
       if (currentGrab) {
         let grabbedEl = els.find(el => el.id === currentGrab);
@@ -133,7 +135,7 @@ const ArGame = ({ onConfirmSong, onPreviewSong }) => {
         if (isInPlayerZone) {
           const originalSong = folkSongs.find(s => s.id === currentGrab);
           if (originalSong) {
-            setPlayingSong({ ...originalSong, color: grabbedEl.color });
+            setPlayingSong(originalSong);
             if (callbacksRef.current.onPreviewSong) {
               callbacksRef.current.onPreviewSong(originalSong);
             }
@@ -161,7 +163,7 @@ const ArGame = ({ onConfirmSong, onPreviewSong }) => {
           const isGrabbed = currentGrab === el.id;
           cassetteRefs.current[i].style.left = `${el.x}%`;
           cassetteRefs.current[i].style.top = `${el.y}%`;
-          cassetteRefs.current[i].style.transform = `translate(-50%, -50%) scale(${isGrabbed ? 1.1 : 1})`;
+          cassetteRefs.current[i].style.transform = `translate(-50%, -50%) scale(${isGrabbed ? 1.2 : 1})`;
           cassetteRefs.current[i].style.zIndex = isGrabbed ? 50 : 10;
         }
       });
@@ -250,8 +252,7 @@ const ArGame = ({ onConfirmSong, onPreviewSong }) => {
             className="absolute flex flex-col items-center justify-center transition-transform duration-100" 
             style={{ left: `${el.x}%`, top: `${el.y}%`, transform: 'translate(-50%, -50%)' }}
           >
-            {/* ★ 統一卡帶，設為 small 尺寸 (約原本 0.75倍) */}
-            <CassetteUI title={el.title} color={el.color} size="small" />
+            <CassetteUI title={el.title} size="small" />
           </div>
         ))}
 
@@ -263,29 +264,31 @@ const ArGame = ({ onConfirmSong, onPreviewSong }) => {
           ></div>
         )}
 
-        {/* ★ 下方播放器縮小至 350px 寬度，並保留原卡帶黑邊 */}
-        <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-[350px] h-[180px]">
-          <div className="w-full h-full bg-[#EAEAEA] rounded-t-3xl border-t-[10px] border-x-[10px] border-gray-800 flex flex-col items-center justify-end pb-6 shadow-[0_-10px_30px_rgba(0,0,0,0.6)] relative overflow-hidden">
-            <div className="absolute top-2 w-48 h-3 bg-black/40 rounded-full blur-[2px]"></div>
-            
-            {/* 播放槽 */}
-            <div className={`w-[220px] h-[130px] rounded-xl flex flex-col items-center justify-center transition-colors duration-500 relative overflow-hidden ${playingSong ? 'bg-[#111]' : 'bg-gray-800 border-4 border-gray-900 shadow-inner'}`}>
-              {playingSong ? (
-                <div className="animate-fade-in-up transform scale-[0.8] origin-center mt-2">
-                  <CassetteUI title={playingSong.title} color={playingSong.color} size="normal" />
-                </div>
-              ) : (
-                <div className="text-gray-400 font-bold text-sm tracking-widest flex items-center gap-2 border-2 border-dashed border-gray-600 w-full h-full justify-center rounded-xl">
-                  <span className="text-2xl animate-bounce">↓</span> 投入卡帶
-                </div>
-              )}
-            </div>
+        {/* ★ 全新設計：以收音機圖片為底的播放器 */}
+        <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-[600px] h-[300px]">
+          <div className="w-full h-full relative flex items-end justify-center drop-shadow-2xl">
+             
+             {/* 1. 收音機背景圖 */}
+             <img src={radioPlayerUrl} alt="收音機" className="absolute bottom-[-20px] w-full object-contain pointer-events-none z-10" />
 
-            <div className="flex gap-3 mt-4">
-               <div className="w-8 h-3 bg-gray-500 rounded-sm border-2 border-gray-700 shadow-inner"></div>
-               <div className="w-8 h-3 bg-gray-500 rounded-sm border-2 border-gray-700 shadow-inner"></div>
-               <div className="w-8 h-3 bg-red-600 rounded-sm border-2 border-red-800 shadow-inner"></div>
-            </div>
+             {/* 2. 模擬卡帶放入的凹槽位置 (精準覆蓋在圖片中間的卡帶窗上) */}
+             {/* 此處的 bottom 與 w/h 需要根據您的 image_4f50d3.png 實際長寬比進行微調，
+                 目前預設在畫面底部中央。 */}
+             <div className="absolute bottom-[55px] w-[180px] h-[110px] z-20 flex items-center justify-center bg-transparent">
+                {playingSong ? (
+                  // 當有歌曲時，顯示稍微縮小版的卡帶 (縮放至符合視窗大小)
+                  <div className="animate-fade-in-up transform scale-[0.6] origin-center mt-2">
+                    <CassetteUI title={playingSong.title} size="normal" />
+                  </div>
+                ) : (
+                  // 當沒有歌曲時，顯示提示文字 (可以選擇不顯示或顯示文字)
+                  <div className="text-gray-400 font-bold text-xs tracking-widest flex flex-col items-center justify-center gap-1 w-full h-full border border-dashed border-gray-600 bg-black/60 rounded">
+                    <span className="text-xl animate-bounce text-white">↓</span>
+                    INSERT TAPE
+                  </div>
+                )}
+             </div>
+
           </div>
         </div>
 

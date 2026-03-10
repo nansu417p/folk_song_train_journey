@@ -118,7 +118,6 @@ const LyricsGamePlay = ({ song, gameData, initialStickers, onHome, onLyricsGener
   return (
     <DndContext sensors={sensors} modifiers={customModifiers} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
        
-       {/* 移除原本的返回火車按鈕，只保留測試用的快速修復，並套用復古按鈕風格 */}
        <div className="absolute top-6 right-8 z-50 flex gap-4">
          {!isCompleted && (
            <button onClick={handleQuickFix} className="px-6 py-3 bg-[#FDFBF7] text-gray-800 font-bold rounded-lg border-2 border-gray-400 shadow-[4px_4px_0_#9ca3af] hover:translate-y-[2px] hover:shadow-[2px_2px_0_#9ca3af] transition-all tracking-wide animate-pulse">
@@ -130,7 +129,12 @@ const LyricsGamePlay = ({ song, gameData, initialStickers, onHome, onLyricsGener
        <div className="w-full max-w-6xl h-full flex flex-col bg-[#E0D8C3] rounded-xl shadow-2xl border-4 border-[#C0B8A3] overflow-hidden mt-8">
            <div className="w-full bg-[#D64F3E] p-4 px-6 flex justify-between items-center shadow-md z-10 border-b-4 border-[#B83E2F]">
              <div className="flex items-center gap-4 min-w-[200px]">
-               <div className={`w-12 h-12 bg-white/20 rounded-full flex items-center justify-center ${isPlaying ? 'animate-spin-slow' : ''}`}>💿</div>
+               
+               {/* ★ 改用真實卡帶圖標 */}
+               <div className="flex items-center justify-center mr-2">
+                 <img src="/images/cassette.png" alt="Cassette" className="w-12 h-8 object-contain drop-shadow-[0_2px_2px_rgba(0,0,0,0.5)]" />
+               </div>
+
                <div className="flex flex-col">
                  <span className="text-white/80 text-[10px] tracking-widest font-bold">RESTORING MEMORY</span>
                  <div className="flex items-baseline gap-3">
@@ -197,7 +201,6 @@ const LyricsGamePlay = ({ song, gameData, initialStickers, onHome, onLyricsGener
     </DndContext>
   );
 };
-
 
 const LyricsGame = ({ song, onRestart, onHome, onLyricsGenerated }) => {
   const [gameState, setGameState] = useState({ status: 'loading', data: null, stickers: [] });

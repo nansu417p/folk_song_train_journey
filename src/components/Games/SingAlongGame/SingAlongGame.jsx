@@ -281,7 +281,6 @@ const SingAlongGame = ({ song, onHome, onRecordingComplete }) => {
   return (
     <div className="relative w-full h-full flex flex-col items-center justify-center overflow-hidden bg-transparent pt-16 pb-8 px-8">
       
-      {/* ★ 移除重複的返回按鈕，保留測試與提前結束按鈕 */}
       <div className="absolute top-6 right-8 z-50 flex gap-4">
         <button onClick={onHome} className="px-6 py-3 bg-red-600 text-white font-bold rounded-lg border-2 border-red-800 shadow-[4px_4px_0_#7f1d1d] hover:translate-y-[2px] hover:shadow-[2px_2px_0_#7f1d1d] transition-all tracking-wide">
           提前結束演唱
@@ -306,7 +305,12 @@ const SingAlongGame = ({ song, onHome, onRecordingComplete }) => {
           
           <div className="w-full bg-[#D64F3E] p-4 px-6 flex justify-between items-center shadow-md z-20 border-b-4 border-[#B83E2F]">
              <div className="flex items-center gap-4 min-w-[200px]">
-               <div className={`w-12 h-12 bg-white/20 rounded-full flex items-center justify-center ${isPlaying ? 'animate-spin-slow' : ''} border-2 border-white`}>💿</div>
+               
+               {/* ★ 改用真實卡帶圖標 */}
+               <div className="flex items-center justify-center mr-2">
+                 <img src="/images/cassette.png" alt="Cassette" className="w-12 h-8 object-contain drop-shadow-[0_2px_2px_rgba(0,0,0,0.5)]" />
+               </div>
+
                <div className="flex flex-col">
                  <span className="text-white/80 text-[10px] tracking-widest font-bold">SING ALONG</span>
                  <div className="flex items-baseline gap-3">

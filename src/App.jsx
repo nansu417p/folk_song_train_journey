@@ -84,6 +84,9 @@ function App() {
   const globalAudioRef = useRef(null);
   const [currentTrackName, setCurrentTrackName] = useState('bg_music.mp3');
   const [isPlaying, setIsPlaying] = useState(false);
+  
+  // ★ 新增：全域音量狀態 (0 到 1)
+  const [volume, setVolume] = useState(0.5);
 
   const homeSectionRef = useRef(null);
   const storySectionRef = useRef(null); 
@@ -95,6 +98,7 @@ function App() {
     if (!globalAudioRef.current) {
       globalAudioRef.current = new Audio(`/music/bg_music.mp3`);
       globalAudioRef.current.loop = true;
+      globalAudioRef.current.volume = volume; // 初始音量
     }
     return () => {
       if (globalAudioRef.current) {
@@ -103,6 +107,13 @@ function App() {
       }
     };
   }, []);
+
+  // ★ 監聽音量改變，並更新 Audio 物件
+  useEffect(() => {
+    if (globalAudioRef.current) {
+      globalAudioRef.current.volume = volume;
+    }
+  }, [volume]);
 
   const playTrack = (fileName) => {
     if (!globalAudioRef.current || !fileName) return;
@@ -227,7 +238,6 @@ function App() {
     }
   };
 
-  // ★ 統一的返回按鈕，加上半透明底色，確保在任何背景下都清楚
   const UnifiedBackButton = ({ onClick, text = "← 返回火車" }) => (
     <button onClick={onClick} className="absolute top-6 left-8 z-50 px-6 py-3 bg-[#FDFBF7]/90 backdrop-blur-sm text-gray-800 font-bold text-lg rounded-lg border-2 border-gray-400 shadow-[4px_4px_0_#9ca3af] hover:bg-gray-100 hover:translate-y-[2px] hover:shadow-[2px_2px_0_#9ca3af] transition-all tracking-widest flex items-center">
       {text}
@@ -288,17 +298,42 @@ function App() {
         <div className="absolute inset-0 bg-cover bg-center z-0" style={{ backgroundImage: "url('/train-bg.jpg')" }}></div>
         
         <div className="relative z-20 w-full h-full">
-          <div className="absolute top-6 right-8 z-50 flex items-center bg-[#FDFBF7] px-6 py-3 rounded-lg border-2 border-gray-400 shadow-[4px_4px_0_#9ca3af]">
-             <div className={`mr-4 text-3xl ${isPlaying ? 'animate-spin' : ''}`}>💿</div>
-             <div className="flex flex-col mr-8">
-               <span className="text-xs text-gray-500 font-bold tracking-widest">NOW PLAYING</span>
-               <span className="text-lg text-gray-800 font-bold tracking-wider">
-                 {mainSong ? mainSong.title : (currentTrackName === 'bg_music.mp3' ? '經典民歌放送中' : (currentTrackName || '').replace('.mp3', ''))}
-               </span>
+          
+          {/* ★ 修改：在外部包裹一個 group，用於觸發 hover 展開音量條 */}
+          <div className="absolute top-6 right-8 z-50 group">
+             
+             {/* 播放器主體 */}
+             <div className="flex items-center bg-[#FDFBF7] px-6 py-3 rounded-lg border-2 border-gray-400 shadow-[4px_4px_0_#9ca3af] relative z-20">
+                <div className="mr-4 flex items-center justify-center">
+                    <img src="/images/cassette.png" alt="Cassette" className="w-12 h-8 object-contain drop-shadow-sm" />
+                </div>
+                <div className="flex flex-col mr-8 min-w-[120px]">
+                  <span className="text-xs text-gray-500 font-bold tracking-widest">NOW PLAYING</span>
+                  <span className="text-lg text-gray-800 font-bold tracking-wider truncate max-w-[150px]">
+                    {mainSong ? mainSong.title : (currentTrackName === 'bg_music.mp3' ? '經典民歌放送中' : (currentTrackName || '').replace('.mp3', ''))}
+                  </span>
+                </div>
+                <button onClick={togglePlayPause} className="w-12 h-12 flex items-center justify-center bg-gray-200 text-2xl rounded text-gray-800 hover:bg-gray-300 border border-gray-400 transition-colors">
+                  {isPlaying ? 'II' : '▶'}
+                </button>
              </div>
-             <button onClick={togglePlayPause} className="w-12 h-12 flex items-center justify-center bg-gray-200 text-2xl rounded text-gray-800 hover:bg-gray-300 border border-gray-400 transition-colors">
-               {isPlaying ? 'II' : '▶'}
-             </button>
+
+             {/* ★ 新增：隱藏式的下拉音量條 */}
+             {/* 透過 -translate-y-full 與 opacity-0 隱藏，hover 時滑出 */}
+             <div className="absolute top-[80%] left-4 right-4 bg-[#EAEAEA] border-x-2 border-b-2 border-gray-400 rounded-b-lg p-4 shadow-[4px_4px_0_#9ca3af] -z-10 transition-all duration-300 opacity-0 -translate-y-[20px] pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto flex flex-col items-center">
+                <span className="text-[10px] text-gray-500 font-bold tracking-widest mb-2 w-full text-left">VOLUME</span>
+                <input 
+                  type="range" 
+                  min="0" max="1" step="0.05" 
+                  value={volume} 
+                  onChange={(e) => setVolume(parseFloat(e.target.value))}
+                  className="w-full h-2 bg-gray-300 rounded-lg appearance-none cursor-pointer accent-red-600 outline-none"
+                  style={{
+                    background: `linear-gradient(to right, #dc2626 0%, #dc2626 ${volume * 100}%, #d1d5db ${volume * 100}%, #d1d5db 100%)`
+                  }}
+                />
+             </div>
+             
           </div>
           
           <TrainPage 
@@ -320,8 +355,6 @@ function App() {
           
           {!activeMode && <div className="text-gray-700 text-2xl font-bold tracking-widest bg-[#F5F5F5] px-8 py-4 rounded-lg shadow border border-gray-300">請先在上方火車選擇一種體驗...</div>}
 
-          {/* ★ 每個車廂內部，不再重複撰寫返回按鈕，統一由最外層包裹 */}
-          
           {activeMode === 'mood-train' && (
             <div className="w-full h-full relative">
               <UnifiedBackButton onClick={handleLeaveGame} />
@@ -371,7 +404,7 @@ function App() {
                  結束旅程 →
                </button>
 
-               {!mainSong ? <RequireMainSongPrompt /> : <CapsuleGame song={mainSong} ticket={ticketData} cover={coverData} swapped={swappedData} lyrics={lyricsData} recording={recordingData} onBack={() => handleModeSelect({ id: 'ar' })} onHome={handleLeaveGame} />}
+               {!mainSong ? <RequireMainSongPrompt /> : <CapsuleGame song={mainSong} ticket={ticketData} cover={coverData} swapped={swappedData} lyrics={lyricsData} recording={recordingData} onHome={handleLeaveGame} />}
              </div>
           )}
         </div>

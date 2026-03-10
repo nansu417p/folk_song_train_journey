@@ -1,35 +1,44 @@
 import React from 'react';
 
-const CassetteUI = ({ title, color = 'bg-[#D64F3E]', size = 'normal' }) => {
+// 注意： public 目錄下的圖片在 JSX 中通常直接以 '/' 開頭引用
+const realisticCassetteUrl = '/images/cassette.png'; 
+
+const CassetteUI = ({ title, size = 'normal' }) => {
   // 透過 size 控制整體縮放比例
   const scaleClass = {
     small: 'scale-75',
     normal: 'scale-100',
-    large: 'scale-150'
+    large: 'scale-[1.8]'
   }[size];
 
   return (
-    <div className={`w-64 h-40 ${color} rounded-xl border-[4px] border-gray-800 shadow-[6px_6px_0_rgba(0,0,0,0.8)] flex flex-col items-center justify-between p-4 relative bg-opacity-95 backdrop-blur-sm transform ${scaleClass} origin-center`}>
-      {/* 頂部標籤底色區 */}
-      <div className="w-full h-6 bg-white/30 rounded-md mb-2 border border-black/20"></div>
-      
-      {/* 歌曲名稱 / 錄音名稱 */}
-      <span className="text-white font-bold text-xl drop-shadow-[0_2px_2px_rgba(0,0,0,0.5)] tracking-widest z-10 whitespace-nowrap overflow-hidden text-ellipsis w-full text-center px-2">
-        {title || 'CASSETTE TAPE'}
-      </span>
-      
-      {/* 磁帶齒輪與透明視窗 */}
-      <div className="w-[60%] h-[30%] bg-gray-400 rounded-sm border-2 border-gray-800 opacity-80 flex items-center justify-center relative mt-2 overflow-hidden shadow-inner">
-         <div className="w-full h-[2px] bg-gray-600"></div>
-      </div>
+    <div 
+      className={`relative w-[320px] h-[200px] transform ${scaleClass} origin-center select-none shrink-0 drop-shadow-2xl`}
+    >
+      {/* 1. 底層：擬真卡帶圖片 */}
+      <img 
+        src={realisticCassetteUrl} 
+        alt="時光卡帶" 
+        className="w-full h-full object-contain pointer-events-none" 
+        draggable="false"
+      />
 
-      <div className="absolute bottom-5 flex w-full justify-center gap-12 z-20">
-         <div className="w-10 h-10 bg-gray-800 rounded-full border-[3px] border-gray-300 flex items-center justify-center shadow-[inset_0_2px_4px_rgba(0,0,0,0.8)]"><div className="w-2 h-2 bg-white rounded-full"></div></div>
-         <div className="w-10 h-10 bg-gray-800 rounded-full border-[3px] border-gray-300 flex items-center justify-center shadow-[inset_0_2px_4px_rgba(0,0,0,0.8)]"><div className="w-2 h-2 bg-white rounded-full"></div></div>
+      {/* 2. 文字疊加層：移除了白底色和邊框 */}
+      <div className="absolute bottom-[65px] left-[5%] w-[90%] h-[24px] flex items-center justify-center px-4">
+         <span 
+           className="text-gray-900 font-bold tracking-[0.1em] text-center whitespace-nowrap overflow-hidden text-ellipsis w-full"
+           style={{ 
+             fontFamily: '"Noto Serif TC", serif', 
+             fontWeight: 900,
+             /* --- 【教學】在這裡調整字的大小 --- */
+             /* 您可以使用常見的單位如 px, em, rem */
+             fontSize: '30px' // 目前設為 20px，您可以隨意修改這個數值
+           }}
+         >
+            {title || '時光民歌珍藏錄'}
+         </span>
       </div>
       
-      {/* 底部裝飾字 */}
-      <span className="absolute bottom-1 right-2 text-white/50 text-[8px] font-mono tracking-widest font-bold">TYPE I (NORMAL)</span>
     </div>
   );
 };

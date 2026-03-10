@@ -96,19 +96,20 @@ const AiCoverGame_zimage = ({ song, onHome, coverStatus, generatedCoverImg, onSt
   };
 
   return (
-    <div className="relative w-full h-full bg-transparent flex flex-col items-center p-8 overflow-hidden">
+    <div className="relative w-full h-full bg-transparent flex flex-col items-center justify-center p-8 overflow-hidden">
       
       {/* 確保標題在深色背景下清晰可見 */}
-      <div className="text-center mb-6 mt-2">
+      <div className="text-center mb-6 mt-2 shrink-0">
         <h2 className="text-4xl font-bold text-[#FDFBF7] tracking-widest drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)] border-b-2 border-red-500 pb-2 inline-block">封面繪製</h2>
         <p className="text-gray-200 mt-4 tracking-wider text-lg drop-shadow-md">從歌詞中萃取靈感，生成專屬專輯</p>
       </div>
 
-      <div className="flex w-full max-w-7xl h-[65vh] gap-8">
+      {/* ★ 加大高度至 h-[75vh]，讓選項區有足夠空間展開 */}
+      <div className="flex w-full max-w-7xl h-[75vh] gap-8">
         
-        <div className="w-1/4 bg-[#FDFBF7] rounded-xl shadow-lg border-4 border-[#C0B8A3] p-6 flex flex-col relative">
+        <div className="w-1/4 bg-[#FDFBF7] rounded-xl shadow-lg border-4 border-[#C0B8A3] p-6 flex flex-col relative h-full">
           <h3 className="text-xl font-bold text-gray-800 mb-4 border-b-2 border-gray-800 pb-2">{song.title}</h3>
-          <div className="overflow-y-auto pr-2 custom-scrollbar flex-1 mb-16">
+          <div className="overflow-y-auto pr-2 custom-scrollbar flex-1 mb-20">
              <pre className="text-sm text-gray-600 leading-relaxed font-serif whitespace-pre-wrap">{currentLyrics}</pre>
           </div>
           <div className="absolute bottom-6 left-6 right-6">
@@ -118,30 +119,30 @@ const AiCoverGame_zimage = ({ song, onHome, coverStatus, generatedCoverImg, onSt
           </div>
         </div>
 
-        <div className="w-1/3 bg-[#EAEAEA] p-6 rounded-xl border-4 border-gray-300 flex flex-col justify-center items-center shadow-lg overflow-y-auto custom-scrollbar relative">
+        {/* ★ 移除中間區塊的 overflow-y-auto 與 flex-1，讓它自然長高塞滿 */}
+        <div className="w-1/3 bg-[#EAEAEA] p-6 rounded-xl border-4 border-gray-300 flex flex-col justify-between items-center shadow-lg h-full">
             {coverStatus === 'generating' ? (
               <div className="flex flex-col items-center justify-center h-full gap-6 text-center w-full">
                   <div className="w-16 h-16 border-8 border-gray-300 border-t-red-600 rounded-full animate-spin"></div>
                   <h3 className="text-2xl font-bold text-gray-800 tracking-widest">畫筆揮灑中...</h3>
                   <p className="text-gray-500 leading-relaxed font-bold">雲端運算約需 10 ~ 20 秒<br/>您可以先回火車大廳等待</p>
                   
-                  {/* ★ 修正：將這裡的重新整理改回原本的返回火車邏輯 */}
                   <button onClick={onHome} className="w-full py-4 mt-4 bg-gray-800 text-white font-bold rounded-lg border-2 border-black shadow-[4px_4px_0_#4b5563] hover:translate-y-[2px] hover:shadow-[2px_2px_0_#4b5563] transition-all tracking-widest">
                       🚂 返回火車等待
                   </button>
               </div>
             ) : !isExtracted ? (
-              <div className="absolute inset-0 flex flex-col items-center justify-center text-gray-400 font-bold tracking-widest">
+              <div className="flex flex-col items-center justify-center h-full text-gray-400 font-bold tracking-widest">
                 <span className="text-4xl mb-4 opacity-50">✨</span>
                 <p>請先點擊左側「歌詞萃取」</p>
               </div>
             ) : (
               <div className="animate-fade-in-up flex flex-col h-full w-full">
-                <div className="flex-1 overflow-y-auto custom-scrollbar pr-2">
-                  <p className="text-xs text-gray-500 mb-4 tracking-wider">點擊下方標籤選擇想要的元素，若不選則由 AI 自由發揮。</p>
+                <div className="w-full mb-auto">
+                  <p className="text-xs text-gray-500 mb-6 tracking-wider font-bold">點擊標籤選擇想要的元素，若不選則由 AI 自由發揮。</p>
                   {[ { id: 'seasons', title: '季節氛圍' }, { id: 'elements', title: '歌詞元素' }, { id: 'styles', title: '藝術風格' } ].map((group) => (
-                    <div key={group.id} className="mb-5 w-full">
-                      <h3 className="text-red-600 font-bold mb-2 text-sm uppercase tracking-widest border-l-4 border-red-500 pl-2">{group.title}</h3>
+                    <div key={group.id} className="mb-6 w-full">
+                      <h3 className="text-red-600 font-bold mb-3 text-sm uppercase tracking-widest border-l-4 border-red-500 pl-2">{group.title}</h3>
                       <div className="flex flex-wrap gap-2">
                         {currentOptions[group.id].map(item => {
                           const isSelected = selections[group.id.slice(0, -1)]?.label === item.label;
@@ -149,7 +150,7 @@ const AiCoverGame_zimage = ({ song, onHome, coverStatus, generatedCoverImg, onSt
                             <button 
                               key={item.label} 
                               onClick={() => handleSelect(group.id.slice(0, -1), item)}
-                              className={`px-3 py-1.5 text-sm font-bold rounded border-2 transition-all duration-300 tracking-wider
+                              className={`px-4 py-2 text-sm font-bold rounded border-2 transition-all duration-300 tracking-wider
                                 ${isSelected ? 'bg-red-600 text-white border-red-800 shadow-[2px_2px_0_#7f1d1d] translate-y-[1px]' : 'bg-[#FDFBF7] text-gray-600 border-gray-300 hover:bg-gray-200'}`}
                             >
                               {item.label}
@@ -160,17 +161,17 @@ const AiCoverGame_zimage = ({ song, onHome, coverStatus, generatedCoverImg, onSt
                     </div>
                   ))}
 
-                  <div className="mb-4 w-full">
-                     <h3 className="text-gray-700 font-bold mb-2 text-sm uppercase tracking-widest border-l-4 border-gray-500 pl-2">自訂意境 (選填)</h3>
-                     <input type="text" value={customWord} onChange={(e) => setCustomWord(e.target.value)} placeholder="例如：眼淚、腳踏車..." className="w-full p-3 border-2 border-gray-300 rounded font-serif text-sm focus:outline-none focus:border-red-400 bg-[#FDFBF7]" />
+                  <div className="mb-6 w-full">
+                     <h3 className="text-gray-700 font-bold mb-3 text-sm uppercase tracking-widest border-l-4 border-gray-500 pl-2">自訂意境 (選填)</h3>
+                     <input type="text" value={customWord} onChange={(e) => setCustomWord(e.target.value)} placeholder="例如：眼淚、腳踏車..." className="w-full p-4 border-2 border-gray-300 rounded font-serif text-sm focus:outline-none focus:border-red-400 bg-[#FDFBF7]" />
                   </div>
                 </div>
 
-                <div className="mt-4 flex flex-col gap-3 w-full">
+                <div className="mt-auto flex flex-col gap-3 w-full">
                   <button onClick={triggerGenerate} className="w-full py-4 bg-red-600 text-white font-bold rounded-lg border-2 border-red-800 shadow-[4px_4px_0_#7f1d1d] hover:translate-y-[2px] hover:shadow-[2px_2px_0_#7f1d1d] transition-all text-lg tracking-widest">
                     ✨ 開始繪製封面
                   </button>
-                  <button onClick={() => onSetMockCover(`/images/${song.audioFileName.replace('.mp3', '.jpg')}`)} className="w-full py-2 bg-gray-300 text-gray-700 font-bold rounded-lg hover:bg-gray-400 transition-all text-sm tracking-widest border border-gray-400">
+                  <button onClick={() => onSetMockCover(`/images/${song.audioFileName.replace('.mp3', '.jpg')}`)} className="w-full py-3 bg-gray-300 text-gray-700 font-bold rounded-lg hover:bg-gray-400 transition-all text-sm tracking-widest border border-gray-400">
                     載入預設圖片 (測試用)
                   </button>
                 </div>

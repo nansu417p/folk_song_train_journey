@@ -129,7 +129,7 @@ const TrainPage = forwardRef(({ onSelectMode, onBack, ticket, cover, coverStatus
     onSelectMode(mode);
   };
 
-  // ★ 修復提示功能：只要開始生成 (Status 不再是 idle)，指標就移往下一站
+  // ★ 提示功能：只要狀態不是 idle，就自動跳往下一個車廂
   const getHintModeId = () => {
     if (!ticket) return 'mood-train';
     if (!mainSong) return 'ar';
@@ -158,10 +158,11 @@ const TrainPage = forwardRef(({ onSelectMode, onBack, ticket, cover, coverStatus
         <h3 className="text-gray-500 font-bold tracking-widest text-sm mb-4 bg-[#FDFBF7]/80 px-4 py-1 rounded-full border border-gray-300 backdrop-blur-sm shadow-sm pointer-events-none mt-2">
           — 您的旅程收集品 —
         </h3>
-
-        {/* ★ 收藏品順序與膠帶重新校正 */}
+        
+        {/* ★ 收藏品順序調整與膠帶修復 */}
         <div className="flex flex-row justify-center items-center gap-8 w-full max-w-6xl h-[180px] pointer-events-auto mt-2">
-            {/* 1. 心情車票 (黃色膠帶) */}
+            
+            {/* 1. 心情車票 */}
             {ticket && (
               <motion.div 
                 initial={{ opacity: 0, y: -20, rotate: -5 }} animate={{ opacity: 1, y: 0, rotate: -2 }} whileHover={{ rotate: 0, scale: 1.05 }} 
@@ -175,7 +176,7 @@ const TrainPage = forwardRef(({ onSelectMode, onBack, ticket, cover, coverStatus
               </motion.div>
             )}
 
-            {/* 2. AI 封面 (紅色膠帶) */}
+            {/* 2. 封面繪製 */}
             {cover && (
               <motion.div 
                 initial={{ opacity: 0, y: -20, rotate: 3 }} animate={{ opacity: 1, y: 0, rotate: 1 }} whileHover={{ rotate: 0, scale: 1.05 }} 
@@ -191,7 +192,7 @@ const TrainPage = forwardRef(({ onSelectMode, onBack, ticket, cover, coverStatus
               </motion.div>
             )}
 
-            {/* 3. 錄音卡帶 (綠色膠帶) */}
+            {/* 3. 錄音卡帶 */}
             {recording && (
               <motion.div 
                 initial={{ opacity: 0, y: -20, rotate: -2 }} animate={{ opacity: 1, y: 0, rotate: -1 }} whileHover={{ rotate: 0, scale: 1.05 }} 
@@ -205,7 +206,7 @@ const TrainPage = forwardRef(({ onSelectMode, onBack, ticket, cover, coverStatus
               </motion.div>
             )}
 
-            {/* 4. 一日歌手封面 (藍色膠帶) */}
+            {/* 4. 換臉封面 */}
             {swapped && (
               <motion.div 
                 initial={{ opacity: 0, y: -20, rotate: -3 }} animate={{ opacity: 1, y: 0, rotate: -1 }} whileHover={{ rotate: 0, scale: 1.05 }} 
@@ -221,7 +222,7 @@ const TrainPage = forwardRef(({ onSelectMode, onBack, ticket, cover, coverStatus
               </motion.div>
             )}
 
-            {/* 5. 歌詞卡 (黃色膠帶) */}
+            {/* 5. 歌詞卡 */}
             {lyrics && (
               <motion.div 
                 initial={{ opacity: 0, y: -20, rotate: 4 }} animate={{ opacity: 1, y: 0, rotate: 2 }} whileHover={{ rotate: 0, scale: 1.05 }} 
@@ -287,14 +288,15 @@ const TrainPage = forwardRef(({ onSelectMode, onBack, ticket, cover, coverStatus
                 )}
 
                 <img 
-                  src="/images/train.jpg" 
+                  src="/images/train.png" 
                   alt="train car" 
                   className="absolute inset-0 w-full h-full object-contain pointer-events-none drop-shadow-2xl"
                   style={{ mixBlendMode: 'multiply' }} 
                   draggable="false"
                 />
                 
-                <div className="absolute bottom-[28%] left-1/2 transform -translate-x-1/2 z-20 flex flex-col items-center justify-center w-[60%] pointer-events-none">
+                {/* ★ 調整高度請改這裡：原本是 bottom-[28%]，往上拉 10px 變成 calc(28% + 10px) */}
+                <div className="absolute bottom-[calc(28%+3px)] left-1/2 transform -translate-x-1/2 z-20 flex flex-col items-center justify-center w-[60%] pointer-events-none">
                   <div className="absolute bottom-full mb-3 w-max flex justify-center z-[60]">
                     {isAiCover && coverStatus === 'generating' && <div className="bg-yellow-400 text-gray-800 px-4 py-1.5 text-sm rounded-full font-bold shadow-md animate-pulse border border-yellow-500">⏳ 畫家繪製中...</div>}
                     {isAiCover && coverStatus === 'done' && !cover && <div className="bg-green-500 text-white px-4 py-1.5 text-sm rounded-full font-bold shadow-[0_0_15px_#22c55e] animate-bounce border border-green-400">✨ 繪製完成！點擊入內領取</div>}
@@ -303,19 +305,18 @@ const TrainPage = forwardRef(({ onSelectMode, onBack, ticket, cover, coverStatus
                     {isFaceSwap && mainSong && !mainSong.hasFace && faceswapStatus === 'idle' && <div className="bg-gray-800 text-white px-4 py-1.5 text-sm rounded-full font-bold shadow-md border border-gray-600">🔒 此歌曲無人臉可替換</div>}
                   </div>
 
-                  <div className={`
-                    w-full bg-gradient-to-b from-[#2A2A2A] to-[#111111] px-6 py-2.5 rounded-sm border-[3px] border-gray-500 shadow-[0_8px_15px_rgba(0,0,0,0.6),inset_0_1px_3px_rgba(255,255,255,0.3)] transition-all duration-300 relative flex items-center justify-center
-                    ${isLocked ? '' : 'group-hover:border-gray-400 group-hover:from-[#333] group-hover:to-[#1a1a1a]'}
-                  `}>
-                    <div className="absolute top-1 left-1 w-2 h-2 rounded-full bg-gray-400 shadow-inner border border-gray-600 flex items-center justify-center"><div className="w-1 h-[1px] bg-gray-600 rotate-45"></div></div>
-                    <div className="absolute top-1 right-1 w-2 h-2 rounded-full bg-gray-400 shadow-inner border border-gray-600 flex items-center justify-center"><div className="w-1 h-[1px] bg-gray-600 -rotate-45"></div></div>
-                    <div className="absolute bottom-1 left-1 w-2 h-2 rounded-full bg-gray-400 shadow-inner border border-gray-600 flex items-center justify-center"><div className="w-1 h-[1px] bg-gray-600 -rotate-12"></div></div>
-                    <div className="absolute bottom-1 right-1 w-2 h-2 rounded-full bg-gray-400 shadow-inner border border-gray-600 flex items-center justify-center"><div className="w-1 h-[1px] bg-gray-600 rotate-90"></div></div>
-                    
-                    <h3 className={`text-2xl font-bold tracking-[0.2em] drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)] transition-colors duration-300 ml-2 ${isLocked ? 'text-gray-500' : 'text-yellow-400 group-hover:text-yellow-300'}`}>
+                  {/* ★ 拔除黑板與螺絲釘，改為平面白色文字，並移除陰影 style */}
+                  <div className="w-full transition-all duration-300 relative flex items-center justify-center py-2">
+                    <h3 
+                      className={`text-3xl font-bold tracking-[0.2em] transition-colors duration-300 ml-2 
+                        ${isLocked ? 'text-gray-400 opacity-60' : 'text-[#FDFBF7] group-hover:text-white'}
+                      `}
+                      // ★ 已移除 style={{ textShadow: ... }}
+                    >
                       {mode.title}
                     </h3>
                   </div>
+
                 </div>
               </motion.div>
               );

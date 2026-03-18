@@ -1,15 +1,36 @@
 import React, { useState, useRef, useMemo } from 'react';
 import { lyricsData } from '../../../data/lyricsData';
+import { CARRIAGE_NAMES, CARRIAGE_SUBTITLES } from '../../../data/gameModes'; 
 
-// ★ 修正 1：移除 no humans 與 music 等字眼，強調復古攝影與純淨無字
-const BASE_PROMPT = "high quality, masterpiece, best quality, 1980s vintage taiwanese photography aesthetic, retro film grain, pure visual art, pure background, strictly no text, completely textless, nostalgic atmosphere, edge-to-edge full illustration, detailed, vibrant";
+// 移除了強制 illustration 等字眼，讓風格詞語來主導
+const BASE_PROMPT = "high quality, masterpiece, best quality, 1980s vintage taiwanese aesthetic, pure visual art, pure background, strictly no text, completely textless, nostalgic atmosphere, edge-to-edge, detailed, vibrant";
 
-// ★ 新增：主角設定資料庫
-const SUBJECTS_BANK = [
-  { label: "純粹風景", value: "pure beautiful scenery, no humans, empty landscape, scenic view" },
-  { label: "復古男歌手", value: "1boy, handsome young taiwanese male singer, 1980s retro hairstyle, holding acoustic guitar, looking at viewer, retro portrait photography" },
-  { label: "清純女歌手", value: "1girl, beautiful young taiwanese female singer, 1980s retro long hair, gentle smile, looking at viewer, retro portrait photography" }
+const SUBJECT_CATEGORIES = [
+  { label: "男歌手", type: "male" },
+  { label: "女歌手", type: "female" },
+  { label: "風景", type: "scenery" }
 ];
+
+const DETAILED_PROMPTS = {
+  male: [
+    "1boy, handsome young taiwanese male singer, 1980s retro hairstyle, holding acoustic guitar, looking at viewer, retro portrait photography",
+    "1boy, handsome young taiwanese male student singer, split turtleneck sweater, black rimmed glasses, soft melancholic eyes, 80s neat short hair, holding book, retro campus photography",
+    "1boy, cool taiwanese male rock singer, dishevelled curly hair, leather jacket, torn jeans, defiant expression, holding electric guitar, neon city lights background, gritty retro film noise",
+    "1boy, mature taiwanese male folk singer, slightly unshaven, linen shirt, warm smile, wool vest, holding acoustic guitar close to body, closed eyes singing, natural sunlight"
+  ],
+  female: [
+    "1girl, beautiful young taiwanese female singer, 1980s retro long hair, gentle smile, looking at viewer, retro portrait photography",
+    "1girl, beautiful young taiwanese female singer, straight black hair with bangs (omega hair style), polka dot dress, gentle smile, holding microphone with two hands, studio light, city pop aesthetic",
+    "1girl, etherial taiwanese female singer-songwriter, long wavy perm hair, bohemian style long flowing dress, playing piano, looking away inspired, misty atmosphere, soft focus photography",
+    "1girl, short hair taiwanese female singer, 80s power suit with shoulder pads, confident bold makeup, microphone held high, dynamic pose, punk rock elements, dramatic contrast lighting"
+  ],
+  scenery: [
+    "pure beautiful scenery, no humans, empty landscape, scenic view",
+    "pure visual art, empty retro train cabin, looking out the window, nostalgic atmosphere",
+    "scenic view, retro taiwanese street, old bicycle, vintage vibe, no humans",
+    "beautiful sunset over a calm lake, distant mountains, reflection on water, pure nature, 80s aesthetic"
+  ]
+};
 
 const PROMPT_BANK = {
   'visit_spring': {
@@ -35,8 +56,9 @@ const PROMPT_BANK = {
 };
 
 const STYLES_BANK = [
-  { label: "水彩暈染", value: "watercolor painting style, soft brush strokes, artistic" },
-  { label: "厚塗油畫", value: "impasto oil painting texture, rich vivid colors" },
+  { label: "真實寫真", value: "hyper-realistic photography, ultra-detailed, 8k resolution, raw photo, highly detailed face" },
+  { label: "水彩暈染", value: "watercolor painting style, soft brush strokes, artistic illustration" },
+  { label: "厚塗油畫", value: "impasto oil painting texture, rich vivid colors, traditional art" },
   { label: "復古底片", value: "1970s vintage film photography, film grain, nostalgic vignette, polaroid" },
   { label: "極簡線條", value: "minimalist line art, clean vector illustration, white background" }
 ];
@@ -45,7 +67,6 @@ const AiCoverGame_zimage = ({ song, onHome, coverStatus, generatedCoverImg, onSt
   const currentLyrics = useMemo(() => lyricsData[song.id] || "（找不到歌詞）", [song.id]);
   const [isExtracted, setIsExtracted] = useState(false);
   
-  // ★ 狀態擴充：加入 subjects (主角設定)
   const [currentOptions, setCurrentOptions] = useState({ subjects: [], seasons: [], elements: [], styles: [] });
   const [selections, setSelections] = useState({ subject: null, season: null, element: null, style: null });
   const [customWord, setCustomWord] = useState(''); 
@@ -56,10 +77,10 @@ const AiCoverGame_zimage = ({ song, onHome, coverStatus, generatedCoverImg, onSt
   const handleExtractLyrics = () => {
     const bank = PROMPT_BANK[song.id] || PROMPT_BANK['kapok_road']; 
     setCurrentOptions({ 
-      subjects: SUBJECTS_BANK, // 主角選項固定顯示這三種
+      subjects: SUBJECT_CATEGORIES,
       seasons: getRandomItems(bank.seasons, 3), 
       elements: getRandomItems(bank.elements, 3), 
-      styles: getRandomItems(STYLES_BANK, 3) 
+      styles: getRandomItems(STYLES_BANK, 3) // 多開一個格子給風格
     });
     setSelections({ subject: null, season: null, element: null, style: null });
     setIsExtracted(true);
@@ -75,27 +96,52 @@ const AiCoverGame_zimage = ({ song, onHome, coverStatus, generatedCoverImg, onSt
   const triggerGenerate = () => {
     if (coverStatus === 'generating') return;
 
-    const promptParts = [BASE_PROMPT];
+    const promptParts = [];
     
-    // ★ 將玩家選擇的元素依序推入提示詞
-    if (selections.subject) promptParts.push(`(${selections.subject.value})`);
+    // 1. 強調畫風 (放在最前面並加重括號權重)
+    let isRealistic = false;
+    if (selections.style) {
+      promptParts.push(`(((${selections.style.value})))`);
+      if (selections.style.label === "真實寫真") isRealistic = true;
+    } else {
+      promptParts.push("(((vintage taiwanese illustration style)))");
+    }
+
+    // 2. 基礎設定
+    promptParts.push(BASE_PROMPT);
+    
+    // 3. 隨機細節
+    let subjectDetailPrompt = "";
+    if (selections.subject) {
+       const pool = DETAILED_PROMPTS[selections.subject.type];
+       subjectDetailPrompt = pool[Math.floor(Math.random() * pool.length)];
+    } else {
+       const types = Object.keys(DETAILED_PROMPTS);
+       const randomType = types[Math.floor(Math.random() * types.length)];
+       const pool = DETAILED_PROMPTS[randomType];
+       subjectDetailPrompt = pool[Math.floor(Math.random() * pool.length)];
+    }
+    promptParts.push(`(${subjectDetailPrompt})`);
+    
     if (selections.element) promptParts.push(`featuring (${selections.element.value})`);
     if (selections.season) promptParts.push(`during (${selections.season.value})`);
-    if (selections.style) promptParts.push(`${selections.style.value}`);
     if (customWord.trim()) promptParts.push(`containing (${customWord.trim()})`);
     
     promptParts.push("center composition");
-
     const prompt = promptParts.join(", ");
     
+    // 4. 動態 Negative Prompt：依據風格阻擋衝突特徵
+    const dynamicNegative = isRealistic 
+        ? "illustration, painting, drawing, cartoon, anime, 3d render, sketch, text, font, chinese characters, watermark, logo, bad anatomy"
+        : "realistic photography, photo, realistic skin, real human, 3d render, text, font, chinese characters, watermark, logo, ugly";
+
     const payload = { 
       prompt, 
-      // ★ 修正 2：下達死命令，絕對不准出現文字、浮水印、邊框等元素
-      negative_prompt: "text, font, letters, typography, writing, signature, watermark, logo, title, words, english letters, chinese characters, gibberish, poster layout, graphic design, worst quality, lowres, ugly, border, frame, white border, padding", 
+      negative_prompt: dynamicNegative, 
       steps: 8, 
       sampler_name: "Euler", 
       scheduler: "Beta", 
-      cfg_scale: 3.5, 
+      cfg_scale: 4.5, // 稍微拉高確保 AI 聽話
       width: 1024,  
       height: 720,  
       batch_size: 1,
@@ -117,13 +163,18 @@ const AiCoverGame_zimage = ({ song, onHome, coverStatus, generatedCoverImg, onSt
 
   return (
     <div className="relative w-full h-full bg-transparent flex flex-col items-center justify-center p-8 overflow-hidden">
-      <div className="text-center mb-6 mt-2 shrink-0">
-        <h2 className="text-4xl font-bold text-[#FDFBF7] tracking-widest drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)] border-b-2 border-red-500 pb-2 inline-block">封面繪製</h2>
-        <p className="text-gray-200 mt-4 tracking-wider text-lg drop-shadow-md">從歌詞中萃取靈感，生成專屬專輯</p>
+      <div className="text-center mb-6 mt-2 shrink-0 relative z-10 pointer-events-none">
+        <h2 className="text-4xl font-bold text-[#FDFBF7] tracking-widest drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)] inline-block font-serif">
+          {CARRIAGE_NAMES.AI_COVER}
+        </h2>
+        {CARRIAGE_SUBTITLES.AI_COVER && (
+           <p className="text-gray-200 mt-4 tracking-wider text-xl drop-shadow-md font-bold">
+             {CARRIAGE_SUBTITLES.AI_COVER}
+           </p>
+        )}
       </div>
 
       <div className="flex w-full max-w-7xl h-[75vh] gap-8">
-        {/* 左側：歌詞區域 */}
         <div className="w-1/4 bg-[#FDFBF7] rounded-xl shadow-lg border-4 border-[#C0B8A3] p-6 flex flex-col relative h-full">
           <h3 className="text-xl font-bold text-gray-800 mb-4 border-b-2 border-gray-800 pb-2">{song.title}</h3>
           <div className="overflow-y-auto pr-2 custom-scrollbar flex-1 mb-20">
@@ -140,7 +191,6 @@ const AiCoverGame_zimage = ({ song, onHome, coverStatus, generatedCoverImg, onSt
           </div>
         </div>
 
-        {/* 中間：選項區域 (加入了 overflow-hidden 防止撐破，內部加入 overflow-y-auto 提供滾動) */}
         <div className="w-1/3 bg-[#EAEAEA] p-6 rounded-xl border-4 border-gray-300 flex flex-col justify-between items-center shadow-lg h-full overflow-hidden">
             {coverStatus === 'generating' ? (
               <div className="flex flex-col items-center justify-center h-full gap-6 text-center w-full">
@@ -159,11 +209,9 @@ const AiCoverGame_zimage = ({ song, onHome, coverStatus, generatedCoverImg, onSt
             ) : (
               <div className="animate-fade-in-up flex flex-col h-full w-full">
                 
-                {/* ★ 選項滾動區：利用 flex-1 和 overflow-y-auto 讓內容自適應並可滾動 */}
                 <div className="w-full flex-1 overflow-y-auto pr-3 pb-4 custom-scrollbar mb-4">
                   <p className="text-xs text-gray-500 mb-6 tracking-wider font-bold">點擊標籤選擇想要的元素，若不選則由 AI 自由發揮。</p>
                   
-                  {/* 動態渲染四大選項群組 */}
                   {[ 
                     { id: 'subjects', title: '主角設定' },
                     { id: 'seasons', title: '季節氛圍' }, 
@@ -174,7 +222,6 @@ const AiCoverGame_zimage = ({ song, onHome, coverStatus, generatedCoverImg, onSt
                       <h3 className="text-red-600 font-bold mb-3 text-sm uppercase tracking-widest border-l-4 border-red-500 pl-2">{group.title}</h3>
                       <div className="flex flex-wrap gap-2">
                         {currentOptions[group.id].map(item => {
-                          // slice(0, -1) 是為了將 'subjects' 轉成 'subject' 等單數對應 state
                           const stateKey = group.id.slice(0, -1);
                           const isSelected = selections[stateKey]?.label === item.label;
                           return (
@@ -198,7 +245,6 @@ const AiCoverGame_zimage = ({ song, onHome, coverStatus, generatedCoverImg, onSt
                   </div>
                 </div>
 
-                {/* 底部按鈕區：固定在下方不隨選項滾動 */}
                 <div className="mt-auto shrink-0 flex flex-col gap-3 w-full">
                   <button onClick={triggerGenerate} className="w-full py-4 bg-red-600 text-white font-bold rounded-lg border-2 border-red-800 shadow-[4px_4px_0_#7f1d1d] hover:translate-y-[2px] hover:shadow-[2px_2px_0_#7f1d1d] transition-all text-lg tracking-widest">
                     ✨ 開始繪製封面
@@ -211,7 +257,6 @@ const AiCoverGame_zimage = ({ song, onHome, coverStatus, generatedCoverImg, onSt
             )}
         </div>
 
-        {/* 右側：生成結果區域 */}
         <div className="w-5/12 flex flex-col items-center justify-center p-4 h-full relative">
            <div ref={resultRef} className="relative w-full shadow-2xl bg-gray-200 flex flex-col rounded-lg overflow-hidden border-4 border-[#C0B8A3] transition-all" style={{ aspectRatio: '1024/720' }}>
               {coverStatus === 'done' && generatedCoverImg ? (
@@ -229,9 +274,12 @@ const AiCoverGame_zimage = ({ song, onHome, coverStatus, generatedCoverImg, onSt
            
            <div className="h-20 mt-8 flex items-center">
              {coverStatus === 'done' && generatedCoverImg && (
-               <div className="flex flex-col items-center gap-3 animate-fade-in-up">
+               <div className="flex flex-col items-center gap-3 animate-fade-in-up w-full">
+                 <h3 className="text-xl font-bold text-[#FDFBF7] tracking-widest drop-shadow-md ">
+                    ✨ 繪製完成！
+                 </h3>
                  <button onClick={handleClaim} className="px-10 py-4 bg-gray-800 text-white rounded-lg font-bold border-2 border-black shadow-[4px_4px_0_#4b5563] hover:translate-y-[2px] hover:shadow-[2px_2px_0_#4b5563] transition-all tracking-widest text-lg">
-                   🎫 領取封面，前往換臉！
+                   🎫 領取封面！
                  </button>
                </div>
              )}

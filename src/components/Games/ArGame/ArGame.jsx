@@ -3,8 +3,8 @@ import Webcam from 'react-webcam';
 import { FilesetResolver, HandLandmarker } from '@mediapipe/tasks-vision';
 import { folkSongs } from '../../../data/folkSongs';
 import CassetteUI from '../../Shared/CassetteUI'; 
+import { CARRIAGE_NAMES, CARRIAGE_SUBTITLES } from '../../../data/gameModes'; 
 
-// ★ 載入收音機圖片 (請確保路徑正確)
 const radioPlayerUrl = '/images/cassette_player.png'; 
 
 const ArGame = ({ onConfirmSong, onPreviewSong }) => {
@@ -122,7 +122,6 @@ const ArGame = ({ onConfirmSong, onPreviewSong }) => {
         }
       }
 
-      // ★ 判斷手指是否落入下方的收音機區域
       const isInPlayerZone = (fX > 30 && fX < 70 && fY > 70);
       
       if (currentGrab) {
@@ -203,10 +202,16 @@ const ArGame = ({ onConfirmSong, onPreviewSong }) => {
   return (
     <div className="relative w-full h-full bg-gray-900 overflow-hidden select-none border-[6px] border-gray-800 rounded-xl shadow-2xl">
       
-      <div className="absolute top-6 left-0 w-full flex justify-center pointer-events-none z-40">
-         <div className="bg-[#FDFBF7]/90 backdrop-blur px-8 py-3 rounded-lg border-4 border-gray-800 shadow-[6px_6px_0_#4b5563]">
-            <h2 className="text-3xl font-bold text-gray-800 tracking-widest m-0">捕捉民歌</h2>
-         </div>
+      {/* ★ 統一標題與放大副標題 */}
+      <div className="absolute top-6 left-0 w-full flex flex-col justify-center items-center pointer-events-none z-40">
+        <h2 className="text-4xl font-bold text-[#FDFBF7] tracking-widest drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)] inline-block font-serif">
+          {CARRIAGE_NAMES.AR_CATCH}
+        </h2>
+        {CARRIAGE_SUBTITLES.AR_CATCH && (
+           <p className="text-gray-200 mt-4 tracking-wider text-xl drop-shadow-md font-bold">
+             {CARRIAGE_SUBTITLES.AR_CATCH}
+           </p>
+        )}
       </div>
 
       {playingSong && (
@@ -244,7 +249,6 @@ const ArGame = ({ onConfirmSong, onPreviewSong }) => {
                style={{ left: `${p.x + p.vx * 10}%`, top: `${p.y + p.vy * 10}%`, opacity: 0 }} />
         ))}
 
-        {/* 漂浮卡帶 */}
         {elementsDataRef.current.map((el, i) => (
           <div 
             key={el.id} 
@@ -264,31 +268,21 @@ const ArGame = ({ onConfirmSong, onPreviewSong }) => {
           ></div>
         )}
 
-        {/* ★ 全新設計：以收音機圖片為底的播放器 */}
         <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-[600px] h-[300px]">
           <div className="w-full h-full relative flex items-end justify-center drop-shadow-2xl">
-             
-             {/* 1. 收音機背景圖 */}
              <img src={radioPlayerUrl} alt="收音機" className="absolute bottom-[-20px] w-full object-contain pointer-events-none z-10" />
-
-             {/* 2. 模擬卡帶放入的凹槽位置 (精準覆蓋在圖片中間的卡帶窗上) */}
-             {/* 此處的 bottom 與 w/h 需要根據您的 image_4f50d3.png 實際長寬比進行微調，
-                 目前預設在畫面底部中央。 */}
              <div className="absolute bottom-[55px] w-[180px] h-[110px] z-20 flex items-center justify-center bg-transparent">
                 {playingSong ? (
-                  // 當有歌曲時，顯示稍微縮小版的卡帶 (縮放至符合視窗大小)
                   <div className="animate-fade-in-up transform scale-[0.6] origin-center mt-2">
                     <CassetteUI title={playingSong.title} size="normal" />
                   </div>
                 ) : (
-                  // 當沒有歌曲時，顯示提示文字 (可以選擇不顯示或顯示文字)
                   <div className="text-gray-400 font-bold text-xs tracking-widest flex flex-col items-center justify-center gap-1 w-full h-full border border-dashed border-gray-600 bg-black/60 rounded">
                     <span className="text-xl animate-bounce text-white">↓</span>
                     INSERT TAPE
                   </div>
                 )}
              </div>
-
           </div>
         </div>
 

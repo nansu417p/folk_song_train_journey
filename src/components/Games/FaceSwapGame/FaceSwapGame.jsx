@@ -1,5 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import Webcam from 'react-webcam';
+import { CARRIAGE_NAMES, CARRIAGE_SUBTITLES } from '../../../data/gameModes'; 
 
 const FaceSwapGame = ({ song, onHome, faceswapStatus, generatedSwappedImg, onStartGenerate, onSetMockSwap, onSwapGenerated, generatedCoverImg }) => {
   const webcamRef = useRef(null);
@@ -7,12 +8,9 @@ const FaceSwapGame = ({ song, onHome, faceswapStatus, generatedSwappedImg, onSta
   const [isCameraReady, setIsCameraReady] = useState(false);
   const [isClaiming, setIsClaiming] = useState(false);
 
-  // ★ 新增狀態：記錄目前選擇的封面來源 ('original' 或 'ai')
-  // 如果有傳入 AI 封面，預設就選 'ai'，否則選 'original'
   const [coverSource, setCoverSource] = useState(generatedCoverImg ? 'ai' : 'original');
 
   useEffect(() => {
-    // 依照目前選擇的 coverSource 來載入對應的背景圖
     const loadTemplate = async () => {
       try {
         let response;
@@ -32,14 +30,12 @@ const FaceSwapGame = ({ song, onHome, faceswapStatus, generatedSwappedImg, onSta
       }
     };
     
-    // 只要處於 idle 狀態，且有選擇來源，就重新載入 Template
     if (song && song.hasFace && faceswapStatus === 'idle') {
       loadTemplate();
     }
-  }, [song, faceswapStatus, generatedCoverImg, coverSource]); // ★ 將 coverSource 加入依賴陣列
+  }, [song, faceswapStatus, generatedCoverImg, coverSource]); 
 
   const handleCaptureAndSwap = async () => {
-    // 前端防呆：如果正在生成中，阻止執行
     if (!webcamRef.current || !base64Template || faceswapStatus === 'generating') return;
     
     const imageSrc = webcamRef.current.getScreenshot({width: 1024, height: 720}); 
@@ -60,7 +56,6 @@ const FaceSwapGame = ({ song, onHome, faceswapStatus, generatedSwappedImg, onSta
         gender_target: 0 
       };
       
-      // 標記這是一個換臉任務 (傳送給父元件)
       onStartGenerate(payload, 'faceswap');
     }
   };
@@ -74,17 +69,22 @@ const FaceSwapGame = ({ song, onHome, faceswapStatus, generatedSwappedImg, onSta
 
   return (
     <div className="relative w-full h-full bg-transparent flex flex-col items-center justify-center p-8 overflow-hidden">
-      <div className="text-center mb-8 mt-4">
-        <h2 className="text-4xl font-bold text-[#FDFBF7] tracking-widest drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)] border-b-2 border-red-500 pb-2 inline-block">一日歌手</h2>
-        <p className="text-gray-200 mt-4 tracking-wider text-lg drop-shadow-md">化身經典封面主角，重溫那年的青春</p>
+      
+      <div className="text-center mb-8 mt-4 shrink-0 relative z-10 pointer-events-none">
+        <h2 className="text-4xl font-bold text-[#FDFBF7] tracking-widest drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)] inline-block font-serif">
+          {CARRIAGE_NAMES.FACE_SWAP}
+        </h2>
+        {CARRIAGE_SUBTITLES.FACE_SWAP && (
+           <p className="text-gray-200 mt-4 tracking-wider text-xl drop-shadow-md font-bold">
+             {CARRIAGE_SUBTITLES.FACE_SWAP}
+           </p>
+        )}
       </div>
 
       <div className="flex w-full max-w-[80vw] h-[65vh] gap-8 items-center justify-center">
         
-        {/* 左側：目標封面展示區 */}
         <div className="w-1/2 flex flex-col items-center bg-[#FDFBF7] rounded-xl shadow-xl border-4 border-[#C0B8A3] p-6 h-full">
           
-          {/* ★ 新增：切換來源的 Toggle 按鈕 */}
           <div className="flex w-full mb-4 bg-gray-200 rounded-lg p-1 border-2 border-gray-300 shadow-inner">
             <button
               onClick={() => setCoverSource('original')}
@@ -99,7 +99,6 @@ const FaceSwapGame = ({ song, onHome, faceswapStatus, generatedSwappedImg, onSta
             </button>
             <button
               onClick={() => setCoverSource('ai')}
-              // 如果沒有 AI 封面，或是正在換臉運算中，禁止點擊
               disabled={!generatedCoverImg || faceswapStatus === 'generating'}
               className={`flex-1 py-2 font-bold tracking-widest rounded-md transition-all ${
                 coverSource === 'ai' 
@@ -120,7 +119,6 @@ const FaceSwapGame = ({ song, onHome, faceswapStatus, generatedSwappedImg, onSta
           </div>
         </div>
 
-        {/* 右側：拍攝與換臉結果區 */}
         <div className="w-1/2 flex flex-col items-center bg-[#EAEAEA] rounded-xl shadow-xl border-4 border-gray-300 p-6 h-full">
           {faceswapStatus === 'generating' ? (
              <div className="w-full h-full flex flex-col items-center justify-center text-center animate-pulse gap-6">
@@ -133,8 +131,9 @@ const FaceSwapGame = ({ song, onHome, faceswapStatus, generatedSwappedImg, onSta
              </div>
           ) : faceswapStatus === 'done' && generatedSwappedImg ? (
              <div className="w-full h-full flex flex-col items-center animate-fade-in-up">
-                <h3 className="text-xl font-bold text-gray-800 mb-4 border-b-2 border-gray-800 pb-2 w-full text-center tracking-widest">
-                  您的專屬封面
+                {/* ★ 確保畫面內有繪製完成的提示文字 */}
+                <h3 className="text-xl font-bold text-green-700 mb-4 border-b-2 border-gray-800 pb-2 w-full text-center tracking-widest ">
+                  ✨ 封面融合完成！
                 </h3>
                 <div className="w-full relative shadow-xl border-4 border-white bg-gray-200 flex-1 flex items-center justify-center overflow-hidden" style={{ aspectRatio: '1024/720' }}>
                   <img src={generatedSwappedImg} alt="Swapped" className="w-full h-full object-contain" />
@@ -163,7 +162,7 @@ const FaceSwapGame = ({ song, onHome, faceswapStatus, generatedSwappedImg, onSta
                     onUserMedia={() => setIsCameraReady(true)}
                   />
                   <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                    <div className="w-[35%] h-[60%] border-4 border-white/80 border-dashed rounded-[50%] shadow-[0_0_0_9999px_rgba(0,0,0,0.5)]"></div>
+                    <div className="w-[25%] h-[60%] border-4 border-white/80 border-dashed rounded-[50%] shadow-[0_0_0_9999px_rgba(0,0,0,0.5)]"></div>
                   </div>
                   {!isCameraReady && (
                     <div className="absolute inset-0 bg-gray-200 flex items-center justify-center text-gray-500 font-bold tracking-widest">

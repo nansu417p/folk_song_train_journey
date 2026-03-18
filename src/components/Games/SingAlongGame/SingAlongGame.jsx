@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { lyricsData } from '../../../data/lyricsData';
+import { CARRIAGE_NAMES } from '../../../data/gameModes'; // ★ 引入中央變數
 
 const SingAlongGame = ({ song, onHome, onRecordingComplete }) => {
   const [lyricsLines, setLyricsLines] = useState([]);
@@ -28,8 +29,6 @@ const SingAlongGame = ({ song, onHome, onRecordingComplete }) => {
   const isPlayingRef = useRef(false);
   const lastMatchTimeRef = useRef(0);
   
-  // ★ 核心修復 1：字詞緩衝區，精準記錄「當前句子」已經唱過哪些字
-  // 結構會像這樣：['看', '日', '落', ...]
   const matchedWordsInCurrentLineRef = useRef([]); 
 
   const startRecognitionRef = useRef(null);
@@ -139,55 +138,40 @@ const SingAlongGame = ({ song, onHome, onRecordingComplete }) => {
           const currentSung = sungLinesRef.current;
           const now = Date.now();
 
-          // 2.5 秒的冷卻機制
           if (now - lastMatchTimeRef.current < 2500) {
              return; 
           }
 
-          // ★ 核心修復 1：精準比對邏輯
           const startIndex = currentActive; 
           const endIndex = Math.min(lyricsLines.length, currentActive + 2);
           
           let matchedIndex = -1;
 
           for (let i = startIndex; i < endIndex; i++) {
-            // 如果是在檢查「下一句」，但它已經被標記為已唱（通常不會發生，除非手動跳轉），則略過
             if (i > currentActive && currentSung.has(i)) continue; 
 
-            // 目標歌詞
             const targetText = lyricsLines[i].replace(/[^\u4e00-\u9fa5a-zA-Z0-9]/g, '');
             if (targetText.length === 0) continue;
 
             let isMatch = false;
 
-            // 檢查是否有「連續兩個字」相符
             for (let j = 0; j < cleanTranscript.length - 1; j++) {
                const twoChars = cleanTranscript.substring(j, j + 2);
                
-               // 如果目標歌詞包含這兩個字
                if (targetText.includes(twoChars)) {
-                 // 如果我們正在檢查「目前這句」(i === currentActive)
                  if (i === currentActive) {
-                    // 檢查這兩個字是不是「已經被配對過了」
                     const char1AlreadyMatched = matchedWordsInCurrentLineRef.current.includes(twoChars[0]);
                     const char2AlreadyMatched = matchedWordsInCurrentLineRef.current.includes(twoChars[1]);
                     
-                    // 如果還沒被配對過，代表這是當前句子的「新」進度
                     if (!char1AlreadyMatched || !char2AlreadyMatched) {
-                       // 記錄這兩個字已配對
                        matchedWordsInCurrentLineRef.current.push(twoChars[0], twoChars[1]);
                        isMatch = true;
-                       console.log(`在第 ${i} 句配對到未唱過的字: ${twoChars}`);
                        break;
                     } else {
-                       // 這兩個字在當前句子已經被標記過，代表可能是下一句的重複詞！
-                       console.log(`第 ${i} 句的 "${twoChars}" 已唱過，略過配對。`);
-                       continue; // 繼續外層迴圈找下一句
+                       continue; 
                     }
                  } else {
-                    // 如果我們是在檢查「下一句」(i > currentActive)，直接算配對成功
                     isMatch = true;
-                    console.log(`在第 ${i} 句(下一句)配對到: ${twoChars}`);
                     break;
                  }
                }
@@ -199,7 +183,6 @@ const SingAlongGame = ({ song, onHome, onRecordingComplete }) => {
             }
           }
 
-          // 如果成功配對到「下一句」
           if (matchedIndex !== -1 && matchedIndex > currentActive) {
               lastMatchTimeRef.current = Date.now();
               setActiveLineIndex(matchedIndex);
@@ -211,7 +194,6 @@ const SingAlongGame = ({ song, onHome, onRecordingComplete }) => {
               });
               
               activeLineIndexRef.current = matchedIndex;
-              // ★ 跳到下一句時，清空字詞記錄陣列，準備記錄新的一句！
               matchedWordsInCurrentLineRef.current = [];
 
               if (lyricsContainerRef.current && lyricRefs.current[matchedIndex]) {
@@ -229,7 +211,6 @@ const SingAlongGame = ({ song, onHome, onRecordingComplete }) => {
       };
 
       recognition.onerror = (event) => {
-        // 隱藏 aborted 報錯，因為這是我們手動重啟時會出現的
         if (event.error !== 'aborted' && isPlayingRef.current) {
           console.log('語音辨識發生錯誤:', event.error);
         }
@@ -253,28 +234,22 @@ const SingAlongGame = ({ song, onHome, onRecordingComplete }) => {
     };
   }, [lyricsLines]); 
 
-  // ★ 核心修復 2：定期重啟機制 (每 15 秒模擬一次手動重啟，突破 60 秒限制)
   useEffect(() => {
      if (isPlaying) {
-         console.log("開始背景重啟計時器...");
          restartIntervalRef.current = setInterval(() => {
              if (isPlayingRef.current && recognitionRef.current) {
-                 console.log("執行背景無縫重啟...");
-                 // 關閉目前辨識器
                  try { recognitionRef.current.abort(); } catch(e) {}
                  
-                 // 給予 50ms 緩衝後重新啟動
                  setTimeout(() => {
                     if (isPlayingRef.current && startRecognitionRef.current) {
                         startRecognitionRef.current();
                     }
                  }, 50);
              }
-         }, 50000); // 15 秒重啟一次
+         }, 50000); 
      } else {
          if (restartIntervalRef.current) {
              clearInterval(restartIntervalRef.current);
-             console.log("停止背景重啟計時器");
          }
      }
 
@@ -300,7 +275,6 @@ const SingAlongGame = ({ song, onHome, onRecordingComplete }) => {
   const togglePlayAndMic = async () => {
     if (!hasStarted) {
         setHasStarted(true);
-        // ★ 核心修復 3：第一次點擊播放時，強制將第一句置中
         if (lyricsContainerRef.current && lyricRefs.current[0]) {
             setTimeout(() => {
               const container = lyricsContainerRef.current;
@@ -377,7 +351,7 @@ const SingAlongGame = ({ song, onHome, onRecordingComplete }) => {
       setIsFinished(true);
       
       activeLineIndexRef.current = lastIndex;
-      matchedWordsInCurrentLineRef.current = []; // 清空字詞記錄
+      matchedWordsInCurrentLineRef.current = []; 
       
       if (lyricsContainerRef.current && lyricRefs.current[lastIndex]) {
         const container = lyricsContainerRef.current;
@@ -395,7 +369,7 @@ const SingAlongGame = ({ song, onHome, onRecordingComplete }) => {
     
     activeLineIndexRef.current = 0;
     sungLinesRef.current = new Set();
-    matchedWordsInCurrentLineRef.current = []; // 清空字詞記錄
+    matchedWordsInCurrentLineRef.current = []; 
     
     if (audioRef.current) audioRef.current.currentTime = 0;
     if (lyricsContainerRef.current && lyricRefs.current[0]) {
@@ -456,8 +430,16 @@ const SingAlongGame = ({ song, onHome, onRecordingComplete }) => {
   return (
     <div className="relative w-full h-full flex flex-col items-center justify-center overflow-hidden bg-transparent pt-16 pb-8 px-8">
       
+      {/* ★ 統一標題設計 (無副標題) */}
+      <div className="absolute top-6 left-0 w-full flex justify-center pointer-events-none z-40">
+        <h2 className="text-4xl font-bold text-[#FDFBF7] tracking-widest drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)] inline-block font-serif">
+          {CARRIAGE_NAMES.SING_ALONG}
+        </h2>
+      </div>
+
       <div className="absolute top-6 right-8 z-50 flex gap-4">
-        <button onClick={handleFinishAndSave} className="px-6 py-3 bg-red-600 text-white font-bold rounded-lg border-2 border-red-800 shadow-[4px_4px_0_#7f1d1d] hover:translate-y-[2px] hover:shadow-[2px_2px_0_#7f1d1d] transition-all tracking-wide">
+        {/* ★ 任務 2：修改為白色復古按鈕風格 */}
+        <button onClick={handleFinishAndSave} className="px-6 py-3 bg-[#FDFBF7] text-gray-800 font-bold rounded-lg border-2 border-gray-400 shadow-[4px_4px_0_#9ca3af] hover:bg-gray-100 hover:translate-y-[2px] hover:shadow-[2px_2px_0_#9ca3af] transition-all tracking-widest flex items-center">
           提前結束演唱
         </button>
       </div>

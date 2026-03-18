@@ -1,8 +1,7 @@
 import React, { useRef, useState, useEffect, forwardRef, useImperativeHandle } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { gameModes } from '../../data/gameModes';
-// ★ 引入共用的 TicketCard
-import { TicketCard } from '../Games/MoodTrainGame/MoodTrainGame'; 
+import { TicketCard } from '../Shared/TicketCard'; 
 import CassetteUI from '../Shared/CassetteUI';
 
 const CustomAudioPlayer = ({ src, onPlayCallback }) => {
@@ -38,24 +37,16 @@ const CustomAudioPlayer = ({ src, onPlayCallback }) => {
   return (
     <div className="w-full bg-[#EAEAEA] border-2 border-gray-400 rounded-lg p-5 shadow-inner flex flex-col gap-4 mt-6 z-10 relative">
       <audio ref={audioRef} src={src} onTimeUpdate={handleTimeUpdate} onEnded={() => setIsPlaying(false)} className="hidden" />
-      
       <div className="flex items-center gap-5">
-        <button 
-          onClick={togglePlay} 
-          className="w-14 h-14 bg-red-600 text-white rounded-full flex items-center justify-center hover:bg-red-500 shadow-[2px_2px_0_#7f1d1d] active:shadow-none active:translate-y-[2px] transition-all border-2 border-red-800 text-xl pl-1"
-        >
+        <button onClick={togglePlay} className="w-14 h-14 bg-red-600 text-white rounded-full flex items-center justify-center hover:bg-red-500 shadow-[2px_2px_0_#7f1d1d] active:shadow-none active:translate-y-[2px] transition-all border-2 border-red-800 text-xl pl-1">
           {isPlaying ? 'II' : '▶'}
         </button>
-        
         <div className="flex-1 flex flex-col gap-2">
            <div className="flex justify-between text-xs text-gray-500 font-bold tracking-widest px-1">
              <span>VOICE RECORDING</span>
              <span>{isPlaying ? 'PLAYING...' : 'READY'}</span>
            </div>
-           <div 
-             className="w-full h-4 bg-gray-300 rounded-full border border-gray-400 overflow-hidden cursor-pointer relative shadow-inner" 
-             onClick={handleProgressClick}
-           >
+           <div className="w-full h-4 bg-gray-300 rounded-full border border-gray-400 overflow-hidden cursor-pointer relative shadow-inner" onClick={handleProgressClick}>
              <div className="absolute top-0 left-0 h-full bg-red-500 transition-all duration-75 pointer-events-none" style={{ width: `${progress}%` }}></div>
            </div>
         </div>
@@ -67,7 +58,6 @@ const CustomAudioPlayer = ({ src, onPlayCallback }) => {
 const TrainPage = forwardRef(({ onSelectMode, onBack, ticket, cover, coverStatus, swapped, faceswapStatus, lyrics, recording, mainSong, onPauseMusic }, ref) => {
   const scrollRef = useRef(null);
   const [lightbox, setLightbox] = useState(null); 
-  
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
@@ -79,19 +69,12 @@ const TrainPage = forwardRef(({ onSelectMode, onBack, ticket, cover, coverStatus
     const carriageWidth = 525;
     const headWidth = 525;
     const paddingLeft = 80; 
-    
     const target = (paddingLeft + headWidth) - (containerWidth / 2) + (carriageWidth / 2);
-    
-    scrollRef.current.scrollTo({
-        left: target,
-        behavior: 'smooth'
-    });
+    scrollRef.current.scrollTo({ left: target, behavior: 'smooth' });
   };
 
   useImperativeHandle(ref, () => ({
-    resetTrainPosition: () => {
-      scrollToFirstCarriage();
-    }
+    resetTrainPosition: () => { scrollToFirstCarriage(); }
   }));
 
   useEffect(() => {
@@ -107,13 +90,8 @@ const TrainPage = forwardRef(({ onSelectMode, onBack, ticket, cover, coverStatus
     dragThreshold.current = e.pageX; 
   };
 
-  const handleMouseLeave = () => {
-    setIsDragging(false);
-  };
-
-  const handleMouseUp = () => {
-    setIsDragging(false);
-  };
+  const handleMouseLeave = () => setIsDragging(false);
+  const handleMouseUp = () => setIsDragging(false);
 
   const handleMouseMove = (e) => {
     if (!isDragging || !scrollRef.current) return;
@@ -129,14 +107,12 @@ const TrainPage = forwardRef(({ onSelectMode, onBack, ticket, cover, coverStatus
     onSelectMode(mode);
   };
 
-  // ★ 提示功能：只要狀態不是 idle，就自動跳往下一個車廂
   const getHintModeId = () => {
     if (!ticket) return 'mood-train';
     if (!mainSong) return 'ar';
-    // 只要狀態不是 idle (代表已經點擊過繪製了)，且還沒拿到收藏品，指標就移往下一個
-    if (coverStatus === 'idle' && !cover) return 'ai-zimage';
+    if (!cover) return coverStatus === 'generating' ? 'sing-along' : 'ai-zimage';
     if (!recording) return 'sing-along';
-    if (mainSong && mainSong.hasFace && faceswapStatus === 'idle' && !swapped) return 'faceswap';
+    if (mainSong && mainSong.hasFace && !swapped) return faceswapStatus === 'generating' ? 'lyrics' : 'faceswap';
     if (!lyrics) return 'lyrics';
     return 'capsule';
   };
@@ -144,13 +120,9 @@ const TrainPage = forwardRef(({ onSelectMode, onBack, ticket, cover, coverStatus
 
   return (
     <div className="w-full h-full bg-transparent flex flex-col justify-between overflow-hidden relative pt-6 pb-6">
-      
       <div className="w-full flex flex-col items-center relative z-20 shrink-0">
         <div className="absolute top-0 left-10">
-          <button 
-            onClick={onBack} 
-            className="px-6 py-3 bg-[#FDFBF7]/90 text-gray-800 font-bold text-lg rounded-lg border-2 border-gray-400 shadow-[4px_4px_0_#9ca3af] hover:bg-gray-100 hover:translate-y-[2px] hover:shadow-[2px_2px_0_#9ca3af] transition-all tracking-widest flex items-center w-max"
-          >
+          <button onClick={onBack} className="px-6 py-3 bg-[#FDFBF7]/90 text-gray-800 font-bold text-lg rounded-lg border-2 border-gray-400 shadow-[4px_4px_0_#9ca3af] hover:bg-gray-100 hover:translate-y-[2px] transition-all tracking-widest flex items-center">
             ← 回首頁
           </button>
         </div>
@@ -158,17 +130,10 @@ const TrainPage = forwardRef(({ onSelectMode, onBack, ticket, cover, coverStatus
         <h3 className="text-gray-500 font-bold tracking-widest text-sm mb-4 bg-[#FDFBF7]/80 px-4 py-1 rounded-full border border-gray-300 backdrop-blur-sm shadow-sm pointer-events-none mt-2">
           — 您的旅程收集品 —
         </h3>
-        
-        {/* ★ 收藏品順序調整與膠帶修復 */}
+
         <div className="flex flex-row justify-center items-center gap-8 w-full max-w-6xl h-[180px] pointer-events-auto mt-2">
-            
-            {/* 1. 心情車票 */}
             {ticket && (
-              <motion.div 
-                initial={{ opacity: 0, y: -20, rotate: -5 }} animate={{ opacity: 1, y: 0, rotate: -2 }} whileHover={{ rotate: 0, scale: 1.05 }} 
-                onClick={() => setLightbox({ type: 'ticket', data: ticket })}
-                className="cursor-pointer z-50 drop-shadow-md flex items-center justify-center w-[280px] h-[140px]" 
-              >
+              <motion.div initial={{ opacity: 0, y: -20, rotate: -5 }} animate={{ opacity: 1, y: 0, rotate: -2 }} whileHover={{ rotate: 0, scale: 1.05 }} onClick={() => setLightbox({ type: 'ticket', data: ticket })} className="cursor-pointer z-50 drop-shadow-md flex items-center justify-center w-[280px] h-[140px]">
                 <div className="relative transform scale-[0.45] origin-center">
                    <div className="absolute -top-6 left-1/2 -translate-x-1/2 w-32 h-10 bg-yellow-100/80 backdrop-blur-[2px] shadow-sm z-30 rotate-2 border border-yellow-200/50"></div>
                    <TicketCard captureImg={ticket.image} moodResult={ticket.mood} size="normal" />
@@ -176,13 +141,8 @@ const TrainPage = forwardRef(({ onSelectMode, onBack, ticket, cover, coverStatus
               </motion.div>
             )}
 
-            {/* 2. 封面繪製 */}
             {cover && (
-              <motion.div 
-                initial={{ opacity: 0, y: -20, rotate: 3 }} animate={{ opacity: 1, y: 0, rotate: 1 }} whileHover={{ rotate: 0, scale: 1.05 }} 
-                onClick={() => setLightbox({ type: 'cover', data: cover })}
-                className="cursor-pointer z-40 drop-shadow-md w-[170px] flex items-center justify-center"
-              >
+              <motion.div initial={{ opacity: 0, y: -20, rotate: 3 }} animate={{ opacity: 1, y: 0, rotate: 1 }} whileHover={{ rotate: 0, scale: 1.05 }} onClick={() => setLightbox({ type: 'cover', data: cover })} className="cursor-pointer z-40 drop-shadow-md w-[170px] flex items-center justify-center">
                 <div className="relative w-full aspect-[16/9]">
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-12 h-4 bg-[#fca5a5]/80 backdrop-blur-[2px] shadow-sm z-30 rotate-[-3deg] border border-red-200/50"></div>
                   <div className="bg-white p-1.5 pb-1 border border-gray-300 flex flex-col pointer-events-none w-full h-full">
@@ -192,13 +152,8 @@ const TrainPage = forwardRef(({ onSelectMode, onBack, ticket, cover, coverStatus
               </motion.div>
             )}
 
-            {/* 3. 錄音卡帶 */}
             {recording && (
-              <motion.div 
-                initial={{ opacity: 0, y: -20, rotate: -2 }} animate={{ opacity: 1, y: 0, rotate: -1 }} whileHover={{ rotate: 0, scale: 1.05 }} 
-                onClick={() => setLightbox({ type: 'recording', data: recording })}
-                className="cursor-pointer z-20 drop-shadow-md w-[120px] flex items-center justify-center"
-              >
+              <motion.div initial={{ opacity: 0, y: -20, rotate: -2 }} animate={{ opacity: 1, y: 0, rotate: -1 }} whileHover={{ rotate: 0, scale: 1.05 }} onClick={() => setLightbox({ type: 'recording', data: recording })} className="cursor-pointer z-20 drop-shadow-md w-[120px] flex items-center justify-center">
                 <div className="relative transform scale-[0.45] origin-center pointer-events-none">
                   <div className="absolute -top-6 left-1/2 -translate-x-1/2 w-32 h-10 bg-green-100/80 backdrop-blur-[2px] shadow-sm z-30 rotate-1 border border-green-300/50"></div>
                   <CassetteUI title={recording.title} color="bg-green-700" size="normal" />
@@ -206,13 +161,8 @@ const TrainPage = forwardRef(({ onSelectMode, onBack, ticket, cover, coverStatus
               </motion.div>
             )}
 
-            {/* 4. 換臉封面 */}
             {swapped && (
-              <motion.div 
-                initial={{ opacity: 0, y: -20, rotate: -3 }} animate={{ opacity: 1, y: 0, rotate: -1 }} whileHover={{ rotate: 0, scale: 1.05 }} 
-                onClick={() => setLightbox({ type: 'swapped', data: swapped })}
-                className="cursor-pointer z-30 drop-shadow-md w-[170px] flex items-center justify-center"
-              >
+              <motion.div initial={{ opacity: 0, y: -20, rotate: -3 }} animate={{ opacity: 1, y: 0, rotate: -1 }} whileHover={{ rotate: 0, scale: 1.05 }} onClick={() => setLightbox({ type: 'swapped', data: swapped })} className="cursor-pointer z-30 drop-shadow-md w-[170px] flex items-center justify-center">
                 <div className="relative w-full aspect-[16/9]">
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-12 h-4 bg-[#bae6fd]/80 backdrop-blur-[2px] shadow-sm z-30 rotate-[2deg] border border-blue-200/50"></div>
                   <div className="bg-white p-1.5 pb-1 border border-gray-300 flex flex-col pointer-events-none w-full h-full">
@@ -222,19 +172,12 @@ const TrainPage = forwardRef(({ onSelectMode, onBack, ticket, cover, coverStatus
               </motion.div>
             )}
 
-            {/* 5. 歌詞卡 */}
             {lyrics && (
-              <motion.div 
-                initial={{ opacity: 0, y: -20, rotate: 4 }} animate={{ opacity: 1, y: 0, rotate: 2 }} whileHover={{ rotate: 0, scale: 1.05 }} 
-                onClick={() => setLightbox({ type: 'lyrics', data: lyrics })}
-                className="cursor-pointer z-20 drop-shadow-md w-[110px] flex items-center justify-center"
-              >
+              <motion.div initial={{ opacity: 0, y: -20, rotate: 4 }} animate={{ opacity: 1, y: 0, rotate: 2 }} whileHover={{ rotate: 0, scale: 1.05 }} onClick={() => setLightbox({ type: 'lyrics', data: lyrics })} className="cursor-pointer z-20 drop-shadow-md w-[110px] flex items-center justify-center">
                 <div className="relative w-full h-[120px]">
                   <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-12 h-4 bg-yellow-100/80 backdrop-blur-[2px] shadow-sm z-30 rotate-[-2deg] border border-yellow-300/50"></div>
                   <div className="bg-[#FDFBF7] p-2 border border-[#C0B8A3] w-full h-full flex flex-col relative overflow-hidden pointer-events-none mt-2">
-                     <div className="text-[6px] text-gray-500 leading-tight font-serif whitespace-pre-wrap opacity-70">
-                       {lyrics.content.substring(0, 100)}...
-                     </div>
+                     <div className="text-[6px] text-gray-500 leading-tight font-serif whitespace-pre-wrap opacity-70">{lyrics.content.substring(0, 100)}...</div>
                      <div className="absolute bottom-0 left-0 w-full h-8 bg-gradient-to-t from-[#FDFBF7] to-transparent"></div>
                   </div>
                 </div>
@@ -258,7 +201,7 @@ const TrainPage = forwardRef(({ onSelectMode, onBack, ticket, cover, coverStatus
         >
           <div className="flex items-end px-20 min-w-max h-[350px] relative">
             <div className="relative w-[525px] h-full flex items-center justify-center shrink-0 z-20 pointer-events-none">
-              <img src="/images/train-head.png" alt="train head" className="absolute inset-0 w-full h-full object-contain drop-shadow-2xl" draggable="false" />
+              <img src="/images/train-head.png" alt="train head" className="absolute inset-0 w-full h-full object-contain drop-shadow-2xl" draggable="false" style={{ transform: 'translateY(-3px)' }} />
             </div>
 
             {gameModes.map((mode) => {
@@ -271,15 +214,8 @@ const TrainPage = forwardRef(({ onSelectMode, onBack, ticket, cover, coverStatus
                 key={mode.id}
                 whileHover={isLocked ? {} : { scale: 1.02 }} 
                 whileTap={isLocked ? {} : { scale: 0.98 }}
-                onClickCapture={(e) => {
-                  if (isLocked) return;
-                  handleCarriageClick(mode, e);
-                }}
-                className={`
-                  group relative w-[525px] h-full flex flex-col items-center justify-center shrink-0 
-                  z-10 hover:z-50
-                  ${isLocked ? 'opacity-50 cursor-not-allowed grayscale' : 'cursor-pointer'}
-                `}
+                onClickCapture={(e) => { if (isLocked) return; handleCarriageClick(mode, e); }}
+                className={`group relative w-[525px] h-full flex flex-col items-center justify-center shrink-0 z-10 hover:z-50 ${isLocked ? 'opacity-50 cursor-not-allowed grayscale' : 'cursor-pointer'}`}
               >
                 {hintModeId === mode.id && !isLocked && (
                   <div className="absolute top-10 transform -translate-x-1/2 z-50 flex flex-col items-center animate-bounce pointer-events-none mb-1">
@@ -291,12 +227,11 @@ const TrainPage = forwardRef(({ onSelectMode, onBack, ticket, cover, coverStatus
                   src="/images/train.png" 
                   alt="train car" 
                   className="absolute inset-0 w-full h-full object-contain pointer-events-none drop-shadow-2xl"
-                  style={{ mixBlendMode: 'multiply' }} 
+                  style={{ mixBlendMode: 'multiply', transform: 'translateY(-3px)' }} 
                   draggable="false"
                 />
                 
-                {/* ★ 調整高度請改這裡：原本是 bottom-[28%]，往上拉 10px 變成 calc(28% + 10px) */}
-                <div className="absolute bottom-[calc(28%+3px)] left-1/2 transform -translate-x-1/2 z-20 flex flex-col items-center justify-center w-[60%] pointer-events-none">
+                <div className="absolute bottom-[calc(28%+10px)] left-1/2 transform -translate-x-1/2 z-20 flex flex-col items-center justify-center w-[60%] pointer-events-none">
                   <div className="absolute bottom-full mb-3 w-max flex justify-center z-[60]">
                     {isAiCover && coverStatus === 'generating' && <div className="bg-yellow-400 text-gray-800 px-4 py-1.5 text-sm rounded-full font-bold shadow-md animate-pulse border border-yellow-500">⏳ 畫家繪製中...</div>}
                     {isAiCover && coverStatus === 'done' && !cover && <div className="bg-green-500 text-white px-4 py-1.5 text-sm rounded-full font-bold shadow-[0_0_15px_#22c55e] animate-bounce border border-green-400">✨ 繪製完成！點擊入內領取</div>}
@@ -305,54 +240,47 @@ const TrainPage = forwardRef(({ onSelectMode, onBack, ticket, cover, coverStatus
                     {isFaceSwap && mainSong && !mainSong.hasFace && faceswapStatus === 'idle' && <div className="bg-gray-800 text-white px-4 py-1.5 text-sm rounded-full font-bold shadow-md border border-gray-600">🔒 此歌曲無人臉可替換</div>}
                   </div>
 
-                  {/* ★ 拔除黑板與螺絲釘，改為平面白色文字，並移除陰影 style */}
                   <div className="w-full transition-all duration-300 relative flex items-center justify-center py-2">
-                    <h3 
-                      className={`text-3xl font-bold tracking-[0.2em] transition-colors duration-300 ml-2 
-                        ${isLocked ? 'text-gray-400 opacity-60' : 'text-[#FDFBF7] group-hover:text-white'}
-                      `}
-                      // ★ 已移除 style={{ textShadow: ... }}
-                    >
+                    <h3 className={`text-3xl font-bold tracking-[0.2em] transition-colors duration-300 ml-2 ${isLocked ? 'text-gray-400 opacity-60' : 'text-[#FDFBF7] group-hover:text-white'}`}>
                       {mode.title}
                     </h3>
                   </div>
-
                 </div>
               </motion.div>
               );
             })}
 
             <div className="relative w-[525px] h-full flex items-center justify-center shrink-0 z-20 pointer-events-none transform scale-x-[-1]">
-              <img src="/images/train-head.png" alt="train tail" className="absolute inset-0 w-full h-full object-contain drop-shadow-2xl" draggable="false" />
+              <img src="/images/train-head.png" alt="train tail" className="absolute inset-0 w-full h-full object-contain drop-shadow-2xl" draggable="false" style={{ transform: 'translateY(-3px)' }} />
             </div>
-
           </div>
         </div>
       </div>
 
       <AnimatePresence>
         {lightbox && (
-          <motion.div 
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            onClick={() => setLightbox(null)}
-            className="fixed inset-0 z-[100] bg-black/80 backdrop-blur-md flex items-center justify-center p-8 select-none"
-          >
-            <motion.div 
-              initial={{ scale: 0.8, y: 30 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.8, y: 30 }} transition={{ type: "spring", damping: 20 }}
-              onClick={(e) => e.stopPropagation()} 
-              className="relative flex flex-col items-center justify-center max-h-full max-w-full"
-            >
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setLightbox(null)} className="fixed inset-0 z-[100] bg-black/80 backdrop-blur-md flex items-center justify-center p-8 select-none">
+            
+            {/* ★ 打叉按鈕 fixed 定位，保證不被遮擋 */}
+            <button onClick={() => setLightbox(null)} className="fixed top-8 right-8 md:top-12 md:right-12 w-14 h-14 flex items-center justify-center bg-black/50 text-white/80 hover:bg-black/80 hover:text-white rounded-full text-4xl font-bold transition-all z-[120]">
+              ×
+            </button>
+
+            <motion.div initial={{ scale: 0.8, y: 30 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.8, y: 30 }} transition={{ type: "spring", damping: 20 }} onClick={(e) => e.stopPropagation()} className="relative flex flex-col items-center justify-center max-h-full max-w-full">
+               
                {lightbox.type === 'ticket' && (
                  <div className="relative flex flex-col items-center drop-shadow-2xl">
-                   <div className="transform scale-120 md:scale-150 origin-center relative mt-6">
+                   {/* ★ 車票使用 size="large" 自動放大，不依賴容易破版的 scale */}
+                   <div className="relative mt-6">
                      <div className="absolute -top-6 left-1/2 -translate-x-1/2 w-32 h-10 bg-yellow-100/90 backdrop-blur-[2px] shadow-sm z-[100] rotate-2 border border-yellow-300"></div>
-                     <TicketCard captureImg={lightbox.data.image} moodResult={lightbox.data.mood} size="normal" />
+                     <TicketCard captureImg={lightbox.data.image} moodResult={lightbox.data.mood} size="large" />
                    </div>
                  </div>
                )}
 
                {lightbox.type === 'cover' && (
-                 <div className="bg-white p-4 pb-14 rounded-sm shadow-2xl border border-gray-200 flex flex-col relative w-[800px]">
+                 /* ★ 封面調小至 w-[650px] 讓比例接近車票 */
+                 <div className="bg-white p-4 pb-14 rounded-sm shadow-2xl border border-gray-200 flex flex-col relative w-[650px]">
                    <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-40 h-10 bg-[#fca5a5]/90 backdrop-blur-[2px] shadow-sm z-[100] rotate-[-2deg] border border-red-300"></div>
                    <img src={lightbox.data.image} className="w-full aspect-[16/9] object-cover border border-gray-300 mt-2" draggable="false" />
                    <div className="absolute bottom-4 w-full left-0 text-center"><h3 className="text-3xl font-bold text-gray-800 tracking-widest font-serif">{lightbox.data.title}</h3></div>
@@ -360,7 +288,7 @@ const TrainPage = forwardRef(({ onSelectMode, onBack, ticket, cover, coverStatus
                )}
 
                {lightbox.type === 'swapped' && (
-                 <div className="bg-white p-4 pb-14 rounded-sm shadow-2xl border border-gray-200 flex flex-col relative w-[800px]">
+                 <div className="bg-white p-4 pb-14 rounded-sm shadow-2xl border border-gray-200 flex flex-col relative w-[650px]">
                    <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-40 h-10 bg-[#bae6fd]/90 backdrop-blur-[2px] shadow-sm z-[100] rotate-[2deg] border border-blue-300"></div>
                    <img src={lightbox.data.image} className="w-full object-cover border border-gray-300 aspect-[1024/720] mt-2" draggable="false" />
                    <div className="absolute bottom-4 w-full left-0 text-center"><h3 className="text-3xl font-bold text-gray-800 tracking-widest font-serif">{lightbox.data.title}</h3></div>
@@ -390,14 +318,10 @@ const TrainPage = forwardRef(({ onSelectMode, onBack, ticket, cover, coverStatus
                  </div>
                )}
 
-               <button onClick={() => setLightbox(null)} className="absolute -top-12 -right-12 text-white/70 hover:text-white text-4xl font-bold transition-colors z-[110]">
-                 ×
-               </button>
             </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
-
     </div>
   );
 });

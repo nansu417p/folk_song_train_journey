@@ -5,8 +5,7 @@ import {
 } from '@dnd-kit/core';
 import { useDraggable as useScrollDraggable } from 'react-use-draggable-scroll';
 import { lyricsData } from '../../../data/lyricsData';
-
-// --- 子組件：StickerItem & DropZone 保持原樣 ---
+import { CARRIAGE_NAMES } from '../../../data/gameModes'; 
 
 function StickerItem({ id, word }) {
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({ id, data: { word } });
@@ -36,8 +35,6 @@ function DropZone({ id, currentWord, correctWord, isHintActive }) {
   );
 }
 
-// --- 遊戲引擎組件 ---
-
 const LyricsGamePlay = ({ song, gameData, initialStickers, onHome, onLyricsGenerated, isPlaying, progress, togglePlay, audioRef }) => {
   const [filledGaps, setFilledGaps] = useState({});
   const [stickers, setStickers] = useState(initialStickers);
@@ -51,7 +48,6 @@ const LyricsGamePlay = ({ song, gameData, initialStickers, onHome, onLyricsGener
   const { events: stickersScrollEvents } = useScrollDraggable(stickersScrollRef);
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));
 
-  // 重啟遊戲時重置內部狀態
   useEffect(() => {
     setFilledGaps({});
     setStickers(initialStickers);
@@ -125,7 +121,8 @@ const LyricsGamePlay = ({ song, gameData, initialStickers, onHome, onLyricsGener
     <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
        <div className="absolute top-6 right-8 z-50 flex gap-4">
          {!isCompleted && (
-           <button onClick={handleQuickFix} className="px-6 py-3 bg-[#FDFBF7] text-gray-800 font-bold rounded-lg border-2 border-gray-400 shadow-[4px_4px_0_#9ca3af] hover:translate-y-[2px] hover:shadow-[2px_2px_0_#9ca3af] transition-all tracking-wide animate-pulse">
+           /* ★ 任務 2：修改為白色復古按鈕風格 */
+           <button onClick={handleQuickFix} className="px-6 py-3 bg-[#FDFBF7] text-gray-800 font-bold rounded-lg border-2 border-gray-400 shadow-[4px_4px_0_#9ca3af] hover:bg-gray-100 hover:translate-y-[2px] hover:shadow-[2px_2px_0_#9ca3af] transition-all tracking-widest flex items-center animate-pulse">
              ⚡ 快速修復
            </button>
          )}
@@ -196,42 +193,33 @@ const LyricsGamePlay = ({ song, gameData, initialStickers, onHome, onLyricsGener
   );
 };
 
-// --- 主控制器組件 ---
-
 const LyricsGame = ({ song, onHome, onLyricsGenerated }) => {
   const [gameState, setGameState] = useState({ status: 'loading', data: null, stickers: [] });
   const audioRef = useRef(null);
   const [isPlaying, setIsPlaying] = useState(true);
   const [progress, setProgress] = useState(0);
 
-  // ★ 修改：自定義處理邏輯，確保「平均分佈」與「每次進入重新生成」
   useEffect(() => {
     if (song) {
       const rawText = lyricsData[song.id];
       if (rawText) {
-        // 1. 先將歌詞切行，過濾掉純空白行
         const allLines = rawText.split('\n')
           .map(l => l.trim())
           .filter(l => l.length > 0);
 
         const totalLines = allLines.length;
-        const targetGaps = 7; // 設定挖空總數
-        const segmentSize = Math.floor(totalLines / targetGaps); // 計算每一段的大小
+        const targetGaps = 7; 
+        const segmentSize = Math.floor(totalLines / targetGaps); 
         
         const chosenIndices = [];
 
-        // 2. 「分段隨機採樣」邏輯：
-        // 將歌詞分成 7 段，每一段隨機抽 1 行。確保題目在頭、中、尾都有分佈。
         for (let i = 0; i < targetGaps; i++) {
           const rangeStart = i * segmentSize;
           const rangeEnd = (i === targetGaps - 1) ? totalLines - 1 : (i + 1) * segmentSize - 1;
-          
-          // 在該區段內隨機取一數
           const randomIndex = Math.floor(Math.random() * (rangeEnd - rangeStart + 1)) + rangeStart;
           chosenIndices.push(randomIndex);
         }
 
-        // 3. 根據抽出的索引建立遊戲數據
         const finalLines = allLines.map((text, idx) => ({
           id: `line-${idx}`,
           text: text,
@@ -241,7 +229,7 @@ const LyricsGame = ({ song, onHome, onLyricsGenerated }) => {
         const finalStickers = finalLines
           .filter(l => l.isGap)
           .map(l => ({ id: `sticker-${l.id}`, text: l.text }))
-          .sort(() => Math.random() - 0.5); // 右側貼紙打亂順序
+          .sort(() => Math.random() - 0.5); 
 
         setGameState({ 
           status: 'playing', 
@@ -250,7 +238,7 @@ const LyricsGame = ({ song, onHome, onLyricsGenerated }) => {
         });
       }
     }
-  }, [song]); // 當進入此組件時執行，若返回火車再進入，組件重掛載會重新執行
+  }, [song]); 
 
   const handleTimeUpdate = () => {
     if (audioRef.current) {
@@ -272,6 +260,14 @@ const LyricsGame = ({ song, onHome, onLyricsGenerated }) => {
 
   return (
     <div className="relative w-full h-full flex flex-col items-center justify-center overflow-hidden bg-transparent pt-16 pb-8 px-8">
+      
+      {/* ★ 統一標題設計 (無副標題) */}
+      <div className="absolute top-6 left-0 w-full flex justify-center pointer-events-none z-40">
+        <h2 className="text-4xl font-bold text-[#FDFBF7] tracking-widest drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)] inline-block font-serif">
+          {CARRIAGE_NAMES.LYRICS}
+        </h2>
+      </div>
+
       <audio ref={audioRef} src={`/music/${song.audioFileName}`} autoPlay loop onTimeUpdate={handleTimeUpdate} className="hidden" />
       <LyricsGamePlay 
         song={song} 

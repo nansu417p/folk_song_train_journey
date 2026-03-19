@@ -440,7 +440,7 @@ const SingAlongGame = ({ song, onHome, onRecordingComplete }) => {
       <div className="absolute top-6 right-8 z-50 flex gap-4">
         {/* ★ 任務 2：修改為白色復古按鈕風格 */}
         <button onClick={handleFinishAndSave} className="px-6 py-3 bg-[#FDFBF7] text-gray-800 font-bold rounded-lg border-2 border-gray-400 shadow-[4px_4px_0_#9ca3af] hover:bg-gray-100 hover:translate-y-[2px] hover:shadow-[2px_2px_0_#9ca3af] transition-all tracking-widest flex items-center">
-          提前結束演唱
+          提前結束錄音
         </button>
       </div>
 
@@ -469,7 +469,7 @@ const SingAlongGame = ({ song, onHome, onRecordingComplete }) => {
                 <div className="bg-yellow-400 text-gray-900 font-bold px-6 py-2 rounded-full shadow-[2px_2px_0_#ca8a04] tracking-widest text-base border-2 border-yellow-600">
                   點擊播放，開始您的專屬錄音！
                 </div>
-                <div className="w-4 h-4 bg-yellow-400 border-b-2 border-r-2 border-yellow-600 transform rotate-45 -mt-2 z-[-1]"></div>
+                <div ></div>
              </div>
           )}
 
@@ -556,7 +556,7 @@ const SingAlongGame = ({ song, onHome, onRecordingComplete }) => {
                     </span>
                   ) : (
                     <span className="text-gray-600 font-mono text-sm tracking-wider">
-                      {isListening ? '> (等待聲音輸入...)' : '> SYSTEM OFFLINE'}
+                      {isListening ? '> (等待聲音輸入...)' : '> 歌詞紀錄'}
                     </span>
                   )}
                </div>
@@ -565,7 +565,7 @@ const SingAlongGame = ({ song, onHome, onRecordingComplete }) => {
              <div className="flex items-center gap-4">
                <div className="flex flex-col gap-2 mr-4 border-r border-gray-700 pr-4">
                  <button onClick={restartSinging} className="text-xs font-bold tracking-widest text-gray-400 hover:text-white px-3 py-1 border border-gray-600 rounded hover:bg-gray-700 transition-all shadow-sm">
-                   ↺ 重頭唱
+                   ↺ 重新錄音
                  </button>
                  <button onClick={jumpToLastLine} className="text-xs font-bold tracking-widest text-gray-400 hover:text-white px-3 py-1 border border-gray-600 rounded hover:bg-gray-700 transition-all shadow-sm">
                    ⏭ 最後一句
@@ -580,7 +580,7 @@ const SingAlongGame = ({ song, onHome, onRecordingComplete }) => {
                      ? 'bg-gray-800 text-white hover:translate-y-[2px] hover:shadow-[2px_2px_0_#4b5563] animate-pulse' 
                      : 'bg-gray-700 text-gray-500 cursor-not-allowed'}`}
                >
-                 {isFinished ? '🎉 完成演唱並儲存錄音' : '等待演唱完成...'}
+                 {isFinished ? '完成演唱並儲存錄音' : '等待演唱完成...'}
                </button>
              </div>
           </div>

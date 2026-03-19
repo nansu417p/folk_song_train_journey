@@ -95,7 +95,7 @@ const FaceSwapGame = ({ song, onHome, faceswapStatus, generatedSwappedImg, onSta
                   : 'text-gray-500 hover:bg-gray-300'
               } disabled:cursor-not-allowed`}
             >
-              經典原版
+              原版專輯封面
             </button>
             <button
               onClick={() => setCoverSource('ai')}
@@ -106,7 +106,7 @@ const FaceSwapGame = ({ song, onHome, faceswapStatus, generatedSwappedImg, onSta
                   : 'text-gray-500 hover:bg-gray-300'
               } disabled:opacity-40 disabled:cursor-not-allowed`}
             >
-              AI 專屬封面
+              自製專輯封面
             </button>
           </div>
 
@@ -123,24 +123,24 @@ const FaceSwapGame = ({ song, onHome, faceswapStatus, generatedSwappedImg, onSta
           {faceswapStatus === 'generating' ? (
              <div className="w-full h-full flex flex-col items-center justify-center text-center animate-pulse gap-6">
                 <div className="w-16 h-16 border-8 border-gray-300 border-t-red-600 rounded-full animate-spin"></div>
-                <h3 className="text-2xl font-bold text-gray-800 tracking-widest">封面融合中...</h3>
-                <p className="text-gray-600 leading-relaxed font-bold">正在處理您的五官，約需 5 ~ 10 秒。<br/>您可以先回火車大廳等待，好了會提醒您！</p>
+                <h3 className="text-2xl font-bold text-gray-800 tracking-widest">封面繪製中...</h3>
+                <p className="text-gray-600 leading-relaxed font-bold">封面繪製約需 1 ~ 2 分鐘<br/>您可以先返回火車，繼續進行後續車廂</p>
                 <button onClick={onHome} className="w-[80%] py-4 mt-4 bg-gray-800 text-white font-bold rounded-lg border-2 border-black shadow-[4px_4px_0_#4b5563] hover:translate-y-[2px] hover:shadow-[2px_2px_0_#4b5563] transition-all tracking-widest">
-                    🚂 返回火車等待
+                    返回火車等待
                 </button>
              </div>
           ) : faceswapStatus === 'done' && generatedSwappedImg ? (
              <div className="w-full h-full flex flex-col items-center animate-fade-in-up">
                 {/* ★ 確保畫面內有繪製完成的提示文字 */}
                 <h3 className="text-xl font-bold text-green-700 mb-4 border-b-2 border-gray-800 pb-2 w-full text-center tracking-widest ">
-                  ✨ 封面融合完成！
+                  封面繪製完成！
                 </h3>
                 <div className="w-full relative shadow-xl border-4 border-white bg-gray-200 flex-1 flex items-center justify-center overflow-hidden" style={{ aspectRatio: '1024/720' }}>
                   <img src={generatedSwappedImg} alt="Swapped" className="w-full h-full object-contain" />
                 </div>
                 <div className="mt-6 w-full flex justify-center">
                   <button onClick={handleClaim} disabled={isClaiming} className="w-[80%] py-4 bg-red-600 text-white rounded-lg font-bold border-2 border-red-800 shadow-[4px_4px_0_#7f1d1d] hover:translate-y-[2px] hover:shadow-[2px_2px_0_#7f1d1d] transition-all tracking-widest text-lg disabled:opacity-50">
-                    {isClaiming ? "⏳ 封裝中..." : "🎫 領取專屬封面"}
+                    {isClaiming ? "封裝中..." : "領取專屬封面! "}
                   </button>
                 </div>
              </div>
@@ -173,7 +173,7 @@ const FaceSwapGame = ({ song, onHome, faceswapStatus, generatedSwappedImg, onSta
                 
                 <div className="w-full text-center mt-4 mb-4">
                    <span className="bg-[#FDFBF7] text-gray-800 border-2 border-gray-400 px-6 py-2 rounded-lg shadow-[2px_2px_0_#9ca3af] font-bold tracking-widest text-sm inline-block">
-                      📷 請將臉部對準虛線框內
+                      請將臉部對準虛線框內
                    </span>
                 </div>
                 
@@ -183,7 +183,7 @@ const FaceSwapGame = ({ song, onHome, faceswapStatus, generatedSwappedImg, onSta
                     disabled={!isCameraReady || !base64Template || faceswapStatus === 'generating'} 
                     className="flex-1 py-4 bg-gray-800 text-white rounded-lg border-2 border-black shadow-[4px_4px_0_#4b5563] hover:translate-y-[2px] hover:shadow-[2px_2px_0_#4b5563] transition-all tracking-widest text-lg font-bold disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    📸 拍下照片並融合
+                    拍下照片並融合
                   </button>
                   <button 
                     onClick={() => onSetMockSwap(`/images/${song.audioFileName.replace('.mp3', '.jpg')}`)}

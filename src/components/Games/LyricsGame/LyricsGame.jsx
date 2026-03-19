@@ -30,7 +30,7 @@ function DropZone({ id, currentWord, correctWord, isHintActive }) {
   const shouldGlow = isHintActive && isHintActive.includes(id);
   return (
     <div ref={setNodeRef} className={`inline-flex items-center justify-center min-w-[250px] h-10 mx-2 border-b-4 transition-all duration-300 align-middle ${shouldGlow ? 'border-yellow-400 bg-yellow-100/50 shadow-[0_0_15px_rgba(250,204,21,0.5)] scale-105' : 'border-dashed border-gray-400 bg-gray-200/40'} ${isOver ? 'bg-blue-100/50 border-blue-400 scale-110' : ''}`}>
-      <span className="text-gray-400 text-sm tracking-widest opacity-50 font-bold">將記憶碎片貼於此...</span>
+      <span className="text-gray-400 text-sm tracking-widest opacity-50 font-bold">將歌詞貼於此</span>
     </div>
   );
 }
@@ -123,7 +123,7 @@ const LyricsGamePlay = ({ song, gameData, initialStickers, onHome, onLyricsGener
          {!isCompleted && (
            /* ★ 任務 2：修改為白色復古按鈕風格 */
            <button onClick={handleQuickFix} className="px-6 py-3 bg-[#FDFBF7] text-gray-800 font-bold rounded-lg border-2 border-gray-400 shadow-[4px_4px_0_#9ca3af] hover:bg-gray-100 hover:translate-y-[2px] hover:shadow-[2px_2px_0_#9ca3af] transition-all tracking-widest flex items-center animate-pulse">
-             ⚡ 快速修復
+             快速拼貼
            </button>
          )}
        </div>
@@ -151,7 +151,7 @@ const LyricsGamePlay = ({ song, gameData, initialStickers, onHome, onLyricsGener
 
             <div className="flex flex-1 overflow-hidden relative">
               <div ref={lyricsScrollRef} {...lyricsScrollEvents} className="flex-[2] bg-[#FDFBF7] p-8 overflow-y-auto custom-scrollbar relative">
-                  <p className="text-center text-gray-500 font-bold tracking-widest mb-10 border-b-2 border-dashed border-gray-300 pb-4">將右側記憶碎片貼回對應位置</p>
+                  <p className="text-center text-gray-500 font-bold tracking-widest mb-10 border-b-2 border-dashed border-gray-300 pb-4">將右側歌詞拖曳至對應位置</p>
                   <div className="flex flex-col gap-6 text-center font-serif text-xl md:text-2xl text-gray-800 leading-loose font-bold">
                     {gameData.lines.map((line) => {
                        if (!line.text) return <div key={line.id} className="h-4"></div>; 
@@ -167,14 +167,14 @@ const LyricsGamePlay = ({ song, gameData, initialStickers, onHome, onLyricsGener
               <div ref={stickersScrollRef} {...stickersScrollEvents} className="flex-[1] bg-[#EAEAEA] p-6 overflow-y-auto custom-scrollbar border-l-4 border-dashed border-[#C0B8A3] shadow-inner flex flex-col items-center gap-6">
                   {isCompleted ? (
                     <div className="text-center flex flex-col items-center justify-center animate-fade-in-up w-full px-4">
-                       <div className="text-6xl mb-4">📜✨</div>
-                       <h3 className="text-2xl font-bold text-gray-800 mb-2 font-serif">歌詞修復完成</h3>
-                       <p className="text-gray-500 font-bold mb-8 text-sm">您已經完美還原了這首歌的記憶。</p>
-                       <button onClick={onHome} className="w-[80%] py-4 bg-gray-800 text-white rounded-lg font-bold border-2 border-black shadow-[4px_4px_0_#4b5563] hover:translate-y-[2px] transition-all">🚂 返回車站大廳</button>
+                       <div className="text-6xl mb-4"></div>
+                       <h3 className="text-2xl font-bold text-gray-800 mb-2 font-serif">歌詞拼貼完成!</h3>
+                       <p className="text-gray-500 font-bold mb-8 text-sm"></p>
+                       <button onClick={onHome} className="w-[80%] py-4 bg-gray-800 text-white rounded-lg font-bold border-2 border-black shadow-[4px_4px_0_#4b5563] hover:translate-y-[2px] transition-all">返回火車</button>
                     </div>
                   ) : (
                     <>
-                      <h3 className="text-gray-500 font-bold tracking-widest text-sm bg-white px-6 py-2 rounded-full border-2 border-gray-300 mb-2">🧩 記憶碎片</h3>
+                      <h3 className="text-gray-500 font-bold tracking-widest text-sm bg-white px-6 py-2 rounded-full border-2 border-gray-300 mb-2">歌詞片段</h3>
                       {stickers.map((item) => <StickerItem key={item.id} id={item.id} word={item.text} />)}
                     </>
                   )}

@@ -180,7 +180,7 @@ const MoodTrainGame = ({ onMoodDetected, onTicketGenerated }) => {
         {/* ★ 左側：寬度縮小到 35% */}
         <div className="flex flex-col gap-6 w-full md:w-[35%] h-full justify-center">
           <div className="bg-[#EAEAEA] p-6 rounded-xl shadow-[8px_8px_0_rgba(0,0,0,0.6)] border-[4px] border-gray-800 flex flex-col items-center relative overflow-hidden h-full">
-            <h2 className="text-2xl font-bold text-gray-800 mb-4 tracking-widest border-b-[3px] border-gray-800 pb-2 w-full text-center font-serif">剪票口相機</h2>
+            <h2 className="text-2xl font-bold text-gray-800 mb-4 tracking-widest border-b-[3px] border-gray-800 pb-2 w-full text-center font-serif">售票口相機</h2>
             
             <div className="w-full aspect-square md:aspect-[4/3] bg-gray-900 rounded-sm overflow-hidden relative border-[4px] border-gray-800 shadow-inner flex items-center justify-center">
               {isCameraActive && ( <Webcam ref={webcamRef} audio={false} screenshotFormat="image/jpeg" className="absolute opacity-0 w-[1px] h-[1px] pointer-events-none" mirrored={false} videoConstraints={{ width: 640, height: 480, facingMode: "user" }} /> )}
@@ -193,18 +193,18 @@ const MoodTrainGame = ({ onMoodDetected, onTicketGenerated }) => {
               )}
               {!isCameraActive && <span className="text-gray-500 font-bold tracking-widest bg-gray-900 inset-0 absolute flex items-center justify-center z-20">相機已關閉</span>}
               {step === 'scanning' && cameraReady && <div className="absolute inset-0 flex items-center justify-center z-30 pointer-events-none"><div className="w-[60%] h-[70%] border-[4px] border-yellow-400 border-dashed rounded animate-pulse shadow-[0_0_15px_#facc15]"></div></div>}
-              {step === 'result' && <div className="absolute inset-0 flex items-center justify-center z-30 pointer-events-none"><p className="bg-[#FDFBF7] px-6 py-2 border-[3px] border-gray-800 rounded font-bold text-gray-800 tracking-widest shadow-[4px_4px_0_#4b5563]">📸 拍攝完成</p></div>}
+              {step === 'result' && <div className="absolute inset-0 flex items-center justify-center z-30 pointer-events-none"><p className="bg-[#FDFBF7] px-6 py-2 border-[3px] border-gray-800 rounded font-bold text-gray-800 tracking-widest shadow-[4px_4px_0_#4b5563]">拍攝完成</p></div>}
             </div>
 
             <div className="w-full text-center mt-4 mb-2">
                <span className="bg-[#FDFBF7] text-gray-800 border-[3px] border-gray-800 px-6 py-2 rounded shadow-[4px_4px_0_#4b5563] font-bold tracking-widest text-sm inline-block">
-                 {step === 'result' ? '照片已洗出' : '請看著相機保持不動'}
+                 {step === 'result' ? '車票印製完成' : '請看著相機保持不動'}
                </span>
             </div>
 
             <div className="mt-auto w-full relative z-10">
               {step === 'intro' && <button onClick={startScan} disabled={!cameraReady} className="w-full py-4 bg-gray-800 text-[#FDFBF7] font-bold rounded border-[3px] border-black shadow-[4px_4px_0_#4b5563] hover:translate-y-[2px] hover:shadow-[2px_2px_0_#4b5563] active:translate-y-[4px] active:shadow-none transition-all tracking-widest text-lg disabled:bg-gray-400 disabled:border-gray-500 disabled:shadow-none disabled:cursor-not-allowed">按下快門並製票</button>}
-              {step === 'scanning' && <div className="w-full py-4 text-center text-gray-600 font-bold animate-pulse tracking-widest bg-[#FDFBF7] rounded border-[3px] border-gray-800 shadow-inner">正在沖洗相片中...</div>}
+              {step === 'scanning' && <div className="w-full py-4 text-center text-gray-600 font-bold animate-pulse tracking-widest bg-[#FDFBF7] rounded border-[3px] border-gray-800 shadow-inner">車票印製中...</div>}
               {step === 'result' && (
                 <div className="flex gap-4 w-full">
                   <button onClick={handleReScan} className="flex-1 py-4 bg-[#FDFBF7] text-gray-800 font-bold rounded border-[3px] border-gray-800 shadow-[4px_4px_0_#4b5563] hover:translate-y-[2px] hover:shadow-[2px_2px_0_#4b5563] transition-all tracking-widest">重新拍攝</button>
@@ -218,7 +218,7 @@ const MoodTrainGame = ({ onMoodDetected, onTicketGenerated }) => {
         {/* ★ 右側：寬度放大到 65% 並增加左間距 md:pl-12 */}
         <div className="w-full md:w-[65%] md:pl-12 flex flex-col items-center justify-center gap-6 h-full relative">
             <div className="w-full bg-[#FDFBF7] p-6 rounded shadow-[6px_6px_0_rgba(0,0,0,0.6)] border-[4px] border-gray-800 relative z-20">
-              <div className="absolute -top-4 -left-4 w-12 h-12 bg-gray-800 rounded-full flex items-center justify-center text-[#FDFBF7] text-sm font-bold shadow-md border-[3px] border-[#FDFBF7] tracking-widest">廣播</div>
+              
               <h3 className="font-bold text-gray-800 mb-2 tracking-widest text-lg font-serif">車長廣播：</h3>
               <p className="text-gray-700 leading-relaxed font-bold tracking-wide bg-gray-100 p-3 rounded-sm border border-gray-300 shadow-inner min-h-[60px]">
                 {getConductorMessage()}

@@ -3,7 +3,26 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 // 資料
 import { folkSongs } from './data/folkSongs';
-import { CARRIAGE_NAMES } from './data/gameModes'; // ★ 引入以動態顯示車廂名稱
+
+export const CARRIAGE_NAMES = {
+  MOOD_TRAIN: "心情車票",
+  AR_CATCH: "民歌卡帶播放器",
+  AI_COVER: "自製專輯封面",
+  SING_ALONG: "民歌錄音室",
+  FACE_SWAP: "一日歌手", 
+  LYRICS: "歌詞拼貼",
+  CAPSULE: "民歌回憶"
+};
+
+export const CARRIAGE_SUBTITLES = {
+  MOOD_TRAIN: "通往內心的時光鐵道",
+  AR_CATCH: "",
+  AI_COVER: "生成你的民歌封面",
+  SING_ALONG: "用聲音點亮回憶",
+  FACE_SWAP: "成為經典專輯主角",
+  LYRICS: "修復記憶中的旋律",
+  CAPSULE: "打包你的專屬回憶"
+};
 
 // 元件
 import TrainPage from './components/Train/TrainPage';
@@ -88,7 +107,7 @@ function App() {
   
   const [volume, setVolume] = useState(0.5);
 
-  const trainRef = useRef(null); // ★ 控制火車位置的 Ref
+  const trainRef = useRef(null); 
   const homeSectionRef = useRef(null);
   const storySectionRef = useRef(null); 
   const trainSectionRef = useRef(null);
@@ -164,7 +183,6 @@ function App() {
     scrollTo(trainSectionRef); 
   };
 
-  // ★ 任務 3：徹底清空所有狀態，重新開始旅程，並重置火車位置
   const handleFullReset = () => {
     setActiveMode(null);
     setMainSong(null);
@@ -180,7 +198,6 @@ function App() {
     setRecordingData(null);
     pauseMusic();
     
-    // ★ 呼叫 TrainPage 的重置方法，將火車滾動回第一節車廂
     if (trainRef.current) {
       trainRef.current.resetTrainPosition();
     }
@@ -218,9 +235,10 @@ function App() {
     setTimeout(() => scrollTo(gameSectionRef), 100);
   };
 
+  // ★ 修復二次生成時沒有顯示等待中的問題
   const handleStartGenerateCover = async (payload) => {
+    setGeneratedCoverImg(null); // 強制清空圖片
     setCoverStatus('generating');
-    setGeneratedCoverImg(null);
     try {
       const response = await fetch(`${API_URL}/sdapi/v1/txt2img`, {
         method: 'POST',
@@ -244,8 +262,8 @@ function App() {
   };
 
   const handleStartFaceSwap = async (payload) => {
+    setGeneratedSwappedImg(null); // 強制清空圖片
     setFaceswapStatus('generating');
-    setGeneratedSwappedImg(null);
     try {
       const response = await fetch(`${API_URL}/reactor/image`, { 
         method: "POST", 
@@ -266,24 +284,23 @@ function App() {
     }
   };
 
-  const UnifiedBackButton = ({ onClick, text = "← 返回火車" }) => (
+  const UnifiedBackButton = ({ onClick, text = " 返回火車" }) => (
     <button onClick={onClick} className="absolute top-6 left-8 z-50 px-6 py-3 bg-[#FDFBF7]/90 backdrop-blur-sm text-gray-800 font-bold text-lg rounded-lg border-2 border-gray-400 shadow-[4px_4px_0_#9ca3af] hover:bg-gray-100 hover:translate-y-[2px] hover:shadow-[2px_2px_0_#9ca3af] transition-all tracking-widest flex items-center">
       {text}
     </button>
   );
 
-  // ★ 任務：將未選歌提示頁面的按鈕與說明文字，改為動態讀取 CARRIAGE_NAMES.AR_CATCH
   const RequireMainSongPrompt = () => (
     <div className="flex flex-col items-center bg-[#FDFBF7] p-12 rounded-xl border-4 border-gray-300 shadow-[8px_8px_0_#d1d5db] text-center max-w-2xl">
       <h2 className="text-4xl font-bold text-gray-800 mb-6 tracking-widest border-b-2 border-red-500 pb-4">尚未選擇旅程主打歌</h2>
       <p className="text-gray-600 mb-10 text-xl leading-loose">
-        請先前往【{CARRIAGE_NAMES.AR_CATCH || '民歌卡帶播放器'}】車廂，用手勢抓取一首您喜愛的歌曲，作為後續所有創作與回憶的主旋律。
+        請先前往【{CARRIAGE_NAMES.AR_CATCH || '民歌卡帶播放器'}】車廂，用選擇一首您喜愛的歌曲，作為後續所有創作與回憶的主旋律。
       </p>
       <button 
         onClick={() => handleModeSelect({ id: 'ar', locked: false })} 
         className="px-10 py-4 bg-red-600 text-white font-bold text-xl rounded-lg border-2 border-red-800 shadow-[4px_4px_0_#7f1d1d] hover:translate-y-[2px] hover:shadow-[2px_2px_0_#7f1d1d] transition-all tracking-widest"
       >
-        🖐️ 前往【{CARRIAGE_NAMES.AR_CATCH || '民歌卡帶播放器'}】
+        前往【{CARRIAGE_NAMES.AR_CATCH || '民歌卡帶播放器'}】
       </button>
     </div>
   );
@@ -301,7 +318,7 @@ function App() {
             <h1 className="text-7xl md:text-8xl font-bold tracking-[0.2em] mb-6 text-gray-800 drop-shadow-sm">民歌旅程</h1>
             <p className="text-2xl md:text-3xl text-gray-600 tracking-[0.3em] mb-12 border-t border-gray-400 pt-6">那年，我們唱自己的歌</p>
             <button onClick={handleStartIntro} className="px-12 py-5 bg-gray-800 text-[#F5F5F5] rounded-lg text-xl font-bold tracking-widest border-2 border-black shadow-[6px_6px_0_#4b5563] hover:translate-y-[2px] hover:shadow-[3px_3px_0_#4b5563] transition-all">
-              開啟旅程 ↓
+              開始旅程 
             </button>
           </motion.div>
         </div>
@@ -312,15 +329,17 @@ function App() {
         
         <div className="relative z-20 w-full h-full flex flex-col items-center justify-center p-8">
           <div className="w-full max-w-4xl bg-[#FDFBF7] p-12 md:p-16 rounded-xl shadow-2xl border-4 border-[#C0B8A3] flex flex-col items-center text-center">
-             <h2 className="text-4xl md:text-5xl font-bold text-gray-800 tracking-widest mb-8 border-b-2 border-red-500 pb-4">歡迎搭乘時光列車</h2>
+             <h2 className="text-4xl md:text-5xl font-bold text-gray-800 tracking-widest mb-8 border-b-2 border-red-500 pb-4">歡迎搭乘民歌號</h2>
              <div className="text-xl md:text-2xl text-gray-700 leading-loose tracking-wider mb-12 text-left space-y-6">
-                <p>這是一趟通往 1980 年代台灣的特別班車。</p>
+                <p>這是一趟通往 1980 年代台灣的特別旅程。</p>
                 <p>在這裡，沒有現代的喧囂，只有一把吉他、純粹的嗓音，以及那些曾經陪伴我們度過青春歲月的熟悉旋律。</p>
-                <p>接下來，請您跟著車廂內的指示，用手勢捕捉一首屬於您的民歌，並與歌聲互動，將這份記憶重新擦亮，封裝成永恆的回憶。</p>
+                <p>接下來，請您跟著車廂內的指示，與歌聲互動，重回那個時代，享受這段與民歌相伴的旅程。</p>
              </div>
-             <button onClick={handleEnterTrain} className="px-12 py-5 bg-red-600 text-white rounded-lg text-xl font-bold tracking-widest border-2 border-red-800 shadow-[6px_6px_0_#7f1d1d] hover:translate-y-[2px] hover:shadow-[3px_3px_0_#7f1d1d] transition-all">
-                點擊上車 ↓
-             </button>
+             <div className="flex justify-center w-full">
+               <button onClick={handleEnterTrain} className="px-12 py-5 bg-red-600 text-white rounded-lg text-xl font-bold tracking-widest border-2 border-red-800 shadow-[6px_6px_0_#7f1d1d] hover:translate-y-[2px] hover:shadow-[3px_3px_0_#7f1d1d] transition-all">
+                   點擊上車 
+               </button>
+             </div>
           </div>
         </div>
       </section>
@@ -361,7 +380,7 @@ function App() {
           </div>
           
           <TrainPage 
-            ref={trainRef} // ★ 將 Ref 綁定到 TrainPage
+            ref={trainRef}
             onSelectMode={handleModeSelect} 
             onBack={handleFullReset} 
             ticket={ticketData} cover={coverData} coverStatus={coverStatus} 
@@ -447,7 +466,7 @@ function App() {
              <div className="w-full h-full flex flex-col items-center justify-center relative">
                <UnifiedBackButton onClick={handleLeaveGame} />
                <button onClick={handleEndJourney} className="absolute top-6 right-8 z-50 px-8 py-3 bg-red-500 text-white font-bold text-lg rounded-lg border-2 border-black shadow-[4px_4px_0_#4b5563] hover:translate-y-[2px] hover:shadow-[2px_2px_0_#4b5563] transition-all tracking-widest flex items-center">
-                 結束旅程 →
+                 結束旅程
                </button>
 
                {!mainSong ? <RequireMainSongPrompt /> : <CapsuleGame song={mainSong} ticket={ticketData} cover={coverData} swapped={swappedData} lyrics={lyricsData} recording={recordingData} onHome={handleLeaveGame} />}
@@ -465,11 +484,11 @@ function App() {
                這首民歌的旅程在此告一段落，<br/>但台灣的民歌記憶，仍會在我們心中繼續傳唱下去。
              </p>
              <div className="flex gap-6 w-full justify-center">
-               <button onClick={handleFullReset} className="px-8 py-4 bg-[#F5F5F5] text-gray-800 text-lg font-bold tracking-widest border-2 border-gray-400 shadow-[4px_4px_0_#9ca3af] hover:bg-gray-100 hover:translate-y-[2px] hover:shadow-[2px_2px_0_#9ca3af] transition-all">
-                 🏠 重新開始
+               <button onClick={handleStartIntro} className="px-12 py-5 bg-[#FDFBF7]/90 text-gray-800 rounded-lg text-xl font-bold tracking-widest border-2 border-black shadow-[6px_6px_0_#4b5563] hover:translate-y-[2px] hover:shadow-[3px_3px_0_#4b5563] transition-all">
+                  重新開始
                </button>
-               <button onClick={handleFullReset} className="px-8 py-4 bg-red-600 text-white text-lg font-bold tracking-widest border-2 border-red-800 shadow-[4px_4px_0_#7f1d1d] hover:bg-red-500 hover:translate-y-[2px] hover:shadow-[2px_2px_0_#7f1d1d] transition-all">
-                 📝 填寫回饋問卷
+               <button onClick={handleStartIntro} className="px-12 py-5 bg-red-600 text-[#F5F5F5] rounded-lg text-xl font-bold tracking-widest border-2 border-black shadow-[6px_6px_0_#4b5563] hover:translate-y-[2px] hover:shadow-[3px_3px_0_#4b5563] transition-all">
+                  填寫回饋問卷
                </button>
              </div>
           </div>

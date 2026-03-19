@@ -107,13 +107,22 @@ const TrainPage = forwardRef(({ onSelectMode, onBack, ticket, cover, coverStatus
     onSelectMode(mode);
   };
 
+  // ★ 任務 1：修正箭頭指向邏輯
   const getHintModeId = () => {
     if (!ticket) return 'mood-train';
     if (!mainSong) return 'ar';
     if (!cover) return coverStatus === 'generating' ? 'sing-along' : 'ai-zimage';
     if (!recording) return 'sing-along';
-    if (mainSong && mainSong.hasFace && !swapped) return faceswapStatus === 'generating' ? 'lyrics' : 'faceswap';
+    
+    // 當有 recording 後，檢查是否要換臉
+    if (mainSong && mainSong.hasFace && !swapped) {
+      return faceswapStatus === 'generating' ? 'lyrics' : 'faceswap';
+    }
+    
+    // 如果都不用換臉（或換臉完成），就指向歌詞
     if (!lyrics) return 'lyrics';
+    
+    // 最後才是打包
     return 'capsule';
   };
   const hintModeId = getHintModeId();
@@ -123,7 +132,7 @@ const TrainPage = forwardRef(({ onSelectMode, onBack, ticket, cover, coverStatus
       <div className="w-full flex flex-col items-center relative z-20 shrink-0">
         <div className="absolute top-0 left-10">
           <button onClick={onBack} className="px-6 py-3 bg-[#FDFBF7]/90 text-gray-800 font-bold text-lg rounded-lg border-2 border-gray-400 shadow-[4px_4px_0_#9ca3af] hover:bg-gray-100 hover:translate-y-[2px] transition-all tracking-widest flex items-center">
-            ← 回首頁
+             回首頁
           </button>
         </div>
         
@@ -233,11 +242,11 @@ const TrainPage = forwardRef(({ onSelectMode, onBack, ticket, cover, coverStatus
                 
                 <div className="absolute bottom-[calc(28%+10px)] left-1/2 transform -translate-x-1/2 z-20 flex flex-col items-center justify-center w-[60%] pointer-events-none">
                   <div className="absolute bottom-full mb-3 w-max flex justify-center z-[60]">
-                    {isAiCover && coverStatus === 'generating' && <div className="bg-yellow-400 text-gray-800 px-4 py-1.5 text-sm rounded-full font-bold shadow-md animate-pulse border border-yellow-500">⏳ 畫家繪製中...</div>}
-                    {isAiCover && coverStatus === 'done' && !cover && <div className="bg-green-500 text-white px-4 py-1.5 text-sm rounded-full font-bold shadow-[0_0_15px_#22c55e] animate-bounce border border-green-400">✨ 繪製完成！點擊入內領取</div>}
-                    {isFaceSwap && faceswapStatus === 'generating' && <div className="bg-blue-400 text-gray-800 px-4 py-1.5 text-sm rounded-full font-bold shadow-md animate-pulse border border-blue-500">⏳ 融合五官中...</div>}
-                    {isFaceSwap && faceswapStatus === 'done' && !swapped && <div className="bg-green-500 text-white px-4 py-1.5 text-sm rounded-full font-bold shadow-[0_0_15px_#22c55e] animate-bounce border border-green-400">✨ 封面完成！點擊入內領取</div>}
-                    {isFaceSwap && mainSong && !mainSong.hasFace && faceswapStatus === 'idle' && <div className="bg-gray-800 text-white px-4 py-1.5 text-sm rounded-full font-bold shadow-md border border-gray-600">🔒 此歌曲無人臉可替換</div>}
+                    {isAiCover && coverStatus === 'generating' && <div className="bg-yellow-400 text-gray-800 px-4 py-1.5 text-sm rounded-full font-bold shadow-md animate-pulse border border-yellow-500">封面繪製中...</div>}
+                    {isAiCover && coverStatus === 'done' && !cover && <div className="bg-green-500 text-white px-4 py-1.5 text-sm rounded-full font-bold shadow-[0_0_15px_#22c55e] animate-bounce border border-green-400">繪製完成！點擊入內領取</div>}
+                    {isFaceSwap && faceswapStatus === 'generating' && <div className="bg-blue-400 text-gray-800 px-4 py-1.5 text-sm rounded-full font-bold shadow-md animate-pulse border border-blue-500">封面繪製中...</div>}
+                    {isFaceSwap && faceswapStatus === 'done' && !swapped && <div className="bg-green-500 text-white px-4 py-1.5 text-sm rounded-full font-bold shadow-[0_0_15px_#22c55e] animate-bounce border border-green-400">繪製完成！點擊入內領取</div>}
+                    {isFaceSwap && mainSong && !mainSong.hasFace && faceswapStatus === 'idle' && <div className="bg-gray-800 text-white px-4 py-1.5 text-sm rounded-full font-bold shadow-md border border-gray-600">此歌曲無人臉可替換</div>}
                   </div>
 
                   <div className="w-full transition-all duration-300 relative flex items-center justify-center py-2">
@@ -261,7 +270,6 @@ const TrainPage = forwardRef(({ onSelectMode, onBack, ticket, cover, coverStatus
         {lightbox && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setLightbox(null)} className="fixed inset-0 z-[100] bg-black/80 backdrop-blur-md flex items-center justify-center p-8 select-none">
             
-            {/* ★ 打叉按鈕 fixed 定位，保證不被遮擋 */}
             <button onClick={() => setLightbox(null)} className="fixed top-8 right-8 md:top-12 md:right-12 w-14 h-14 flex items-center justify-center bg-black/50 text-white/80 hover:bg-black/80 hover:text-white rounded-full text-4xl font-bold transition-all z-[120]">
               ×
             </button>
@@ -270,7 +278,6 @@ const TrainPage = forwardRef(({ onSelectMode, onBack, ticket, cover, coverStatus
                
                {lightbox.type === 'ticket' && (
                  <div className="relative flex flex-col items-center drop-shadow-2xl">
-                   {/* ★ 車票使用 size="large" 自動放大，不依賴容易破版的 scale */}
                    <div className="relative mt-6">
                      <div className="absolute -top-6 left-1/2 -translate-x-1/2 w-32 h-10 bg-yellow-100/90 backdrop-blur-[2px] shadow-sm z-[100] rotate-2 border border-yellow-300"></div>
                      <TicketCard captureImg={lightbox.data.image} moodResult={lightbox.data.mood} size="large" />
@@ -279,7 +286,6 @@ const TrainPage = forwardRef(({ onSelectMode, onBack, ticket, cover, coverStatus
                )}
 
                {lightbox.type === 'cover' && (
-                 /* ★ 封面調小至 w-[650px] 讓比例接近車票 */
                  <div className="bg-white p-4 pb-14 rounded-sm shadow-2xl border border-gray-200 flex flex-col relative w-[650px]">
                    <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-40 h-10 bg-[#fca5a5]/90 backdrop-blur-[2px] shadow-sm z-[100] rotate-[-2deg] border border-red-300"></div>
                    <img src={lightbox.data.image} className="w-full aspect-[16/9] object-cover border border-gray-300 mt-2" draggable="false" />

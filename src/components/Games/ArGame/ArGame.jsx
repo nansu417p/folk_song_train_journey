@@ -219,14 +219,14 @@ const ArGame = ({ onConfirmSong, onPreviewSong }) => {
           onClick={handleConfirmClick} 
           className="absolute top-6 right-8 z-50 px-8 py-3 bg-red-600 text-white font-bold text-lg rounded-lg border-2 border-red-800 shadow-[4px_4px_0_#7f1d1d] hover:translate-y-[2px] hover:shadow-[2px_2px_0_#7f1d1d] transition-all tracking-widest pointer-events-auto animate-pulse"
         >
-          ✅ 確認歌曲並返回
+          選擇旅程歌曲
         </button>
       )}
 
       {isLoading && (
         <div className="absolute inset-0 z-40 flex flex-col items-center justify-center bg-[#FDFBF7] text-gray-800">
           <div className="w-16 h-16 border-8 border-gray-300 border-t-red-600 rounded-full animate-spin mb-6"></div>
-          <p className="animate-pulse text-2xl font-bold tracking-widest border-b-2 border-red-500 pb-2">AR 引擎與空間掃描中...</p>
+          <p className="animate-pulse text-2xl font-bold tracking-widest border-b-2 border-red-500 pb-2">鏡頭開啟中...</p>
         </div>
       )}
 
@@ -239,7 +239,7 @@ const ArGame = ({ onConfirmSong, onPreviewSong }) => {
         {showHint && !isLoading && (
           <div className="absolute top-32 left-0 w-full text-center animate-bounce z-40">
             <span className="bg-[#FDFBF7] text-gray-800 border-4 border-gray-800 px-6 py-3 rounded-lg shadow-[4px_4px_0_#4b5563] font-bold tracking-widest text-lg">
-              👆 食指觸碰空中卡帶，拖入下方收音機
+              用手指觸碰卡帶，放入下方播放器
             </span>
           </div>
         )}

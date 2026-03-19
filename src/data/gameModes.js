@@ -11,11 +11,11 @@ export const CARRIAGE_NAMES = {
 
 // ★ 中央控制：在此統一修改所有車廂的副標題
 export const CARRIAGE_SUBTITLES = {
-  MOOD_TRAIN: "通往內心的時光鐵道",
+  MOOD_TRAIN: "帶著今日的心情踏上旅程",
   AR_CATCH: "",
-  AI_COVER: "生成你的民歌封面",
+  AI_COVER: "繪製屬於您的專輯封面",
   SING_ALONG: "用聲音點亮回憶",
-  FACE_SWAP: "成為經典專輯主角",
+  FACE_SWAP: "成為專輯封面主角",
   LYRICS: "修復記憶中的旋律",
   CAPSULE: "打包你的專屬回憶"
 };

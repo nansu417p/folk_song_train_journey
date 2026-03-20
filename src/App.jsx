@@ -24,6 +24,24 @@ export const CARRIAGE_SUBTITLES = {
   CAPSULE: "打包你的專屬回憶"
 };
 
+// ==========================================
+// ★ 跨平台排版微調中控台 (解決脫軌與對齊)
+// ==========================================
+export const LAYOUT_CONFIG = {
+  // 1. 全域背景圖設定 (含遠山背景)
+  BG_SCALE: 1.0, 
+  BG_POSITION: 'center bottom',
+
+  // 2. 獨立鐵軌層 (rail.png) 設定
+  // 預設縮放與定位跟背景一樣，這樣就能還原切分前的比例。
+  RAIL_SCALE: 1.0,         // 鐵軌的縮放大小 (若覺得鐵軌太小可調為 1.05)
+  RAIL_Y_OFFSET: '100px',    // 鐵軌的上下微調 (例如 '10px' 往下移)
+
+  // 3. 火車車廂設定
+  TRAIN_Y_OFFSET: '0px',   // 火車的上下微調 (對準輪子與鐵軌用)
+};
+// ==========================================
+
 // 元件
 import TrainPage from './components/Train/TrainPage';
 import MoodTrainGame from './components/Games/MoodTrainGame/MoodTrainGame'; 
@@ -235,9 +253,8 @@ function App() {
     setTimeout(() => scrollTo(gameSectionRef), 100);
   };
 
-  // ★ 修復二次生成時沒有顯示等待中的問題
   const handleStartGenerateCover = async (payload) => {
-    setGeneratedCoverImg(null); // 強制清空圖片
+    setGeneratedCoverImg(null); 
     setCoverStatus('generating');
     try {
       const response = await fetch(`${API_URL}/sdapi/v1/txt2img`, {
@@ -262,7 +279,7 @@ function App() {
   };
 
   const handleStartFaceSwap = async (payload) => {
-    setGeneratedSwappedImg(null); // 強制清空圖片
+    setGeneratedSwappedImg(null); 
     setFaceswapStatus('generating');
     try {
       const response = await fetch(`${API_URL}/reactor/image`, { 
@@ -305,13 +322,23 @@ function App() {
     </div>
   );
 
+  // 共用的背景樣式生成器
+  const getBgStyle = (url) => ({
+    backgroundImage: `url('${url}')`,
+    backgroundSize: 'cover',
+    backgroundPosition: LAYOUT_CONFIG.BG_POSITION,
+    backgroundRepeat: 'no-repeat',
+    transform: `scale(${LAYOUT_CONFIG.BG_SCALE})`,
+    transformOrigin: 'bottom center'
+  });
+
   return (
     <div className="w-full h-screen overflow-hidden bg-[#EAEAEA] text-folk-dark font-serif flex flex-col">
       <GlobalMoodEffects mood={globalMood} />
       
       <section ref={homeSectionRef} className="h-screen w-full relative shrink-0 overflow-hidden bg-[#EAEAEA]">
-        <div className="absolute inset-0 bg-cover bg-center z-0" style={{ backgroundImage: "url('/home-bg.jpg')" }}></div>
-        <div className="absolute inset-0 bg-black/30 z-0"></div>
+        <div className="absolute inset-0 pointer-events-none z-0" style={getBgStyle('/home-bg.jpg')} />
+        <div className="absolute inset-0 bg-black/30 z-0 pointer-events-none"></div>
         
         <div className="relative z-20 w-full h-full flex flex-col items-center justify-center">
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="text-center flex flex-col items-center bg-[#FDFBF7]/95 p-16 rounded-xl border-2 border-[#C0B8A3] shadow-2xl">
@@ -325,7 +352,7 @@ function App() {
       </section>
 
       <section ref={storySectionRef} className="h-screen w-full relative shrink-0 overflow-hidden bg-[#EAEAEA]">
-        <div className="absolute inset-0 bg-cover bg-center z-0 opacity-40" style={{ backgroundImage: "url('/train-bg_2.jpg')" }}></div>
+        <div className="absolute inset-0 pointer-events-none opacity-40 z-0" style={getBgStyle('/train-bg_2.jpg')} />
         
         <div className="relative z-20 w-full h-full flex flex-col items-center justify-center p-8">
           <div className="w-full max-w-4xl bg-[#FDFBF7] p-12 md:p-16 rounded-xl shadow-2xl border-4 border-[#C0B8A3] flex flex-col items-center text-center">
@@ -345,7 +372,7 @@ function App() {
       </section>
 
       <section ref={trainSectionRef} className="h-screen w-full relative shrink-0 overflow-hidden bg-[#EAEAEA]">
-        <div className="absolute inset-0 bg-cover bg-center z-0" style={{ backgroundImage: "url('/train-bg.jpg')" }}></div>
+        <div className="absolute inset-0 pointer-events-none z-0" style={getBgStyle('/train-bg.png')} />
         
         <div className="relative z-20 w-full h-full">
           <div className="absolute top-6 right-8 z-50 group">
@@ -387,13 +414,14 @@ function App() {
             swapped={swappedData} faceswapStatus={faceswapStatus} 
             lyrics={lyricsData} recording={recordingData} 
             onPauseMusic={pauseMusic} mainSong={mainSong}
+            layoutConfig={LAYOUT_CONFIG} // ★ 將設定傳遞給 TrainPage
           />
         </div>
       </section>
 
       <section ref={gameSectionRef} className="h-screen w-full relative shrink-0 overflow-hidden bg-[#EAEAEA]">
-        <div className="absolute inset-0 bg-cover bg-center z-0" style={{ backgroundImage: "url('/game-bg.jpg')" }}></div>
-        <div className="absolute inset-0 bg-black/10 z-0"></div> 
+        <div className="absolute inset-0 pointer-events-none z-0" style={getBgStyle('/game-bg.jpg')} />
+        <div className="absolute inset-0 bg-black/10 z-0 pointer-events-none"></div> 
         
         <div className="relative z-20 w-full h-full flex flex-col items-center justify-center">
           
@@ -476,7 +504,7 @@ function App() {
       </section>
 
       <section ref={outroSectionRef} className="h-screen w-full relative shrink-0 overflow-hidden bg-[#EAEAEA]">
-        <div className="absolute inset-0 bg-cover bg-center z-0 opacity-30" style={{ backgroundImage: "url('/train-bg_2.jpg')" }}></div>
+        <div className="absolute inset-0 pointer-events-none opacity-30 z-0" style={getBgStyle('/train-bg_2.jpg')} />
         <div className="relative z-20 w-full h-full flex flex-col items-center justify-center p-8">
           <div className="w-full max-w-3xl bg-[#FDFBF7] p-12 md:p-16 rounded-xl shadow-2xl border-4 border-[#C0B8A3] flex flex-col items-center text-center">
              <h2 className="text-4xl font-bold text-gray-800 tracking-widest mb-6 border-b-2 border-red-500 pb-4">終點站到了</h2>
@@ -484,10 +512,10 @@ function App() {
                這首民歌的旅程在此告一段落，<br/>但台灣的民歌記憶，仍會在我們心中繼續傳唱下去。
              </p>
              <div className="flex gap-6 w-full justify-center">
-               <button onClick={handleStartIntro} className="px-12 py-5 bg-[#FDFBF7]/90 text-gray-800 rounded-lg text-xl font-bold tracking-widest border-2 border-black shadow-[6px_6px_0_#4b5563] hover:translate-y-[2px] hover:shadow-[3px_3px_0_#4b5563] transition-all">
+               <button onClick={handleFullReset} className="px-12 py-5 bg-[#FDFBF7]/90 text-gray-800 rounded-lg text-xl font-bold tracking-widest border-2 border-black shadow-[6px_6px_0_#4b5563] hover:translate-y-[2px] hover:shadow-[3px_3px_0_#4b5563] transition-all">
                   重新開始
                </button>
-               <button onClick={handleStartIntro} className="px-12 py-5 bg-red-600 text-[#F5F5F5] rounded-lg text-xl font-bold tracking-widest border-2 border-black shadow-[6px_6px_0_#4b5563] hover:translate-y-[2px] hover:shadow-[3px_3px_0_#4b5563] transition-all">
+               <button onClick={handleFullReset} className="px-12 py-5 bg-red-600 text-[#F5F5F5] rounded-lg text-xl font-bold tracking-widest border-2 border-black shadow-[6px_6px_0_#4b5563] hover:translate-y-[2px] hover:shadow-[3px_3px_0_#4b5563] transition-all">
                   填寫回饋問卷
                </button>
              </div>

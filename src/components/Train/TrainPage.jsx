@@ -55,7 +55,8 @@ const CustomAudioPlayer = ({ src, onPlayCallback }) => {
   );
 };
 
-const TrainPage = forwardRef(({ onSelectMode, onBack, ticket, cover, coverStatus, swapped, faceswapStatus, lyrics, recording, mainSong, onPauseMusic }, ref) => {
+// ★ 接收從 App.jsx 傳遞來的 layoutConfig
+const TrainPage = forwardRef(({ onSelectMode, onBack, ticket, cover, coverStatus, swapped, faceswapStatus, lyrics, recording, mainSong, onPauseMusic, layoutConfig }, ref) => {
   const scrollRef = useRef(null);
   const [lightbox, setLightbox] = useState(null); 
   const [isDragging, setIsDragging] = useState(false);
@@ -107,28 +108,39 @@ const TrainPage = forwardRef(({ onSelectMode, onBack, ticket, cover, coverStatus
     onSelectMode(mode);
   };
 
-  // ★ 任務 1：修正箭頭指向邏輯
   const getHintModeId = () => {
     if (!ticket) return 'mood-train';
     if (!mainSong) return 'ar';
     if (!cover) return coverStatus === 'generating' ? 'sing-along' : 'ai-zimage';
     if (!recording) return 'sing-along';
     
-    // 當有 recording 後，檢查是否要換臉
     if (mainSong && mainSong.hasFace && !swapped) {
       return faceswapStatus === 'generating' ? 'lyrics' : 'faceswap';
     }
     
-    // 如果都不用換臉（或換臉完成），就指向歌詞
     if (!lyrics) return 'lyrics';
     
-    // 最後才是打包
     return 'capsule';
   };
   const hintModeId = getHintModeId();
 
   return (
     <div className="w-full h-full bg-transparent flex flex-col justify-between overflow-hidden relative pt-6 pb-6">
+      
+      {/* ★ 獨立鐵軌層 (放置在所有內容之下，但確保縮放比例與 App.jsx 的背景完全同步) ★ */}
+      <div 
+        className="absolute inset-x-0 bottom-0 pointer-events-none z-0"
+        style={{
+          height: '100vh', // 讓這個 div 跟螢幕一樣大，這樣 cover 計算才會等同於背景
+          backgroundImage: "url('/rail.png')",
+          backgroundSize: 'cover',
+          backgroundPosition: layoutConfig?.BG_POSITION || 'center bottom',
+          backgroundRepeat: 'no-repeat',
+          transform: `translateY(${layoutConfig?.RAIL_Y_OFFSET || '0px'}) scale(${layoutConfig?.RAIL_SCALE || 1})`,
+          transformOrigin: 'bottom center',
+        }}
+      />
+
       <div className="w-full flex flex-col items-center relative z-20 shrink-0">
         <div className="absolute top-0 left-10">
           <button onClick={onBack} className="px-6 py-3 bg-[#FDFBF7]/90 text-gray-800 font-bold text-lg rounded-lg border-2 border-gray-400 shadow-[4px_4px_0_#9ca3af] hover:bg-gray-100 hover:translate-y-[2px] transition-all tracking-widest flex items-center">
@@ -199,7 +211,11 @@ const TrainPage = forwardRef(({ onSelectMode, onBack, ticket, cover, coverStatus
         <h2 className="text-5xl font-bold mb-2 text-gray-800 drop-shadow-md tracking-widest">點擊車廂開始旅程</h2>
       </div>
 
-      <div className="w-full h-[400px] overflow-hidden relative z-10 shrink-0">
+      {/* ★ 使用 App 傳來的參數統一調整整串火車車廂的上下位移 */}
+      <div 
+        className="w-full h-[400px] overflow-hidden relative z-10 shrink-0"
+        style={{ transform: `translateY(${layoutConfig?.TRAIN_Y_OFFSET || '0px'})` }}
+      >
         <div 
           ref={scrollRef}
           className={`w-full h-[420px] overflow-x-scroll overflow-y-hidden no-scrollbar flex items-start pt-4 pb-10 ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
@@ -243,10 +259,10 @@ const TrainPage = forwardRef(({ onSelectMode, onBack, ticket, cover, coverStatus
                 <div className="absolute bottom-[calc(28%+10px)] left-1/2 transform -translate-x-1/2 z-20 flex flex-col items-center justify-center w-[60%] pointer-events-none">
                   <div className="absolute bottom-full mb-3 w-max flex justify-center z-[60]">
                     {isAiCover && coverStatus === 'generating' && <div className="bg-yellow-400 text-gray-800 px-4 py-1.5 text-sm rounded-full font-bold shadow-md animate-pulse border border-yellow-500">封面繪製中...</div>}
-                    {isAiCover && coverStatus === 'done' && !cover && <div className="bg-green-500 text-white px-4 py-1.5 text-sm rounded-full font-bold shadow-[0_0_15px_#22c55e] animate-bounce border border-green-400">繪製完成！點擊入內領取</div>}
+                    {isAiCover && coverStatus === 'done' && <div className="bg-green-500 text-white px-4 py-1.5 text-sm rounded-full font-bold shadow-[0_0_15px_#22c55e] animate-bounce border border-green-400">✨ 繪製完成！點擊入內領取</div>}
                     {isFaceSwap && faceswapStatus === 'generating' && <div className="bg-blue-400 text-gray-800 px-4 py-1.5 text-sm rounded-full font-bold shadow-md animate-pulse border border-blue-500">封面繪製中...</div>}
-                    {isFaceSwap && faceswapStatus === 'done' && !swapped && <div className="bg-green-500 text-white px-4 py-1.5 text-sm rounded-full font-bold shadow-[0_0_15px_#22c55e] animate-bounce border border-green-400">繪製完成！點擊入內領取</div>}
-                    {isFaceSwap && mainSong && !mainSong.hasFace && faceswapStatus === 'idle' && <div className="bg-gray-800 text-white px-4 py-1.5 text-sm rounded-full font-bold shadow-md border border-gray-600">此歌曲無人臉可替換</div>}
+                    {isFaceSwap && faceswapStatus === 'done' && <div className="bg-green-500 text-white px-4 py-1.5 text-sm rounded-full font-bold shadow-[0_0_15px_#22c55e] animate-bounce border border-green-400">✨ 繪製完成！點擊入內領取</div>}
+                    {isFaceSwap && mainSong && !mainSong.hasFace && faceswapStatus === 'idle' && <div className="bg-gray-800 text-white px-4 py-1.5 text-sm rounded-full font-bold shadow-md border border-gray-600">🔒 此歌曲無人臉可替換</div>}
                   </div>
 
                   <div className="w-full transition-all duration-300 relative flex items-center justify-center py-2">

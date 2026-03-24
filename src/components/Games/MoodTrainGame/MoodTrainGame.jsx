@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect } from 'react';
 import Webcam from 'react-webcam';
 import { FilesetResolver, FaceLandmarker, ImageSegmenter } from '@mediapipe/tasks-vision';
 import { TicketCard } from '../../Shared/TicketCard';
-import { CARRIAGE_NAMES, CARRIAGE_SUBTITLES } from '../../../data/gameModes'; 
+import { CARRIAGE_NAMES } from '../../../data/gameModes'; 
 
 const BACKGROUND_IMAGE_SRC = '/images/MoodTrainGame.jpg';
 
@@ -145,16 +145,16 @@ const MoodTrainGame = ({ onMoodDetected, onTicketGenerated }) => {
         let imageSrc = null;
         if (canvasRef.current) imageSrc = canvasRef.current.toDataURL('image/jpeg', 0.85); else if (webcamRef.current) imageSrc = webcamRef.current.getScreenshot();
         setCaptureImg(imageSrc); setMoodResult(finalMood); setStep('result'); onMoodDetected(finalMood);
-    }, 3000);
+    }, 2000);
   };
 
   const getConductorMessage = () => {
-    if(step === 'intro') return "各位旅客您好，請您看向前方的鏡頭，讓我看看您今日的心情天氣，好為您印製一張專屬的乘車券。";
-    if(step === 'scanning') return "請保持目前的表情，我們正在為您捕捉最真實的瞬間...";
+    if(step === 'intro') return "各位旅客您好，請望向前方鏡頭，讓我為您記錄此刻的心情，印製專屬的乘車券。";
+    if(step === 'scanning') return "請保持微笑，我們正在為您捕捉最真實的瞬間。";
     switch(moodResult) {
-      case 'happy': return "看您笑得這麼開心，今天心裡一定是個大晴天吧！這趟旅程，溫暖的陽光會一路陪著您。";
-      case 'sad': return "眉頭怎麼稍微鎖上了呢？沒關係的，窗外正落起了溫柔的微雨。就讓雨水洗去疲憊，我們聽首溫柔的歌再出發。";
-      default: return "旅途的風景總是平穩而悠長，今日的天氣也清爽宜人。請您靠在窗邊，悠閒地享受這段民歌時光。";
+      case 'happy': return "看您笑得如此燦爛，今天心底必定是個大晴天。這趟旅程，溫暖的陽光將會一路相伴。";
+      case 'sad': return "眉頭似乎微微鎖上了呢。沒關係的，窗外正落起溫柔的微雨，就讓雨水洗去疲憊，聽首輕柔的歌再出發吧。";
+      default: return "旅途的風景平穩而悠長，今日的天氣也清爽宜人。請靠在窗邊，悠閒享受這段純粹的民歌時光。";
     }
   };
   
@@ -165,24 +165,19 @@ const MoodTrainGame = ({ onMoodDetected, onTicketGenerated }) => {
       <div className={`absolute inset-0 bg-white z-[100] pointer-events-none transition-opacity duration-300 ${flash ? 'opacity-100' : 'opacity-0'}`}></div>
 
       <div className="text-center mb-6 mt-2 shrink-0 relative z-10 pointer-events-none">
-        <h2 className="text-4xl font-bold text-[#FDFBF7] tracking-widest drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)] inline-block font-serif">
+        <h2 className="text-4xl font-bold text-white tracking-widest drop-shadow-md inline-block font-serif">
           {CARRIAGE_NAMES.MOOD_TRAIN}
         </h2>
-        {CARRIAGE_SUBTITLES.MOOD_TRAIN && (
-           <p className="text-gray-200 mt-4 tracking-wider text-xl drop-shadow-md font-bold">
-             {CARRIAGE_SUBTITLES.MOOD_TRAIN}
-           </p>
-        )}
       </div>
 
       <div className="flex flex-col md:flex-row gap-6 md:gap-8 w-full max-w-7xl items-center justify-center h-[65vh]">
         
-        {/* ★ 左側：寬度縮小到 35% */}
+        {/* 左側：鏡頭與拍攝 */}
         <div className="flex flex-col gap-6 w-full md:w-[35%] h-full justify-center">
-          <div className="bg-[#EAEAEA] p-6 rounded-xl shadow-[8px_8px_0_rgba(0,0,0,0.6)] border-[4px] border-gray-800 flex flex-col items-center relative overflow-hidden h-full">
-            <h2 className="text-2xl font-bold text-gray-800 mb-4 tracking-widest border-b-[3px] border-gray-800 pb-2 w-full text-center font-serif">售票口相機</h2>
+          <div className="bg-[#FDFBF7] p-6 rounded-3xl shadow-xl border border-gray-100 flex flex-col items-center relative overflow-hidden h-full">
+            <h2 className="text-2xl font-bold text-gray-800 mb-6 tracking-widest border-b-2 border-rose-400 pb-2 w-full text-center font-serif">今日心情捕捉</h2>
             
-            <div className="w-full aspect-square md:aspect-[4/3] bg-gray-900 rounded-sm overflow-hidden relative border-[4px] border-gray-800 shadow-inner flex items-center justify-center">
+            <div className="w-full aspect-square md:aspect-[4/3] bg-gray-900 rounded-xl overflow-hidden relative border border-gray-200 shadow-inner flex items-center justify-center">
               {isCameraActive && ( <Webcam ref={webcamRef} audio={false} screenshotFormat="image/jpeg" className="absolute opacity-0 w-[1px] h-[1px] pointer-events-none" mirrored={false} videoConstraints={{ width: 640, height: 480, facingMode: "user" }} /> )}
               <canvas ref={canvasRef} className={`absolute inset-0 w-full h-full object-cover z-10 transition-opacity duration-500 ${step === 'result' ? 'opacity-30 blur-sm' : 'opacity-100'} ${cameraReady ? 'bg-transparent' : 'bg-gray-900'}`} />
               {!cameraReady && isCameraActive && (
@@ -191,45 +186,43 @@ const MoodTrainGame = ({ onMoodDetected, onTicketGenerated }) => {
                   <span className="text-gray-400 font-bold tracking-widest text-sm">相機啟動中...</span>
                 </div>
               )}
-              {!isCameraActive && <span className="text-gray-500 font-bold tracking-widest bg-gray-900 inset-0 absolute flex items-center justify-center z-20">相機已關閉</span>}
-              {step === 'scanning' && cameraReady && <div className="absolute inset-0 flex items-center justify-center z-30 pointer-events-none"><div className="w-[60%] h-[70%] border-[4px] border-yellow-400 border-dashed rounded animate-pulse shadow-[0_0_15px_#facc15]"></div></div>}
-              {step === 'result' && <div className="absolute inset-0 flex items-center justify-center z-30 pointer-events-none"><p className="bg-[#FDFBF7] px-6 py-2 border-[3px] border-gray-800 rounded font-bold text-gray-800 tracking-widest shadow-[4px_4px_0_#4b5563]">拍攝完成</p></div>}
-            </div>
-
-            <div className="w-full text-center mt-4 mb-2">
-               <span className="bg-[#FDFBF7] text-gray-800 border-[3px] border-gray-800 px-6 py-2 rounded shadow-[4px_4px_0_#4b5563] font-bold tracking-widest text-sm inline-block">
-                 {step === 'result' ? '車票印製完成' : '請看著相機保持不動'}
-               </span>
+              {!isCameraActive && <span className="text-gray-500 font-bold tracking-widest bg-gray-900 inset-0 absolute flex items-center justify-center z-20">相機休息中</span>}
+              {step === 'scanning' && cameraReady && <div className="absolute inset-0 flex items-center justify-center z-30 pointer-events-none"><div className="w-[45%] h-[70%] border-[4px] border-yellow-400 border-dashed rounded-[50%] animate-pulse shadow-[0_0_15px_rgba(250,204,21,0.6)]"></div></div>}
             </div>
 
             <div className="mt-auto w-full relative z-10">
-              {step === 'intro' && <button onClick={startScan} disabled={!cameraReady} className="w-full py-4 bg-gray-800 text-[#FDFBF7] font-bold rounded border-[3px] border-black shadow-[4px_4px_0_#4b5563] hover:translate-y-[2px] hover:shadow-[2px_2px_0_#4b5563] active:translate-y-[4px] active:shadow-none transition-all tracking-widest text-lg disabled:bg-gray-400 disabled:border-gray-500 disabled:shadow-none disabled:cursor-not-allowed">按下快門並製票</button>}
-              {step === 'scanning' && <div className="w-full py-4 text-center text-gray-600 font-bold animate-pulse tracking-widest bg-[#FDFBF7] rounded border-[3px] border-gray-800 shadow-inner">車票印製中...</div>}
+              {step === 'intro' && <button onClick={startScan} disabled={!cameraReady} className="w-full py-4 bg-rose-400 text-white font-bold rounded-full shadow-md hover:bg-rose-500 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 tracking-widest text-lg disabled:bg-gray-300 disabled:text-gray-500 disabled:shadow-none disabled:hover:translate-y-0 disabled:cursor-not-allowed">拍下此刻的風景</button>}
+              {step === 'scanning' && <div className="w-full py-4 text-center text-gray-600 font-bold animate-pulse tracking-widest bg-white rounded-full border border-gray-100 shadow-inner">正在為您沖印車票...</div>}
               {step === 'result' && (
-                <div className="flex gap-4 w-full">
-                  <button onClick={handleReScan} className="flex-1 py-4 bg-[#FDFBF7] text-gray-800 font-bold rounded border-[3px] border-gray-800 shadow-[4px_4px_0_#4b5563] hover:translate-y-[2px] hover:shadow-[2px_2px_0_#4b5563] transition-all tracking-widest">重新拍攝</button>
-                  <button onClick={() => { setIsCameraActive(false); onTicketGenerated(captureImg, moodResult); }} className="flex-1 py-4 bg-red-600 text-[#FDFBF7] font-bold rounded border-[3px] border-red-900 shadow-[4px_4px_0_#7f1d1d] hover:translate-y-[2px] hover:shadow-[2px_2px_0_#7f1d1d] transition-all tracking-widest">領取車票</button>
+                <div className="flex w-full justify-center mt-2">
+                  <button onClick={handleReScan} className="w-[80%] py-4 bg-[#D2A679] text-white font-bold rounded-full shadow-md hover:bg-[#C09668] hover:shadow-lg hover:-translate-y-1 transition-all duration-300 tracking-widest">重新拍攝</button>
                 </div>
               )}
             </div>
           </div>
         </div>
 
-        {/* ★ 右側：寬度放大到 65% 並增加左間距 md:pl-12 */}
-        <div className="w-full md:w-[65%] md:pl-12 flex flex-col items-center justify-center gap-6 h-full relative">
-            <div className="w-full bg-[#FDFBF7] p-6 rounded shadow-[6px_6px_0_rgba(0,0,0,0.6)] border-[4px] border-gray-800 relative z-20">
+        {/* 右側：車票顯示與車長廣播 */}
+        <div className="w-full md:w-[65%] md:pl-12 flex flex-col items-center justify-start gap-6 h-full relative">
+            <div className="w-full bg-[#FDFBF7] p-6 rounded-3xl shadow-xl border border-gray-100 relative z-20">
               
               <h3 className="font-bold text-gray-800 mb-2 tracking-widest text-lg font-serif">車長廣播：</h3>
-              <p className="text-gray-700 leading-relaxed font-bold tracking-wide bg-gray-100 p-3 rounded-sm border border-gray-300 shadow-inner min-h-[60px]">
+              <p className="text-gray-700 leading-relaxed font-bold tracking-wide bg-transparent p-2 min-h-[60px]">
                 {getConductorMessage()}
               </p>
             </div>
 
-            <div className={`transition-all duration-700 origin-center w-full flex justify-center
+            <div className={`transition-all duration-700 origin-center w-full flex flex-col items-center justify-start mt-6
                 ${step === 'result' ? 'opacity-100 scale-100' : 'opacity-40 scale-95 blur-[2px] pointer-events-none'}
             `}>
               <div className="drop-shadow-[0_10px_15px_rgba(0,0,0,0.5)]">
                 <TicketCard captureImg={captureImg} moodResult={moodResult} size="large" />
+              </div>
+              {/* ★ 使用固定高度的容器包裹按鈕，避免出現時把上面的車票往上擠 */}
+              <div className="h-[80px] flex items-center justify-center w-full mt-4">
+                <button onClick={() => { setIsCameraActive(false); onTicketGenerated(captureImg, moodResult); }} className={`px-10 py-4 bg-rose-400 text-white font-bold text-lg rounded-full shadow-md hover:bg-rose-500 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 tracking-widest ${step === 'result' ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 translate-y-4 pointer-events-none'}`}>
+                  領取這張專屬紀念票
+                </button>
               </div>
             </div>
         </div>

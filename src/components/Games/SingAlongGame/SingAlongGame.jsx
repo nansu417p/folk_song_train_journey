@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { lyricsData } from '../../../data/lyricsData';
-import { CARRIAGE_NAMES } from '../../../data/gameModes'; // ★ 引入中央變數
+import { CARRIAGE_NAMES } from '../../../data/gameModes'; 
 
 const SingAlongGame = ({ song, onHome, onRecordingComplete }) => {
   const [lyricsLines, setLyricsLines] = useState([]);
@@ -267,7 +267,7 @@ const SingAlongGame = ({ song, onHome, onRecordingComplete }) => {
     const duration = audioRef.current.duration || 1;
     setProgress((current / duration) * 100);
 
-    if ((current / duration) > 0.70) {
+    if ((current / duration) > 0.10) {
       setIsFinished(true);
     }
   };
@@ -344,23 +344,6 @@ const SingAlongGame = ({ song, onHome, onRecordingComplete }) => {
     audioRef.current.currentTime = percent * audioRef.current.duration;
   };
 
-  const jumpToLastLine = () => {
-    if (lyricsLines.length > 0) {
-      const lastIndex = lyricsLines.length - 1;
-      setActiveLineIndex(lastIndex);
-      setIsFinished(true);
-      
-      activeLineIndexRef.current = lastIndex;
-      matchedWordsInCurrentLineRef.current = []; 
-      
-      if (lyricsContainerRef.current && lyricRefs.current[lastIndex]) {
-        const container = lyricsContainerRef.current;
-        const targetNode = lyricRefs.current[lastIndex];
-        const scrollTarget = targetNode.offsetTop - (container.clientHeight / 2) + (targetNode.clientHeight / 2);
-        container.scrollTo({ top: scrollTarget, behavior: 'smooth' });
-      }
-    }
-  };
 
   const restartSinging = () => {
     setActiveLineIndex(0);
@@ -418,7 +401,7 @@ const SingAlongGame = ({ song, onHome, onRecordingComplete }) => {
   if (!recognitionSupported) {
     return (
       <div className="w-full h-full flex flex-col items-center justify-center p-8 bg-[#EAEAEA]">
-        <button onClick={executeBackToHome} className="absolute top-6 left-6 z-50 px-5 py-2.5 bg-[#F5F5F5] text-gray-800 font-bold rounded-lg shadow border hover:bg-gray-200">← 返回火車</button>
+        <button onClick={executeBackToHome} className="absolute top-6 left-6 z-50 px-6 py-3 bg-[#D2A679] text-white font-bold rounded-full shadow-md hover:bg-[#C09668] hover:shadow-lg hover:-translate-y-1 transition-all duration-300">返回火車</button>
         <div className="bg-white p-10 rounded-lg shadow-xl text-center">
           <h2 className="text-3xl font-bold text-red-600 mb-4">無法啟動麥克風</h2>
           <p className="text-gray-600">您的瀏覽器不支援語音辨識功能，請使用 Chrome 或 Edge 瀏覽器開啟。</p>
@@ -432,16 +415,9 @@ const SingAlongGame = ({ song, onHome, onRecordingComplete }) => {
       
       {/* ★ 統一標題設計 (無副標題) */}
       <div className="absolute top-6 left-0 w-full flex justify-center pointer-events-none z-40">
-        <h2 className="text-4xl font-bold text-[#FDFBF7] tracking-widest drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)] inline-block font-serif">
+        <h2 className="text-4xl font-bold text-white tracking-widest drop-shadow-md inline-block font-serif">
           {CARRIAGE_NAMES.SING_ALONG}
         </h2>
-      </div>
-
-      <div className="absolute top-6 right-8 z-50 flex gap-4">
-        {/* ★ 任務 2：修改為白色復古按鈕風格 */}
-        <button onClick={handleFinishAndSave} className="px-6 py-3 bg-[#FDFBF7] text-gray-800 font-bold rounded-lg border-2 border-gray-400 shadow-[4px_4px_0_#9ca3af] hover:bg-gray-100 hover:translate-y-[2px] hover:shadow-[2px_2px_0_#9ca3af] transition-all tracking-widest flex items-center">
-          提前結束錄音
-        </button>
       </div>
 
       <audio 
@@ -467,7 +443,7 @@ const SingAlongGame = ({ song, onHome, onRecordingComplete }) => {
           {!hasStarted && (
              <div className="absolute top-4 right-1/4 z-50 flex flex-col items-center animate-bounce pointer-events-none">
                 <div className="bg-yellow-400 text-gray-900 font-bold px-6 py-2 rounded-full shadow-[2px_2px_0_#ca8a04] tracking-widest text-base border-2 border-yellow-600">
-                  點擊播放，開始您的專屬錄音！
+                  點擊播放，開始您的專屬錄音
                 </div>
                 <div ></div>
              </div>
@@ -490,8 +466,8 @@ const SingAlongGame = ({ song, onHome, onRecordingComplete }) => {
              </div>
              
              <div className="flex-1 flex items-center gap-6 max-w-xl">
-               <button onClick={togglePlayAndMic} className="w-12 h-12 bg-[#F5F5F5] text-[#D64F3E] rounded-full flex items-center justify-center hover:scale-105 transition-transform shadow-md text-xl pl-1 border-2 border-white">
-                 {isPlaying ? 'II' : '▶'}
+               <button onClick={togglePlayAndMic} className="w-12 h-12 bg-[#FDFBF7] text-gray-700 rounded-full flex items-center justify-center shadow-md border border-gray-100 text-xl font-bold transition-colors hover:bg-white">
+                 {isPlaying ? 'll' : '▶'}
                </button>
                <div 
                  className="flex-1 h-4 bg-black/30 rounded-full overflow-hidden relative shadow-inner border border-black/20 cursor-pointer"
@@ -502,9 +478,9 @@ const SingAlongGame = ({ song, onHome, onRecordingComplete }) => {
              </div>
           </div>
 
-          <div className="flex-1 w-full bg-[#FDFBF7] overflow-hidden relative flex flex-col items-center py-0 px-8 border-b-4 border-dashed border-[#C0B8A3]">
+          <div className="flex-1 w-full bg-white overflow-hidden relative flex flex-col items-center py-0 px-8 border-b border-gray-200">
              
-             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[80%] h-[4.5rem] border-y-2 border-red-400/40 bg-red-50/20 pointer-events-none rounded-lg z-10 shadow-sm"></div>
+             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[80%] h-[4.5rem] border-y border-rose-300/40 bg-rose-50/20 pointer-events-none rounded-xl z-10 shadow-sm"></div>
 
              <div 
                ref={lyricsContainerRef}
@@ -522,13 +498,11 @@ const SingAlongGame = ({ song, onHome, onRecordingComplete }) => {
                       ref={el => lyricRefs.current[index] = el}
                       className={`
                         relative text-2xl md:text-3xl font-serif tracking-widest transition-all duration-500 text-center px-6 py-2 rounded-lg min-h-[3rem] flex items-center justify-center shrink-0
-                        ${isActive ? 'text-yellow-600 bg-yellow-100/50 shadow-[0_0_15px_rgba(250,204,21,0.4)] scale-110 font-bold border-2 border-yellow-400 z-20' : 
+                        ${isActive ? 'text-yellow-600 bg-yellow-50 shadow-sm scale-110 font-bold border border-yellow-200 z-20' : 
                           isSung ? 'text-green-700/60 opacity-60 scale-95' : 'text-gray-400 opacity-80 font-bold'}
                       `}
                     >
-                      {isSung && !isActive && <span className="absolute -left-6 text-green-600/50 text-xl font-sans">✓</span>}
                       {line}
-                      {isActive && <span className="absolute -top-4 -right-2 text-yellow-500 text-2xl animate-bounce drop-shadow">🎵</span>}
                     </div>
                   );
                 })}
@@ -536,8 +510,8 @@ const SingAlongGame = ({ song, onHome, onRecordingComplete }) => {
                 <div className="w-full shrink-0 pointer-events-none" style={{ height: '40vh' }}></div>
              </div>
              
-             <div className="absolute top-0 left-0 w-full h-40 bg-gradient-to-b from-[#FDFBF7] via-[#FDFBF7]/80 to-transparent pointer-events-none z-20"></div>
-             <div className="absolute bottom-0 left-0 w-full h-40 bg-gradient-to-t from-[#FDFBF7] via-[#FDFBF7]/80 to-transparent pointer-events-none z-20"></div>
+             <div className="absolute top-0 left-0 w-full h-40 bg-gradient-to-b from-white via-white/80 to-transparent pointer-events-none z-20"></div>
+             <div className="absolute bottom-0 left-0 w-full h-40 bg-gradient-to-t from-white via-white/80 to-transparent pointer-events-none z-20"></div>
           </div>
 
           <div className="h-28 w-full bg-[#2A2A2A] flex flex-row items-center justify-between relative px-8 shadow-inner z-20">
@@ -546,7 +520,7 @@ const SingAlongGame = ({ song, onHome, onRecordingComplete }) => {
                <div className="flex items-center gap-3 mb-2">
                  <div className={`w-3 h-3 rounded-full border border-gray-600 ${isListening ? 'bg-green-500 shadow-[0_0_8px_#22c55e] animate-pulse' : 'bg-gray-500'}`}></div>
                  <span className="text-gray-400 text-xs tracking-widest font-bold">
-                   {isListening ? '系統正在聆聽與錄製您的歌聲...' : '等待播放音樂'}
+                   {isListening ? '正在用心記錄您的歌聲...' : '錄音室已準備就緒，請跟著音樂輕聲哼唱'}
                  </span>
                </div>
                <div className="w-full max-w-xl h-10 bg-[#111] rounded border-2 border-gray-600 shadow-inner flex items-center overflow-hidden px-4">
@@ -556,31 +530,22 @@ const SingAlongGame = ({ song, onHome, onRecordingComplete }) => {
                     </span>
                   ) : (
                     <span className="text-gray-600 font-mono text-sm tracking-wider">
-                      {isListening ? '> (等待聲音輸入...)' : '> 歌詞紀錄'}
+                      {isListening ? '> (等待聲音輸入)' : '> 歌詞紀錄'}
                     </span>
                   )}
                </div>
              </div>
 
-             <div className="flex items-center gap-4">
-               <div className="flex flex-col gap-2 mr-4 border-r border-gray-700 pr-4">
-                 <button onClick={restartSinging} className="text-xs font-bold tracking-widest text-gray-400 hover:text-white px-3 py-1 border border-gray-600 rounded hover:bg-gray-700 transition-all shadow-sm">
-                   ↺ 重新錄音
-                 </button>
-                 <button onClick={jumpToLastLine} className="text-xs font-bold tracking-widest text-gray-400 hover:text-white px-3 py-1 border border-gray-600 rounded hover:bg-gray-700 transition-all shadow-sm">
-                   ⏭ 最後一句
-                 </button>
-               </div>
-
+             <div className="flex items-center justify-end w-full max-w-sm">
                <button 
                  onClick={handleFinishAndSave}
                  disabled={!isFinished}
-                 className={`px-8 py-4 rounded-lg font-bold tracking-widest text-lg transition-all duration-300 shadow-[4px_4px_0_#4b5563] border-2 border-black
+                 className={`px-10 py-4 rounded-full font-bold tracking-widest text-lg transition-all duration-300 shadow-md
                    ${isFinished 
-                     ? 'bg-gray-800 text-white hover:translate-y-[2px] hover:shadow-[2px_2px_0_#4b5563] animate-pulse' 
-                     : 'bg-gray-700 text-gray-500 cursor-not-allowed'}`}
+                     ? 'bg-rose-400 text-white hover:bg-rose-500 hover:shadow-lg hover:-translate-y-1 animate-pulse' 
+                     : 'bg-gray-300 text-gray-500 cursor-not-allowed shadow-none'}`}
                >
-                 {isFinished ? '完成演唱並儲存錄音' : '等待演唱完成...'}
+                 {isFinished ? '收藏這段珍貴的錄音' : '盡情享受這段歌唱時光'}
                </button>
              </div>
           </div>

@@ -1,23 +1,23 @@
-// ★ 中央控制：在此統一修改所有車廂的名稱
+// ★ 中央控制：在此統一修改所有車廂的名稱（加入溫度的文案）
 export const CARRIAGE_NAMES = {
-  MOOD_TRAIN: "心情車票",
-  AR_CATCH: "民歌卡帶播放器",
-  AI_COVER: "自製專輯封面",
-  SING_ALONG: "民歌錄音室",
-  FACE_SWAP: "一日歌手", // 這是原本的合照車廂
-  LYRICS: "歌詞拼貼",
-  CAPSULE: "民歌回憶"
+  MOOD_TRAIN: "啟程售票亭",
+  AR_CATCH: "記憶點唱機",
+  AI_COVER: "時光沖印室",
+  SING_ALONG: "初心錄音室",
+  FACE_SWAP: "時代留影機",
+  LYRICS: "青春詩詞本",
+  CAPSULE: "回憶紀念票"
 };
 
-// ★ 中央控制：在此統一修改所有車廂的副標題
+// ★ 中央控制：在此統一修改所有車廂的副標題（增添感性語氣）
 export const CARRIAGE_SUBTITLES = {
-  MOOD_TRAIN: "帶著今日的心情踏上旅程",
-  AR_CATCH: "",
-  AI_COVER: "繪製屬於您的專輯封面",
-  SING_ALONG: "用聲音點亮回憶",
-  FACE_SWAP: "成為專輯封面主角",
-  LYRICS: "修復記憶中的旋律",
-  CAPSULE: "打包你的專屬回憶"
+  MOOD_TRAIN: "拍下此刻心情，領取專屬車票",
+  AR_CATCH: "挑選一首觸動心弦的經典民歌",
+  AI_COVER: "畫筆揮灑，重塑經典專輯視覺",
+  SING_ALONG: "拿起麥克風，錄下你的專屬翻唱",
+  FACE_SWAP: "走入時光機，化身經典封面主角",
+  LYRICS: "拼湊散落的詩句，尋回熟悉的旋律",
+  CAPSULE: "打包沿途感動，寄給未來的自己"
 };
 
 export const gameModes = [

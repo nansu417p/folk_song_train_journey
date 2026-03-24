@@ -26,7 +26,7 @@ const CassetteUI = ({ title, size = 'normal' }) => {
       {/* 2. 文字疊加層：移除了白底色和邊框 */}
       <div className="absolute bottom-[65px] left-[5%] w-[90%] h-[24px] flex items-center justify-center px-4">
          <span 
-           className="text-gray-900 font-bold tracking-[0.1em] text-center whitespace-nowrap overflow-hidden text-ellipsis w-full"
+           className="text-white drop-shadow-md font-bold tracking-[0.1em] text-center whitespace-nowrap overflow-hidden text-ellipsis w-full"
            style={{ 
              fontFamily: '"Noto Serif TC", serif', 
              fontWeight: 900,

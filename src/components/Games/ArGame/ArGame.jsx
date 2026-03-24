@@ -3,7 +3,7 @@ import Webcam from 'react-webcam';
 import { FilesetResolver, HandLandmarker } from '@mediapipe/tasks-vision';
 import { folkSongs } from '../../../data/folkSongs';
 import CassetteUI from '../../Shared/CassetteUI'; 
-import { CARRIAGE_NAMES, CARRIAGE_SUBTITLES } from '../../../data/gameModes'; 
+import { CARRIAGE_NAMES } from '../../../data/gameModes'; 
 
 const radioPlayerUrl = '/images/cassette_player.png'; 
 
@@ -200,33 +200,27 @@ const ArGame = ({ onConfirmSong, onPreviewSong }) => {
   };
 
   return (
-    <div className="relative w-full h-full bg-gray-900 overflow-hidden select-none border-[6px] border-gray-800 rounded-xl shadow-2xl">
+    <div className="relative w-full h-full bg-gray-900 overflow-hidden select-none shadow-xl">
       
-      {/* ★ 統一標題與放大副標題 */}
       <div className="absolute top-6 left-0 w-full flex flex-col justify-center items-center pointer-events-none z-40">
-        <h2 className="text-4xl font-bold text-[#FDFBF7] tracking-widest drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)] inline-block font-serif">
+        <h2 className="text-4xl font-bold text-white tracking-widest drop-shadow-md inline-block font-serif">
           {CARRIAGE_NAMES.AR_CATCH}
         </h2>
-        {CARRIAGE_SUBTITLES.AR_CATCH && (
-           <p className="text-gray-200 mt-4 tracking-wider text-xl drop-shadow-md font-bold">
-             {CARRIAGE_SUBTITLES.AR_CATCH}
-           </p>
-        )}
       </div>
 
       {playingSong && (
         <button 
           onClick={handleConfirmClick} 
-          className="absolute top-6 right-8 z-50 px-8 py-3 bg-red-600 text-white font-bold text-lg rounded-lg border-2 border-red-800 shadow-[4px_4px_0_#7f1d1d] hover:translate-y-[2px] hover:shadow-[2px_2px_0_#7f1d1d] transition-all tracking-widest pointer-events-auto animate-pulse"
+          className="absolute top-6 right-8 z-50 px-8 py-3 bg-rose-400 text-white font-bold text-lg rounded-full shadow-md hover:bg-rose-500 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 tracking-widest pointer-events-auto animate-pulse"
         >
-          選擇旅程歌曲
+          選擇這首歌曲
         </button>
       )}
 
       {isLoading && (
         <div className="absolute inset-0 z-40 flex flex-col items-center justify-center bg-[#FDFBF7] text-gray-800">
           <div className="w-16 h-16 border-8 border-gray-300 border-t-red-600 rounded-full animate-spin mb-6"></div>
-          <p className="animate-pulse text-2xl font-bold tracking-widest border-b-2 border-red-500 pb-2">鏡頭開啟中...</p>
+          <p className="animate-pulse text-2xl font-bold tracking-widest border-b-2 border-rose-400 pb-2">正在為您準備卡帶機，請稍候片刻</p>
         </div>
       )}
 
@@ -238,8 +232,8 @@ const ArGame = ({ onConfirmSong, onPreviewSong }) => {
         
         {showHint && !isLoading && (
           <div className="absolute top-32 left-0 w-full text-center animate-bounce z-40">
-            <span className="bg-[#FDFBF7] text-gray-800 border-4 border-gray-800 px-6 py-3 rounded-lg shadow-[4px_4px_0_#4b5563] font-bold tracking-widest text-lg">
-              用手指觸碰卡帶，放入下方播放器
+            <span className="bg-[#FDFBF7] text-gray-800 border border-gray-200 px-8 py-4 rounded-full shadow-lg font-bold tracking-widest text-lg">
+              請輕觸卡帶，將它輕輕放入播放器中
             </span>
           </div>
         )}
@@ -278,8 +272,7 @@ const ArGame = ({ onConfirmSong, onPreviewSong }) => {
                   </div>
                 ) : (
                   <div className="text-gray-400 font-bold text-xs tracking-widest flex flex-col items-center justify-center gap-1 w-full h-full border border-dashed border-gray-600 bg-black/60 rounded">
-                    <span className="text-xl animate-bounce text-white">↓</span>
-                    INSERT TAPE
+                    置入卡帶
                   </div>
                 )}
              </div>

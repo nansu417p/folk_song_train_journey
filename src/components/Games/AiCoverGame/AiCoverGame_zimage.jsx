@@ -1,6 +1,6 @@
 import React, { useState, useRef, useMemo } from 'react';
 import { lyricsData } from '../../../data/lyricsData';
-import { CARRIAGE_NAMES, CARRIAGE_SUBTITLES } from '../../../data/gameModes'; 
+import { CARRIAGE_NAMES } from '../../../data/gameModes'; 
 
 const BASE_PROMPT = "high quality, masterpiece, best quality, 1980s vintage taiwanese aesthetic, pure visual art, pure background, strictly no text, completely textless, nostalgic atmosphere, edge-to-edge, detailed, vibrant";
 
@@ -159,20 +159,15 @@ const AiCoverGame_zimage = ({ song, onHome, coverStatus, generatedCoverImg, onSt
   return (
     <div className="relative w-full h-full bg-transparent flex flex-col items-center justify-center p-8 overflow-hidden">
       <div className="text-center mb-6 mt-2 shrink-0 relative z-10 pointer-events-none">
-        <h2 className="text-4xl font-bold text-[#FDFBF7] tracking-widest drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)] inline-block font-serif">
+        <h2 className="text-4xl font-bold text-white tracking-widest drop-shadow-md inline-block font-serif">
           {CARRIAGE_NAMES.AI_COVER}
         </h2>
-        {CARRIAGE_SUBTITLES.AI_COVER && (
-           <p className="text-gray-200 mt-4 tracking-wider text-xl drop-shadow-md font-bold">
-             {CARRIAGE_SUBTITLES.AI_COVER}
-           </p>
-        )}
       </div>
 
       <div className="flex w-full max-w-[85rem] h-[80vh] gap-8">
         
         {/* 左側歌詞區 */}
-        <div className="w-1/4 bg-[#FDFBF7] rounded-xl shadow-lg border-4 border-[#C0B8A3] p-8 flex flex-col relative h-full">
+        <div className="w-[25%] bg-[#FDFBF7] rounded-3xl shadow-xl border border-gray-100 p-8 flex flex-col relative h-full">
           <h3 className="text-2xl font-bold text-gray-800 mb-4 border-b-2 border-gray-800 pb-3">{song.title}</h3>
           <div className="overflow-y-auto pr-2 custom-scrollbar flex-1 mb-20">
              <pre className="text-base text-gray-600 leading-loose font-serif whitespace-pre-wrap">{currentLyrics}</pre>
@@ -181,34 +176,33 @@ const AiCoverGame_zimage = ({ song, onHome, coverStatus, generatedCoverImg, onSt
             <button 
               onClick={handleExtractLyrics} 
               disabled={coverStatus === 'generating'}
-              className="w-full py-4 bg-gray-800 text-white font-bold rounded-lg border-2 border-black shadow-[4px_4px_0_#4b5563] hover:translate-y-[2px] hover:shadow-[2px_2px_0_#4b5563] transition-all tracking-widest text-lg flex justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full py-4 bg-rose-400 text-white font-bold rounded-full shadow-md hover:bg-rose-500 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 tracking-widest text-lg flex justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-               {isExtracted ? "重新萃取" : "歌詞萃取"}
+               {isExtracted ? "再找找其他靈感" : "從歌詞中找尋靈感"}
             </button>
           </div>
         </div>
 
         {/* 中間選項區 */}
-        <div className="w-1/3 bg-[#EAEAEA] p-8 rounded-xl border-4 border-gray-300 flex flex-col justify-between items-center shadow-lg h-full overflow-hidden">
+        <div className="flex-1 bg-[#F9F7F1] p-8 rounded-3xl border border-gray-100 flex flex-col justify-between items-center shadow-xl h-full overflow-hidden">
             {coverStatus === 'generating' ? (
               <div className="flex flex-col items-center justify-center h-full gap-6 text-center w-full">
                   <div className="w-16 h-16 border-8 border-gray-300 border-t-red-600 rounded-full animate-spin"></div>
-                  <h3 className="text-3xl font-bold text-gray-800 tracking-widest">封面繪製中...</h3>
-                  <p className="text-gray-500 leading-relaxed font-bold text-lg">封面繪製約需 10 ~ 20 秒<br/>您可以先返回火車等待</p>
-                  <button onClick={onHome} className="w-full py-4 mt-6 bg-gray-800 text-white font-bold rounded-lg border-2 border-black shadow-[4px_4px_0_#4b5563] hover:translate-y-[2px] hover:shadow-[2px_2px_0_#4b5563] transition-all tracking-widest text-xl">
-                      返回火車等待
+                  <h3 className="text-3xl font-bold text-gray-800 tracking-widest">畫筆正為您揮灑</h3>
+                  <p className="text-gray-500 leading-relaxed font-bold text-lg">這會需要片刻時間，<br/>您可以先回車廂稍作休息，欣賞沿途風景。</p>
+                  <button onClick={onHome} className="w-full py-4 mt-6 bg-[#D2A679] text-white font-bold rounded-full shadow-md hover:bg-[#C09668] hover:shadow-lg hover:-translate-y-1 transition-all duration-300 tracking-widest text-xl">
+                      返回火車
                   </button>
               </div>
             ) : !isExtracted ? (
               <div className="flex flex-col items-center justify-center h-full text-gray-400 font-bold tracking-widest">
-                <span className="text-5xl mb-4 opacity-50">✨</span>
-                <p className="text-xl">請先點擊左側「歌詞萃取」</p>
+                <p className="text-xl">點擊左側，從歌詞中尋找靈感</p>
               </div>
             ) : (
               <div className="animate-fade-in-up flex flex-col h-full w-full">
                 
                 <div className="w-full flex-1 overflow-y-auto pr-3 pb-4 custom-scrollbar mb-4">
-                  <p className="text-sm text-gray-500 mb-6 tracking-wider font-bold">點擊標籤選擇想要的元素，或交由車廂畫家為您選擇。</p>
+                  <p className="text-sm text-gray-500 mb-6 tracking-wider font-bold">挑選觸動您的元素，或是交給車廂畫家自由揮灑吧</p>
                   
                   {[ 
                     { id: 'subjects', title: '主角設定' },
@@ -226,8 +220,8 @@ const AiCoverGame_zimage = ({ song, onHome, coverStatus, generatedCoverImg, onSt
                             <button 
                               key={item.label} 
                               onClick={() => handleSelect(stateKey, item)}
-                              className={`px-5 py-3 text-base font-bold rounded border-2 transition-all duration-300 tracking-wider
-                                ${isSelected ? 'bg-red-600 text-white border-red-800 shadow-[2px_2px_0_#7f1d1d] translate-y-[1px]' : 'bg-[#FDFBF7] text-gray-600 border-gray-300 hover:bg-gray-200'}`}
+                              className={`px-5 py-3 text-base font-bold rounded-full transition-all duration-300 tracking-wider
+                                ${isSelected ? 'bg-rose-400 text-white shadow-inner' : 'bg-white text-gray-700 border border-gray-200 shadow-sm hover:bg-gray-50 hover:-translate-y-0.5'}`}
                             >
                               {item.label}
                             </button>
@@ -238,17 +232,17 @@ const AiCoverGame_zimage = ({ song, onHome, coverStatus, generatedCoverImg, onSt
                   ))}
 
                   <div className="mb-2 w-full mt-4">
-                     <h3 className="text-gray-700 font-bold mb-3 text-base uppercase tracking-widest border-l-4 border-gray-500 pl-3">自訂意境</h3>
-                     <input type="text" value={customWord} onChange={(e) => setCustomWord(e.target.value)} placeholder="例如：眼淚、腳踏車..." className="w-full p-4 border-2 border-gray-300 rounded font-serif text-base focus:outline-none focus:border-red-400 bg-[#FDFBF7]" />
+                     <h3 className="text-gray-700 font-bold mb-3 text-base uppercase tracking-widest border-l-4 border-stone-400 pl-3">有什麼特別想留下的畫面嗎？</h3>
+                     <input type="text" value={customWord} onChange={(e) => setCustomWord(e.target.value)} placeholder="例如：眼淚、腳踏車..." className="w-full p-4 border-2 border-gray-200 rounded-xl font-serif text-base focus:outline-none focus:border-rose-300 bg-white" />
                   </div>
                 </div>
 
                 <div className="mt-auto shrink-0 flex flex-col gap-4 w-full pt-4">
-                  <button onClick={triggerGenerate} className="w-full py-4 bg-red-600 text-white font-bold rounded-lg border-2 border-red-800 shadow-[4px_4px_0_#7f1d1d] hover:translate-y-[2px] hover:shadow-[2px_2px_0_#7f1d1d] transition-all text-xl tracking-widest">
-                    開始繪製封面
+                  <button onClick={triggerGenerate} className="w-full py-4 bg-rose-400 text-white font-bold rounded-full shadow-md hover:bg-rose-500 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 text-xl tracking-widest">
+                    開始繪製專屬封面
                   </button>
-                  <button onClick={() => onSetMockCover(`/images/${song.audioFileName.replace('.mp3', '.jpg')}`)} className="w-full py-3 bg-gray-300 text-gray-700 font-bold rounded-lg hover:bg-gray-400 transition-all text-base tracking-widest border border-gray-400">
-                    載入預設圖片
+                  <button onClick={() => onSetMockCover(`/images/${song.audioFileName.replace('.mp3', '.jpg')}`)} className="w-full py-3 bg-[#D2A679] text-white font-bold rounded-full shadow-md hover:bg-[#C09668] hover:shadow-lg hover:-translate-y-1 transition-all duration-300 text-base tracking-widest">
+                    先保留經典封面
                   </button>
                 </div>
               </div>
@@ -256,8 +250,8 @@ const AiCoverGame_zimage = ({ song, onHome, coverStatus, generatedCoverImg, onSt
         </div>
 
         {/* 右側結果區 */}
-        <div className="w-5/12 flex flex-col items-center justify-center p-6 h-full relative">
-           <div ref={resultRef} className="relative w-full shadow-2xl bg-gray-200 flex flex-col rounded-lg overflow-hidden border-4 border-[#C0B8A3] transition-all" style={{ aspectRatio: '1024/720' }}>
+        <div className="w-[35%] flex flex-col items-center justify-center p-6 h-full relative">
+           <div ref={resultRef} className="relative w-full shadow-xl bg-gray-200 flex flex-col rounded-xl overflow-hidden border-2 border-gray-300 transition-all" style={{ aspectRatio: '1024/720' }}>
               {/* ★ 防呆：確定不在 generating 狀態才顯示圖片 */}
               {coverStatus === 'done' && generatedCoverImg ? (
                  <img src={generatedCoverImg} className="w-full h-full object-cover animate-fade-in" crossOrigin="anonymous" alt="AI Generated Cover" />
@@ -265,9 +259,7 @@ const AiCoverGame_zimage = ({ song, onHome, coverStatus, generatedCoverImg, onSt
                  <div className="w-full h-full flex flex-col items-center justify-center text-gray-400 font-bold gap-3 opacity-50">
                    {coverStatus === 'generating' ? (
                      <div className="w-12 h-12 border-4 border-gray-300 border-t-gray-800 rounded-full animate-spin"></div>
-                   ) : (
-                     <span className="text-4xl">🖌️</span>
-                   )}
+                   ) : null}
                  </div>
               )}
            </div>
@@ -275,11 +267,11 @@ const AiCoverGame_zimage = ({ song, onHome, coverStatus, generatedCoverImg, onSt
            <div className="h-24 mt-8 flex items-center">
              {coverStatus === 'done' && generatedCoverImg && (
                <div className="flex flex-col items-center gap-4 animate-fade-in-up w-full">
-                 <h3 className="text-2xl font-bold text-[#FDFBF7] tracking-widest drop-shadow-md ">
-                  封面繪製完成！
+                 <h3 className="text-2xl font-bold text-white tracking-widest drop-shadow-md ">
+                  您的專屬封面已經繪製完成了
                  </h3>
-                 <button onClick={handleClaim} className="px-10 py-4 bg-gray-800 text-white rounded-lg font-bold border-2 border-black shadow-[4px_4px_0_#4b5563] hover:translate-y-[2px] hover:shadow-[2px_2px_0_#4b5563] transition-all tracking-widest text-xl">
-                  領取專屬封面！
+                 <button onClick={handleClaim} className="px-10 py-4 bg-rose-400 text-white rounded-full font-bold shadow-md hover:bg-rose-500 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 tracking-widest text-xl">
+                  領取專屬封面
                  </button>
                </div>
              )}

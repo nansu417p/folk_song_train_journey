@@ -10,7 +10,7 @@ import { CARRIAGE_NAMES } from '../../../data/gameModes';
 function StickerItem({ id, word }) {
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({ id, data: { word } });
   return (
-    <div ref={setNodeRef} {...listeners} {...attributes} className={`relative w-full px-4 py-3 bg-[#FDFBF7] text-gray-800 border-2 border-gray-400 font-serif text-lg md:text-xl rounded-sm shadow-[4px_4px_0_#9ca3af] cursor-grab touch-none select-none flex items-center justify-center text-center hover:translate-y-[2px] hover:shadow-[2px_2px_0_#9ca3af] transition-all duration-200 ${isDragging ? 'opacity-0' : ''}`}>
+    <div ref={setNodeRef} {...listeners} {...attributes} className={`relative w-full px-4 py-3 bg-white text-gray-700 border border-gray-100 font-serif text-lg md:text-xl rounded-xl shadow-md cursor-grab touch-none select-none flex items-center justify-center text-center hover:-translate-y-1 hover:shadow-lg transition-all duration-300 ${isDragging ? 'opacity-0' : ''}`}>
       <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 w-8 h-4 bg-yellow-100/60 backdrop-blur-sm border border-yellow-200/50 shadow-sm rotate-[-4deg]"></div>
       {word}
     </div>
@@ -21,7 +21,7 @@ function DropZone({ id, currentWord, correctWord, isHintActive }) {
   const { isOver, setNodeRef } = useDroppable({ id, data: { correctWord } });
   if (currentWord) {
     return (
-      <div className="relative inline-flex items-center justify-center px-4 py-1 mx-2 bg-[#FDFBF7] border-2 border-gray-400 text-gray-800 shadow-[2px_2px_0_#9ca3af] rounded-sm -rotate-1 font-bold text-xl transition-all z-10">
+      <div className="relative inline-flex items-center justify-center px-4 py-1 mx-2 bg-white border border-gray-100 text-gray-700 shadow-md rounded-xl -rotate-1 font-bold text-xl transition-all z-10">
         <div className="absolute -top-1.5 left-2 w-6 h-3 bg-red-200/50 backdrop-blur-sm border border-red-300/50 shadow-sm rotate-6"></div>
         {currentWord}
       </div>
@@ -30,7 +30,7 @@ function DropZone({ id, currentWord, correctWord, isHintActive }) {
   const shouldGlow = isHintActive && isHintActive.includes(id);
   return (
     <div ref={setNodeRef} className={`inline-flex items-center justify-center min-w-[250px] h-10 mx-2 border-b-4 transition-all duration-300 align-middle ${shouldGlow ? 'border-yellow-400 bg-yellow-100/50 shadow-[0_0_15px_rgba(250,204,21,0.5)] scale-105' : 'border-dashed border-gray-400 bg-gray-200/40'} ${isOver ? 'bg-blue-100/50 border-blue-400 scale-110' : ''}`}>
-      <span className="text-gray-400 text-sm tracking-widest opacity-50 font-bold">將歌詞貼於此</span>
+      <span className="text-gray-400 text-sm tracking-widest opacity-50 font-bold">放置於此</span>
     </div>
   );
 }
@@ -122,14 +122,14 @@ const LyricsGamePlay = ({ song, gameData, initialStickers, onHome, onLyricsGener
        <div className="absolute top-6 right-8 z-50 flex gap-4">
          {!isCompleted && (
            /* ★ 任務 2：修改為白色復古按鈕風格 */
-           <button onClick={handleQuickFix} className="px-6 py-3 bg-[#FDFBF7] text-gray-800 font-bold rounded-lg border-2 border-gray-400 shadow-[4px_4px_0_#9ca3af] hover:bg-gray-100 hover:translate-y-[2px] hover:shadow-[2px_2px_0_#9ca3af] transition-all tracking-widest flex items-center animate-pulse">
-             快速拼貼
+           <button onClick={handleQuickFix} className="px-6 py-3 bg-[#D2A679] text-white font-bold rounded-full shadow-md hover:bg-[#C09668] hover:shadow-lg hover:-translate-y-1 transition-all duration-300 tracking-widest flex items-center animate-pulse">
+             一鍵還原
            </button>
          )}
        </div>
 
-       <div className="w-full max-w-6xl h-full flex flex-col bg-[#E0D8C3] rounded-xl shadow-2xl border-4 border-[#C0B8A3] overflow-hidden mt-8">
-            <div className="w-full bg-[#D64F3E] p-4 px-6 flex justify-between items-center shadow-md z-10 border-b-4 border-[#B83E2F]">
+       <div className="w-full max-w-6xl h-full flex flex-col bg-[#FDFBF7] rounded-3xl shadow-xl border border-gray-100 overflow-hidden mt-8">
+            <div className="w-full bg-[#D64F3E] p-4 px-6 flex justify-between items-center shadow-md z-10">
               <div className="flex items-center gap-4 min-w-[200px]">
                 <img src="/images/cassette.png" alt="Cassette" className="w-12 h-8 object-contain drop-shadow" />
                 <div className="flex flex-col">
@@ -140,8 +140,8 @@ const LyricsGamePlay = ({ song, gameData, initialStickers, onHome, onLyricsGener
                 </div>
               </div>
               <div className="flex-1 flex items-center gap-6 max-w-xl">
-                <button onClick={togglePlay} className="w-12 h-12 bg-[#F5F5F5] text-[#D64F3E] rounded-full flex items-center justify-center hover:bg-gray-200 shadow-md text-xl pl-1 border-2 border-white">
-                  {isPlaying ? 'II' : '▶'}
+                <button onClick={togglePlay} className="w-12 h-12 bg-[#FDFBF7] text-gray-700 rounded-full flex items-center justify-center shadow-md border border-gray-100 text-xl font-bold pb-1 transition-colors hover:bg-white">
+                  {isPlaying ? 'll' : '▶'}
                 </button>
                 <div className="flex-1 h-4 bg-black/30 rounded-full overflow-hidden relative shadow-inner cursor-pointer" onClick={handleProgressClick}>
                   <div className="absolute top-0 left-0 h-full bg-yellow-400 transition-all" style={{ width: `${progress}%` }}></div>
@@ -150,8 +150,8 @@ const LyricsGamePlay = ({ song, gameData, initialStickers, onHome, onLyricsGener
             </div>
 
             <div className="flex flex-1 overflow-hidden relative">
-              <div ref={lyricsScrollRef} {...lyricsScrollEvents} className="flex-[2] bg-[#FDFBF7] p-8 overflow-y-auto custom-scrollbar relative">
-                  <p className="text-center text-gray-500 font-bold tracking-widest mb-10 border-b-2 border-dashed border-gray-300 pb-4">將右側歌詞拖曳至對應位置</p>
+              <div ref={lyricsScrollRef} {...lyricsScrollEvents} className="flex-[2] bg-white p-8 overflow-y-auto custom-scrollbar relative">
+                  <p className="text-center text-gray-500 font-bold tracking-widest mb-10 border-b border-dashed border-gray-200 pb-4">請將右側散落的歌詞 輕輕放回原本的位置</p>
                   <div className="flex flex-col gap-6 text-center font-serif text-xl md:text-2xl text-gray-800 leading-loose font-bold">
                     {gameData.lines.map((line) => {
                        if (!line.text) return <div key={line.id} className="h-4"></div>; 
@@ -164,17 +164,17 @@ const LyricsGamePlay = ({ song, gameData, initialStickers, onHome, onLyricsGener
                   <div className="h-20"></div>
               </div>
 
-              <div ref={stickersScrollRef} {...stickersScrollEvents} className="flex-[1] bg-[#EAEAEA] p-6 overflow-y-auto custom-scrollbar border-l-4 border-dashed border-[#C0B8A3] shadow-inner flex flex-col items-center gap-6">
+              <div ref={stickersScrollRef} {...stickersScrollEvents} className="flex-[1] bg-[#F9F7F1] p-6 overflow-y-auto custom-scrollbar border-l border-gray-200 shadow-inner flex flex-col items-center gap-6">
                   {isCompleted ? (
                     <div className="text-center flex flex-col items-center justify-center animate-fade-in-up w-full px-4">
                        <div className="text-6xl mb-4"></div>
-                       <h3 className="text-2xl font-bold text-gray-800 mb-2 font-serif">歌詞拼貼完成!</h3>
+                       <h3 className="text-2xl font-bold text-gray-800 mb-6 font-serif tracking-widest">歌詞拼貼完成</h3>
                        <p className="text-gray-500 font-bold mb-8 text-sm"></p>
-                       <button onClick={onHome} className="w-[80%] py-4 bg-gray-800 text-white rounded-lg font-bold border-2 border-black shadow-[4px_4px_0_#4b5563] hover:translate-y-[2px] transition-all">返回火車</button>
+                       <button onClick={onHome} className="w-[80%] py-4 bg-[#D2A679] text-white rounded-full font-bold shadow-md hover:bg-[#C09668] hover:shadow-lg hover:-translate-y-1 transition-all duration-300 tracking-widest">返回火車</button>
                     </div>
                   ) : (
                     <>
-                      <h3 className="text-gray-500 font-bold tracking-widest text-sm bg-white px-6 py-2 rounded-full border-2 border-gray-300 mb-2">歌詞片段</h3>
+                      <h3 className="text-gray-500 font-bold tracking-widest text-sm bg-white px-6 py-2 rounded-full border border-gray-200 mb-2 shadow-sm">散落的記憶</h3>
                       {stickers.map((item) => <StickerItem key={item.id} id={item.id} word={item.text} />)}
                     </>
                   )}
@@ -184,7 +184,7 @@ const LyricsGamePlay = ({ song, gameData, initialStickers, onHome, onLyricsGener
 
        <DragOverlay dropAnimation={null}>
           {activeStickerData ? (
-            <div className="px-4 py-3 bg-[#FDFBF7] text-gray-800 border-2 border-gray-400 font-serif text-xl rounded-sm shadow-2xl rotate-2 scale-105 opacity-95">
+            <div className="px-4 py-3 bg-white text-gray-700 border border-gray-100 font-serif text-xl rounded-xl shadow-2xl rotate-2 scale-105 opacity-95">
               {activeStickerData.text}
             </div>
           ) : null}
@@ -263,7 +263,7 @@ const LyricsGame = ({ song, onHome, onLyricsGenerated }) => {
       
       {/* ★ 統一標題設計 (無副標題) */}
       <div className="absolute top-6 left-0 w-full flex justify-center pointer-events-none z-40">
-        <h2 className="text-4xl font-bold text-[#FDFBF7] tracking-widest drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)] inline-block font-serif">
+        <h2 className="text-4xl font-bold text-white tracking-widest drop-shadow-md inline-block font-serif">
           {CARRIAGE_NAMES.LYRICS}
         </h2>
       </div>

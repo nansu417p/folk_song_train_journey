@@ -38,8 +38,8 @@ const CustomAudioPlayer = ({ src, onPlayCallback }) => {
     <div className="w-full bg-[#EAEAEA] border-2 border-gray-400 rounded-lg p-5 shadow-inner flex flex-col gap-4 mt-6 z-10 relative">
       <audio ref={audioRef} src={src} onTimeUpdate={handleTimeUpdate} onEnded={() => setIsPlaying(false)} className="hidden" />
       <div className="flex items-center gap-5">
-        <button onClick={togglePlay} className="w-14 h-14 bg-red-600 text-white rounded-full flex items-center justify-center hover:bg-red-500 shadow-[2px_2px_0_#7f1d1d] active:shadow-none active:translate-y-[2px] transition-all border-2 border-red-800 text-xl pl-1">
-          {isPlaying ? 'II' : '▶'}
+        <button onClick={togglePlay} className="w-14 h-14 bg-[#FDFBF7] text-gray-700 rounded-full flex items-center justify-center hover:bg-white shadow-md hover:shadow-lg hover:-translate-y-1 transition-all duration-300 border border-gray-100 text-xl font-bold pb-1">
+          {isPlaying ? 'll' : '▶'}
         </button>
         <div className="flex-1 flex flex-col gap-2">
            <div className="flex justify-between text-xs text-gray-500 font-bold tracking-widest px-1">
@@ -64,24 +64,42 @@ const TrainPage = forwardRef(({ onSelectMode, onBack, ticket, cover, coverStatus
   const [scrollLeft, setScrollLeft] = useState(0);
   const dragThreshold = useRef(0); 
 
-  const scrollToFirstCarriage = () => {
+  const getHintModeId = () => {
+    if (!ticket) return 'mood-train';
+    if (!mainSong) return 'ar';
+    if (!cover) return coverStatus === 'generating' ? 'sing-along' : 'ai-zimage';
+    if (!recording) return 'sing-along';
+    if (mainSong && mainSong.hasFace && !swapped) {
+      return faceswapStatus === 'generating' ? 'lyrics' : 'faceswap';
+    }
+    if (!lyrics) return 'lyrics';
+    return 'capsule';
+  };
+
+  const scrollToHintCarriage = () => {
     if (!scrollRef.current) return;
+    
+    const hintId = getHintModeId();
+    const targetIndex = gameModes.findIndex(m => m.id === hintId);
+    const safeIndex = targetIndex === -1 ? 0 : targetIndex;
+    
     const containerWidth = scrollRef.current.offsetWidth;
     const carriageWidth = 525;
     const headWidth = 525;
     const paddingLeft = 80; 
-    const target = (paddingLeft + headWidth) - (containerWidth / 2) + (carriageWidth / 2);
-    scrollRef.current.scrollTo({ left: target, behavior: 'smooth' });
+    const target = (paddingLeft + headWidth) + (safeIndex * carriageWidth) - (containerWidth / 2) + (carriageWidth / 2);
+    scrollRef.current.scrollTo({ left: target, behavior: 'auto' });
   };
 
   useImperativeHandle(ref, () => ({
-    resetTrainPosition: () => { scrollToFirstCarriage(); }
+    resetTrainPosition: () => { scrollToHintCarriage(); }
   }));
 
   useEffect(() => {
-    const timer = setTimeout(scrollToFirstCarriage, 600);
-    return () => clearTimeout(timer);
-  }, []);
+    scrollToHintCarriage();
+    const frame = requestAnimationFrame(() => scrollToHintCarriage());
+    return () => cancelAnimationFrame(frame);
+  }, [ticket, cover, swapped, lyrics, recording, mainSong, faceswapStatus, coverStatus]);
 
   const handleMouseDown = (e) => {
     if (!scrollRef.current) return;
@@ -108,20 +126,6 @@ const TrainPage = forwardRef(({ onSelectMode, onBack, ticket, cover, coverStatus
     onSelectMode(mode);
   };
 
-  const getHintModeId = () => {
-    if (!ticket) return 'mood-train';
-    if (!mainSong) return 'ar';
-    if (!cover) return coverStatus === 'generating' ? 'sing-along' : 'ai-zimage';
-    if (!recording) return 'sing-along';
-    
-    if (mainSong && mainSong.hasFace && !swapped) {
-      return faceswapStatus === 'generating' ? 'lyrics' : 'faceswap';
-    }
-    
-    if (!lyrics) return 'lyrics';
-    
-    return 'capsule';
-  };
   const hintModeId = getHintModeId();
 
   return (
@@ -143,13 +147,13 @@ const TrainPage = forwardRef(({ onSelectMode, onBack, ticket, cover, coverStatus
 
       <div className="w-full flex flex-col items-center relative z-20 shrink-0">
         <div className="absolute top-0 left-10">
-          <button onClick={onBack} className="px-6 py-3 bg-[#FDFBF7]/90 text-gray-800 font-bold text-lg rounded-lg border-2 border-gray-400 shadow-[4px_4px_0_#9ca3af] hover:bg-gray-100 hover:translate-y-[2px] transition-all tracking-widest flex items-center">
-             回首頁
+          <button onClick={onBack} className="px-8 py-3 bg-[#D2A679] text-white font-bold text-lg rounded-full shadow-md hover:bg-[#C09668] hover:shadow-lg hover:-translate-y-1 transition-all duration-300 tracking-widest flex items-center">
+             返回首頁
           </button>
         </div>
         
-        <h3 className="text-gray-500 font-bold tracking-widest text-sm mb-4 bg-[#FDFBF7]/80 px-4 py-1 rounded-full border border-gray-300 backdrop-blur-sm shadow-sm pointer-events-none mt-2">
-          — 您的旅程收集品 —
+        <h3 className="text-gray-600 font-bold tracking-widest text-sm mb-4 bg-white/70 px-6 py-2 rounded-full border border-gray-200 backdrop-blur-sm shadow-sm pointer-events-none mt-2">
+          這趟旅程的美好回憶
         </h3>
 
         <div className="flex flex-row justify-center items-center gap-8 w-full max-w-6xl h-[180px] pointer-events-auto mt-2">
@@ -208,7 +212,7 @@ const TrainPage = forwardRef(({ onSelectMode, onBack, ticket, cover, coverStatus
       </div>
       
       <div className="text-center z-10 pointer-events-none mt-auto mb-2 shrink-0">
-        <h2 className="text-5xl font-bold mb-2 text-gray-800 drop-shadow-md tracking-widest">點擊車廂開始旅程</h2>
+        <h2 className="text-5xl font-bold mb-2 text-[#FDFBF7] drop-shadow-[0_4px_12px_rgba(0,0,0,0.5)] tracking-widest">點選車廂，開啟專屬體驗</h2>
       </div>
 
       {/* ★ 使用 App 傳來的參數統一調整整串火車車廂的上下位移 */}
@@ -258,15 +262,15 @@ const TrainPage = forwardRef(({ onSelectMode, onBack, ticket, cover, coverStatus
                 
                 <div className="absolute bottom-[calc(28%+10px)] left-1/2 transform -translate-x-1/2 z-20 flex flex-col items-center justify-center w-[60%] pointer-events-none">
                   <div className="absolute bottom-full mb-3 w-max flex justify-center z-[60]">
-                    {isAiCover && coverStatus === 'generating' && <div className="bg-yellow-400 text-gray-800 px-4 py-1.5 text-sm rounded-full font-bold shadow-md animate-pulse border border-yellow-500">封面繪製中...</div>}
-                    {isAiCover && coverStatus === 'done' && <div className="bg-green-500 text-white px-4 py-1.5 text-sm rounded-full font-bold shadow-[0_0_15px_#22c55e] animate-bounce border border-green-400">✨ 繪製完成！點擊入內領取</div>}
-                    {isFaceSwap && faceswapStatus === 'generating' && <div className="bg-blue-400 text-gray-800 px-4 py-1.5 text-sm rounded-full font-bold shadow-md animate-pulse border border-blue-500">封面繪製中...</div>}
-                    {isFaceSwap && faceswapStatus === 'done' && <div className="bg-green-500 text-white px-4 py-1.5 text-sm rounded-full font-bold shadow-[0_0_15px_#22c55e] animate-bounce border border-green-400">✨ 繪製完成！點擊入內領取</div>}
-                    {isFaceSwap && mainSong && !mainSong.hasFace && faceswapStatus === 'idle' && <div className="bg-gray-800 text-white px-4 py-1.5 text-sm rounded-full font-bold shadow-md border border-gray-600">🔒 此歌曲無人臉可替換</div>}
+                    {isAiCover && coverStatus === 'generating' && <div className="bg-amber-100 text-amber-700 px-5 py-2 text-sm rounded-full font-bold shadow-md animate-pulse border border-amber-200">正在為您繪製專屬封面...</div>}
+                    {isAiCover && coverStatus === 'done' && <div className="bg-emerald-100 text-emerald-700 px-5 py-2 text-sm rounded-full font-bold shadow-md animate-bounce border border-emerald-200">封面繪製完成，請進來看看</div>}
+                    {isFaceSwap && faceswapStatus === 'generating' && <div className="bg-amber-100 text-amber-700 px-5 py-2 text-sm rounded-full font-bold shadow-md animate-pulse border border-amber-200">正在為您合成專屬封面...</div>}
+                    {isFaceSwap && faceswapStatus === 'done' && <div className="bg-emerald-100 text-emerald-700 px-5 py-2 text-sm rounded-full font-bold shadow-md animate-bounce border border-emerald-200">封面合成完成，請進來領取</div>}
+                    {isFaceSwap && mainSong && !mainSong.hasFace && faceswapStatus === 'idle' && <div className="bg-gray-800 text-white px-4 py-1.5 text-sm rounded-full font-bold shadow-md border border-gray-600">此歌曲無人臉可替換</div>}
                   </div>
 
                   <div className="w-full transition-all duration-300 relative flex items-center justify-center py-2">
-                    <h3 className={`text-3xl font-bold tracking-[0.2em] transition-colors duration-300 ml-2 ${isLocked ? 'text-gray-400 opacity-60' : 'text-[#FDFBF7] group-hover:text-white'}`}>
+                    <h3 className={`text-3xl font-bold tracking-[0.2em] transition-colors duration-300 ml-2 translate-y-[1px] ${isLocked ? 'text-gray-400 opacity-60' : 'text-[#FDFBF7] group-hover:text-white'}`}>
                       {mode.title}
                     </h3>
                   </div>
@@ -286,8 +290,8 @@ const TrainPage = forwardRef(({ onSelectMode, onBack, ticket, cover, coverStatus
         {lightbox && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setLightbox(null)} className="fixed inset-0 z-[100] bg-black/80 backdrop-blur-md flex items-center justify-center p-8 select-none">
             
-            <button onClick={() => setLightbox(null)} className="fixed top-8 right-8 md:top-12 md:right-12 w-14 h-14 flex items-center justify-center bg-black/50 text-white/80 hover:bg-black/80 hover:text-white rounded-full text-4xl font-bold transition-all z-[120]">
-              ×
+            <button onClick={() => setLightbox(null)} className="fixed top-8 right-8 md:top-12 md:right-12 w-14 h-14 flex items-center justify-center bg-[#FDFBF7] text-gray-700 hover:bg-white shadow-md hover:shadow-lg hover:-translate-y-1 transition-all duration-300 border border-gray-100 rounded-none text-4xl font-bold z-[120]">
+              關閉
             </button>
 
             <motion.div initial={{ scale: 0.8, y: 30 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.8, y: 30 }} transition={{ type: "spring", damping: 20 }} onClick={(e) => e.stopPropagation()} className="relative flex flex-col items-center justify-center max-h-full max-w-full">
@@ -302,7 +306,7 @@ const TrainPage = forwardRef(({ onSelectMode, onBack, ticket, cover, coverStatus
                )}
 
                {lightbox.type === 'cover' && (
-                 <div className="bg-white p-4 pb-14 rounded-sm shadow-2xl border border-gray-200 flex flex-col relative w-[650px]">
+                 <div className="bg-[#FDFBF7] p-4 pb-14 rounded-none shadow-xl border border-gray-200 flex flex-col relative w-[650px]">
                    <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-40 h-10 bg-[#fca5a5]/90 backdrop-blur-[2px] shadow-sm z-[100] rotate-[-2deg] border border-red-300"></div>
                    <img src={lightbox.data.image} className="w-full aspect-[16/9] object-cover border border-gray-300 mt-2" draggable="false" />
                    <div className="absolute bottom-4 w-full left-0 text-center"><h3 className="text-3xl font-bold text-gray-800 tracking-widest font-serif">{lightbox.data.title}</h3></div>
@@ -310,17 +314,17 @@ const TrainPage = forwardRef(({ onSelectMode, onBack, ticket, cover, coverStatus
                )}
 
                {lightbox.type === 'swapped' && (
-                 <div className="bg-white p-4 pb-14 rounded-sm shadow-2xl border border-gray-200 flex flex-col relative w-[650px]">
+                 <div className="bg-[#FDFBF7] p-4 pb-14 rounded-none shadow-xl border border-gray-200 flex flex-col relative w-[650px]">
                    <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-40 h-10 bg-[#bae6fd]/90 backdrop-blur-[2px] shadow-sm z-[100] rotate-[2deg] border border-blue-300"></div>
-                   <img src={lightbox.data.image} className="w-full object-cover border border-gray-300 aspect-[1024/720] mt-2" draggable="false" />
+                   <img src={lightbox.data.image} className="w-full object-contain border border-gray-200 aspect-video mt-2 bg-gray-100 rounded-none" draggable="false" />
                    <div className="absolute bottom-4 w-full left-0 text-center"><h3 className="text-3xl font-bold text-gray-800 tracking-widest font-serif">{lightbox.data.title}</h3></div>
                  </div>
                )}
 
                {lightbox.type === 'lyrics' && (
-                 <div className="relative flex flex-col items-center pt-4">
-                   <div className="absolute top-0 left-1/2 -translate-x-1/2 w-40 h-10 bg-yellow-100/90 backdrop-blur-[2px] shadow-sm z-[100] rotate-[-1deg] border border-yellow-300"></div>
-                   <div className="bg-[#FDFBF7] p-10 pt-12 rounded-sm shadow-2xl border border-[#C0B8A3] w-[500px] max-h-[85vh] flex flex-col overflow-y-auto custom-scrollbar mt-2">
+                 <div className="relative flex flex-col items-center pt-4 w-[500px]">
+                   <div className="absolute top-2 left-1/2 -translate-x-1/2 w-40 h-10 bg-yellow-100/90 backdrop-blur-[2px] shadow-sm z-[100] rotate-[-1deg] border border-yellow-300"></div>
+                   <div className="bg-[#FDFBF7] p-10 pt-12 rounded-none shadow-xl border border-gray-200 w-full max-h-[85vh] flex flex-col overflow-y-auto custom-scrollbar mt-2">
                      <h2 className="text-3xl font-bold text-gray-800 text-center border-b-2 border-gray-300 pb-4 mb-6 tracking-widest font-serif">{lightbox.data.title}</h2>
                      <div className="text-lg text-gray-700 leading-loose font-serif whitespace-pre-wrap text-center px-4">
                        {lightbox.data.content}
@@ -330,7 +334,7 @@ const TrainPage = forwardRef(({ onSelectMode, onBack, ticket, cover, coverStatus
                )}
 
                {lightbox.type === 'recording' && (
-                 <div className="bg-[#FDFBF7] p-10 rounded-sm shadow-2xl border border-[#C0B8A3] w-[500px] flex flex-col items-center relative pt-12">
+                 <div className="bg-[#FDFBF7] p-10 rounded-none shadow-xl border border-gray-200 w-[500px] flex flex-col items-center relative pt-12">
                    <div className="my-6 relative transform scale-125 origin-center">
                       <div className="absolute -top-[50px] left-1/2 -translate-x-1/2 w-32 h-10 bg-green-100/90 backdrop-blur-[2px] shadow-sm z-[100] rotate-[1deg] border border-green-300 z-50"></div>
                       <CassetteUI title={lightbox.data.title} color="bg-gray-800" size="normal" />

@@ -7,10 +7,6 @@ import { CARRIAGE_NAMES } from '../../../data/gameModes';
 const BACKGROUND_IMAGE_SRC = '/images/MoodTrainGame.jpg';
 
 const MoodTrainGame = ({ onMoodDetected, onTicketGenerated }) => {
-  // ...(模型宣告與 useEffect 邏輯保持完全一樣，省略以節省篇幅)...
-  // （請直接保留您原本的 webcamRef 到 getConductorMessage 等邏輯，無需更動）
-  // 為了提供完整代碼我放了全部，但核心修改在最下方 return
-
   const webcamRef = useRef(null);
   const canvasRef = useRef(null);
   const tempCanvasRef = useRef(null);
@@ -122,7 +118,7 @@ const MoodTrainGame = ({ onMoodDetected, onTicketGenerated }) => {
   }, [isCameraActive, imageSegmenter, bgImageObj, step, cameraReady]);
 
   const startScan = () => {
-    if (!faceLandmarker || !webcamRef.current?.video) { alert("相機準備中，請稍候..."); return; }
+    if (!faceLandmarker || !webcamRef.current?.video) return; 
     setStep('scanning');
     let scanCount = 0; let smileScore = 0; let sadScore = 0;
     const interval = setInterval(() => {
@@ -149,12 +145,12 @@ const MoodTrainGame = ({ onMoodDetected, onTicketGenerated }) => {
   };
 
   const getConductorMessage = () => {
-    if(step === 'intro') return "各位旅客您好，請望向前方鏡頭，讓我為您記錄此刻的心情，印製專屬的乘車券。";
-    if(step === 'scanning') return "請保持微笑，我們正在為您捕捉最真實的瞬間。";
+    if(step === 'intro') return "歡迎搭乘！請望向鏡頭，讓我們為您記錄此刻的心情，印製專屬車票。無論您今天開心或難過，都帶上這份心情踏上旅程吧!";
+    if(step === 'scanning') return "請看著鏡頭，為這趟旅程留下一個微笑吧。";
     switch(moodResult) {
-      case 'happy': return "看您笑得如此燦爛，今天心底必定是個大晴天。這趟旅程，溫暖的陽光將會一路相伴。";
-      case 'sad': return "眉頭似乎微微鎖上了呢。沒關係的，窗外正落起溫柔的微雨，就讓雨水洗去疲憊，聽首輕柔的歌再出發吧。";
-      default: return "旅途的風景平穩而悠長，今日的天氣也清爽宜人。請靠在窗邊，悠閒享受這段純粹的民歌時光。";
+      case 'happy': return "看來您今天心情不錯呢！就讓這份好心情陪伴您接下來的音樂旅程。";
+      case 'sad': return "今天似乎有些疲憊呢。沒關係，讓輕柔的民歌旋律為您洗去煩勞，放鬆享受旅程吧。";
+      default: return "旅途的風景正美，請放鬆心情，悠閒享受這段純粹的民歌時光。";
     }
   };
   
@@ -172,10 +168,9 @@ const MoodTrainGame = ({ onMoodDetected, onTicketGenerated }) => {
 
       <div className="flex flex-col md:flex-row gap-6 md:gap-8 w-full max-w-7xl items-center justify-center h-[65vh]">
         
-        {/* 左側：鏡頭與拍攝 */}
         <div className="flex flex-col gap-6 w-full md:w-[35%] h-full justify-center">
           <div className="bg-[#FDFBF7] p-6 rounded-3xl shadow-xl border border-gray-100 flex flex-col items-center relative overflow-hidden h-full">
-            <h2 className="text-2xl font-bold text-gray-800 mb-6 tracking-widest border-b-2 border-rose-400 pb-2 w-full text-center font-serif">今日心情捕捉</h2>
+            <h2 className="text-2xl font-bold text-gray-800 mb-6 tracking-widest border-b-2 border-rose-400 pb-2 w-full text-center font-serif">心情相機</h2>
             
             <div className="w-full aspect-square md:aspect-[4/3] bg-gray-900 rounded-xl overflow-hidden relative border border-gray-200 shadow-inner flex items-center justify-center">
               {isCameraActive && ( <Webcam ref={webcamRef} audio={false} screenshotFormat="image/jpeg" className="absolute opacity-0 w-[1px] h-[1px] pointer-events-none" mirrored={false} videoConstraints={{ width: 640, height: 480, facingMode: "user" }} /> )}
@@ -183,7 +178,7 @@ const MoodTrainGame = ({ onMoodDetected, onTicketGenerated }) => {
               {!cameraReady && isCameraActive && (
                 <div className="absolute inset-0 flex flex-col items-center justify-center z-20 bg-gray-900 gap-3">
                   <div className="w-8 h-8 border-4 border-gray-400 border-t-white rounded-full animate-spin"></div>
-                  <span className="text-gray-400 font-bold tracking-widest text-sm">相機啟動中...</span>
+                  <span className="text-gray-400 font-bold tracking-widest text-sm">準備相機中...</span>
                 </div>
               )}
               {!isCameraActive && <span className="text-gray-500 font-bold tracking-widest bg-gray-900 inset-0 absolute flex items-center justify-center z-20">相機休息中</span>}
@@ -191,8 +186,8 @@ const MoodTrainGame = ({ onMoodDetected, onTicketGenerated }) => {
             </div>
 
             <div className="mt-auto w-full relative z-10">
-              {step === 'intro' && <button onClick={startScan} disabled={!cameraReady} className="w-full py-4 bg-rose-400 text-white font-bold rounded-full shadow-md hover:bg-rose-500 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 tracking-widest text-lg disabled:bg-gray-300 disabled:text-gray-500 disabled:shadow-none disabled:hover:translate-y-0 disabled:cursor-not-allowed">拍下此刻的風景</button>}
-              {step === 'scanning' && <div className="w-full py-4 text-center text-gray-600 font-bold animate-pulse tracking-widest bg-white rounded-full border border-gray-100 shadow-inner">正在為您沖印車票...</div>}
+              {step === 'intro' && <button onClick={startScan} disabled={!cameraReady} className="w-full py-4 bg-rose-400 text-white font-bold rounded-full shadow-md hover:bg-rose-500 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 tracking-widest text-lg disabled:bg-gray-300 disabled:text-gray-500 disabled:shadow-none disabled:hover:translate-y-0 disabled:cursor-not-allowed">點擊拍攝</button>}
+              {step === 'scanning' && <div className="w-full py-4 text-center text-gray-600 font-bold animate-pulse tracking-widest bg-white rounded-full border border-gray-100 shadow-inner">正在為您印製專屬車票...</div>}
               {step === 'result' && (
                 <div className="flex w-full justify-center mt-2">
                   <button onClick={handleReScan} className="w-[80%] py-4 bg-[#D2A679] text-white font-bold rounded-full shadow-md hover:bg-[#C09668] hover:shadow-lg hover:-translate-y-1 transition-all duration-300 tracking-widest">重新拍攝</button>
@@ -202,10 +197,8 @@ const MoodTrainGame = ({ onMoodDetected, onTicketGenerated }) => {
           </div>
         </div>
 
-        {/* 右側：車票顯示與車長廣播 */}
         <div className="w-full md:w-[65%] md:pl-12 flex flex-col items-center justify-start gap-6 h-full relative">
             <div className="w-full bg-[#FDFBF7] p-6 rounded-3xl shadow-xl border border-gray-100 relative z-20">
-              
               <h3 className="font-bold text-gray-800 mb-2 tracking-widest text-lg font-serif">車長廣播：</h3>
               <p className="text-gray-700 leading-relaxed font-bold tracking-wide bg-transparent p-2 min-h-[60px]">
                 {getConductorMessage()}
@@ -218,10 +211,9 @@ const MoodTrainGame = ({ onMoodDetected, onTicketGenerated }) => {
               <div className="drop-shadow-[0_10px_15px_rgba(0,0,0,0.5)]">
                 <TicketCard captureImg={captureImg} moodResult={moodResult} size="large" />
               </div>
-              {/* ★ 使用固定高度的容器包裹按鈕，避免出現時把上面的車票往上擠 */}
               <div className="h-[80px] flex items-center justify-center w-full mt-4">
                 <button onClick={() => { setIsCameraActive(false); onTicketGenerated(captureImg, moodResult); }} className={`px-10 py-4 bg-rose-400 text-white font-bold text-lg rounded-full shadow-md hover:bg-rose-500 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 tracking-widest ${step === 'result' ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 translate-y-4 pointer-events-none'}`}>
-                  領取這張專屬紀念票
+                  領取車票
                 </button>
               </div>
             </div>

@@ -11,7 +11,6 @@ const getTodayFullDate = () => {
   return `${yyyy}年 ${mm}月 ${dd}日`;
 };
 
-// 幫助元件：包含「旋轉/縮放按鈕、動態圖層置頂、自由拖曳」的拼貼圖層
 const CollageItem = ({ children, initialX, initialY, initialRotate = 0, initialScale = 1, initialZ = 10, isResetting, bringToFront }) => {
   const controls = useAnimation();
   const [currentRotate, setCurrentRotate] = useState(initialRotate);
@@ -95,7 +94,6 @@ const CollageItem = ({ children, initialX, initialY, initialRotate = 0, initialS
   );
 };
 
-// 明信片本體設計 (1280x720) 
 const PostcardContent = ({ song, ticket, selectedCoverImg, customMessage, lyrics, isResetting }) => {
   const todayDate = getTodayFullDate();
   
@@ -109,24 +107,22 @@ const PostcardContent = ({ song, ticket, selectedCoverImg, customMessage, lyrics
   return (
     <div 
       id="postcard-actual-content" 
-      className="w-[1280px] h-[720px] bg-[#F4F1EA] overflow-hidden border-[8px] border-white shadow-2xl font-serif relative box-border bg-[url('/images/Capsule_bg.jpg')] bg-cover bg-center rounded-sm"
+      className="w-[1280px] h-[720px] bg-[#F4F1EA] overflow-hidden border-[8px] border-white shadow-2xl font-serif relative box-border bg-[url('/images/Capsule_bg.png')] bg-cover bg-center rounded-sm"
     >
       <div className="absolute inset-0 bg-white/50 pointer-events-none"></div>
 
-      {/* 拼貼一：封面圖片 (左上) */}
       <CollageItem initialX={60} initialY={50} initialRotate={-2} initialScale={1} initialZ={10} isResetting={isResetting} bringToFront={bringToFront}>
         <div className="p-3 pb-10 bg-white shadow-2xl border border-gray-200 relative select-none inline-block">
           <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-20 h-6 bg-red-200/90 shadow-sm rotate-2"></div>
           {selectedCoverImg ? (
             <img src={selectedCoverImg} className="w-[450px] aspect-[16/9] object-cover pointer-events-none" draggable="false" alt="封面" />
           ) : (
-            <div className="w-[450px] aspect-[16/9] flex items-center justify-center bg-gray-200 text-gray-500 font-bold tracking-widest text-2xl">無封面圖片</div>
+            <div className="w-[450px] aspect-[16/9] flex items-center justify-center bg-gray-200 text-gray-500 font-bold tracking-widest text-2xl">無圖片紀錄</div>
           )}
           <div className="absolute bottom-2 left-0 w-full text-center text-gray-500 text-sm font-bold tracking-widest pointer-events-none">民歌記憶．時光永存</div>
         </div>
       </CollageItem>
 
-      {/* 拼貼二：心情車票 (左下) */}
       <CollageItem initialX={60} initialY={400} initialRotate={3} initialScale={0.8} initialZ={20} isResetting={isResetting} bringToFront={bringToFront}>
         <div className="relative select-none drop-shadow-2xl inline-block">
            <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-16 h-5 bg-blue-200/90 shadow-sm -rotate-2 z-50"></div>
@@ -140,7 +136,6 @@ const PostcardContent = ({ song, ticket, selectedCoverImg, customMessage, lyrics
         </div>
       </CollageItem>
 
-      {/* 拼貼三：歌曲資訊與歌詞結合 (右方長條) */}
       <CollageItem initialX={760} initialY={40} initialRotate={1} initialScale={1} initialZ={30} isResetting={isResetting} bringToFront={bringToFront}>
         <div className="bg-white/95 backdrop-blur-md border border-[#D2A679] p-6 w-[440px] h-[480px] flex flex-col relative shadow-xl select-none inline-block rounded-sm">
           <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-24 h-8 bg-yellow-200/90 shadow-sm rotate-3 z-50"></div>
@@ -154,16 +149,15 @@ const PostcardContent = ({ song, ticket, selectedCoverImg, customMessage, lyrics
 
           <div className="flex-1 overflow-hidden relative">
             <div className="absolute top-0 left-0 w-full h-[32px] leading-[32px] text-center block bg-gray-800 text-xs text-white font-bold tracking-widest">
-              — 記憶手稿 —
+              — 記憶筆記 —
             </div>
             <div className="leading-loose tracking-widest whitespace-pre-wrap text-sm font-bold opacity-80 mt-10 h-full overflow-hidden text-gray-700 px-4 text-center">
-              {lyrics ? lyrics.content : '歌詞尚未拼貼...'}
+              {lyrics ? lyrics.content : '歌詞尚未拼貼完成...'}
             </div>
           </div>
         </div>
       </CollageItem>
 
-      {/* 拼貼四：獨立的心情留言 (右下) */}
       <CollageItem initialX={680} initialY={530} initialRotate={-4} initialScale={1} initialZ={40} isResetting={isResetting} bringToFront={bringToFront}>
         <div className="bg-[#FDFBF7] border-l-[6px] border-[#D2A679] p-4 pr-6 w-[380px] shadow-xl relative select-none inline-block">
           <h4 className="text-xs font-bold text-[#D2A679] mb-2 tracking-widest uppercase">旅程留言</h4>
@@ -173,10 +167,8 @@ const PostcardContent = ({ song, ticket, selectedCoverImg, customMessage, lyrics
         </div>
       </CollageItem>
 
-      {/* ★ 任務 6：重新排版的明信片印章 (加入 NCUE 元素與圓環設計) */}
       <CollageItem initialX={1080} initialY={540} initialRotate={-15} initialScale={1} initialZ={15} isResetting={isResetting} bringToFront={bringToFront}>
         <div className="relative w-36 h-36 flex flex-col items-center justify-center text-red-700/70 mix-blend-multiply pointer-events-none select-none inline-block font-sans">
-          {/* 郵戳外圈雙線 */}
           <div className="absolute inset-0 border-[3px] border-red-700/70 rounded-full"></div>
           <div className="absolute inset-1.5 border-[1px] border-red-700/60 rounded-full"></div>
           
@@ -224,11 +216,11 @@ const CapsuleGame = ({ song, ticket, cover, swapped, lyrics, recording, onHome }
       });
       
       const link = document.createElement('a');
-      link.download = `${song.title}_民歌拼貼回憶.png`;
+      link.download = `${song.title}_時光紀念明信片.png`;
       link.href = dataUrl;
       link.click();
     } catch (e) {
-      alert("圖片生成失敗，請確保圖片載入完成並重試！");
+      alert("圖片印製失敗，請確保所有照片都已載入。");
       console.error("截圖錯誤:", e);
     } finally {
       setIsGenerating(false);
@@ -240,7 +232,7 @@ const CapsuleGame = ({ song, ticket, cover, swapped, lyrics, recording, onHome }
     if (!recording || !recording.audioUrl) return;
     const link = document.createElement('a');
     link.href = recording.audioUrl;
-    link.download = `${song.title}_我的演唱錄音.webm`; 
+    link.download = `${song.title}_演唱錄音.webm`; 
     link.click();
   };
 
@@ -249,31 +241,29 @@ const CapsuleGame = ({ song, ticket, cover, swapped, lyrics, recording, onHome }
       
       <div className="w-full max-w-[98%] h-[92vh] bg-[#EAEAEA] rounded-xl shadow-2xl border-[4px] border-[#C0B8A3] flex overflow-hidden relative transform translate-y-[30px]">
           
-         {/* 沖洗中載入遮罩 */}
          {isCapturingImage && (
             <div className="fixed inset-0 bg-black/60 z-[9999] flex flex-col items-center justify-center backdrop-blur-sm pointer-events-auto">
                 <div className="w-16 h-16 border-8 border-gray-300 border-t-red-600 rounded-full animate-spin mb-6"></div>
-                <h2 className="text-3xl font-bold text-white tracking-widest font-serif">正在用心為你印製中...</h2>
+                <h2 className="text-3xl font-bold text-white tracking-widest font-serif">正在為您印製明信片...</h2>
             </div>
          )}
 
-         {/* 左側控制面板 */}
          <div className="w-[32%] bg-[#FDFBF7] p-6 lg:p-8 border-r border-gray-200 flex flex-col justify-between z-20 min-w-[340px] shrink-0">
             <div className="flex flex-col gap-2 shrink-0">
-              <h2 className="text-3xl font-bold text-gray-800 tracking-widest font-serif border-b-2 border-rose-400 pb-2 w-max">製作專屬回憶明信片</h2>
-              <p className="text-gray-500 text-sm font-bold tracking-widest mt-2 leading-relaxed">輕輕拖曳與縮放<br/>打造獨一無二的回憶明信片</p>
+              <h2 className="text-3xl font-bold text-gray-800 tracking-widest font-serif border-b-2 border-rose-400 pb-2 w-max">旅程回憶明信片</h2>
+              <p className="text-gray-500 text-sm font-bold tracking-widest mt-2 leading-relaxed">輕輕拖曳與縮放<br/>排版出獨一無二的回憶畫面</p>
             </div>
 
             <div className="flex flex-col gap-2 mt-6 shrink-0">
-               <h3 className="font-bold text-gray-700 bg-white border border-gray-200 px-4 py-2 rounded-full shadow-sm w-max text-xs tracking-widest">挑選一張最觸動您的畫面吧</h3>
+               <h3 className="font-bold text-gray-700 bg-white border border-gray-200 px-4 py-2 rounded-full shadow-sm w-max text-xs tracking-widest">挑選一張您喜歡的照片</h3>
                <div className="flex gap-4">
                   <div onClick={() => !isCapturingImage && setSelectedCoverType('cover')} className={`flex-1 cursor-pointer rounded-sm overflow-hidden border-[3px] transition-all ${selectedCoverType === 'cover' ? 'border-red-600 shadow-[4px_4px_0_#7f1d1d] scale-[1.02]' : 'border-gray-400 opacity-60 hover:opacity-100'}`}>
-                    {cover ? <img src={cover.image} className="w-full aspect-[16/9] object-cover bg-gray-200" alt="意境封面" draggable="false" /> : <div className="w-full aspect-[16/9] bg-gray-300 flex items-center justify-center text-xs font-bold tracking-widest">無封面</div>}
-                    <div className="bg-gray-800 text-white text-center text-xs py-1.5 tracking-widest font-bold border-t-[2px] border-gray-600">自製封面</div>
+                    {cover ? <img src={cover.image} className="w-full aspect-[16/9] object-cover bg-gray-200" alt="意境封面" draggable="false" /> : <div className="w-full aspect-[16/9] bg-gray-300 flex items-center justify-center text-xs font-bold tracking-widest">無相片</div>}
+                    <div className="bg-gray-800 text-white text-center text-xs py-1.5 tracking-widest font-bold border-t-[2px] border-gray-600">時光畫筆</div>
                   </div>
                   <div onClick={() => !isCapturingImage && setSelectedCoverType('swapped')} className={`flex-1 cursor-pointer rounded-sm overflow-hidden border-[3px] transition-all ${selectedCoverType === 'swapped' ? 'border-red-600 shadow-[4px_4px_0_#7f1d1d] scale-[1.02]' : 'border-gray-400 opacity-60 hover:opacity-100'}`}>
                     {swapped ? <img src={swapped.image} className="w-full aspect-[16/9] object-cover bg-gray-200" alt="合照封面" draggable="false" /> : <div className="w-full aspect-[16/9] bg-gray-300 flex items-center justify-center text-xs font-bold tracking-widest">無合照</div>}
-                    <div className="bg-gray-800 text-white text-center text-xs py-1.5 tracking-widest font-bold border-t-[2px] border-gray-600">一日歌手</div>
+                    <div className="bg-gray-800 text-white text-center text-xs py-1.5 tracking-widest font-bold border-t-[2px] border-gray-600">歲月留影</div>
                   </div>
                </div>
             </div>
@@ -285,25 +275,24 @@ const CapsuleGame = ({ song, ticket, cover, swapped, lyrics, recording, onHome }
 
             <div className="flex flex-col gap-4 mt-6 shrink-0">
                <button onClick={handleDownloadImage} disabled={isGenerating || isCapturingImage} className={`w-full py-4 text-white text-base md:text-lg rounded-full font-bold transition-all duration-300 tracking-widest flex items-center justify-center ${isGenerating || isCapturingImage ? 'bg-gray-400 cursor-wait shadow-sm' : 'bg-rose-400 shadow-md hover:bg-rose-500 hover:shadow-lg hover:-translate-y-1'}`}>
-                 {isCapturingImage ? "正在為您精心印製..." : isGenerating ? "處理中..." : "珍藏這份美好回憶"}
+                 {isCapturingImage ? "正在為您印製..." : isGenerating ? "處理中..." : "下載回憶明信片"}
                </button>
                
                {recording ? (
-                 <button disabled={isCapturingImage} onClick={handleDownloadAudio} className="w-full py-3 bg-[#D2A679] text-white text-sm md:text-base rounded-full font-bold shadow-md hover:bg-[#C09668] hover:shadow-lg hover:-translate-y-1 transition-all duration-300 tracking-widest">下載演唱錄音</button>
+                 <button disabled={isCapturingImage} onClick={handleDownloadAudio} className="w-full py-3 bg-[#D2A679] text-white text-sm md:text-base rounded-full font-bold shadow-md hover:bg-[#C09668] hover:shadow-lg hover:-translate-y-1 transition-all duration-300 tracking-widest">下載您的歌聲錄音</button>
                ) : (
                  <div className="w-full py-3 bg-[#FDFBF7] text-gray-500 text-center rounded font-bold text-sm tracking-widest border-[3px] border-gray-400 border-dashed">此次無錄音紀錄</div>
                )}
             </div>
          </div>
 
-         {/* 右側預覽區 */}
          <div className={`flex-1 flex flex-col items-center relative overflow-hidden px-4 md:px-8 py-6 transition-colors duration-300 ${isCapturingImage ? 'bg-gray-400/80 pointer-events-none' : 'bg-[#C0B8A3] pointer-events-auto'}`}>
             
             <div className="w-full shrink-0 flex items-center justify-between relative z-50">
                <div className="flex flex-col items-start">
-                 <div className="text-white/80 font-bold tracking-widest text-2xl font-serif">回憶紀念預覽</div>
+                 <div className="text-white/80 font-bold tracking-widest text-2xl font-serif">明信片預覽</div>
                  <div className="mt-2 text-gray-700 font-bold tracking-widest text-sm bg-white/80 px-5 py-2 rounded-full border border-white/50 shadow-sm backdrop-blur-md pointer-events-none inline-block flex items-center gap-2">
-                   提示：滑鼠移至元件上，點擊縮放或旋轉按鈕來自由調整排版
+                   提示：滑鼠移至元件上，可點擊縮放或旋轉來自由調整排版
                  </div>
                </div>
                <button disabled={isCapturingImage} onClick={handleResetLayout} className="px-8 py-3 bg-[#D2A679] text-white text-sm font-bold tracking-widest rounded-full hover:bg-[#C09668] hover:shadow-lg hover:-translate-y-1 shadow-md transition-all duration-300 mt-2">
@@ -311,7 +300,6 @@ const CapsuleGame = ({ song, ticket, cover, swapped, lyrics, recording, onHome }
                </button>
             </div>
             
-            {/* 視覺居中與放大容器 */}
             <div className="w-full flex-1 flex justify-center items-start overflow-visible">
                <div className="transform scale-[0.6] lg:scale-[0.7] xl:scale-[0.8] origin-top transition-all duration-500 drop-shadow-[0_10px_20px_rgba(0,0,0,0.15)] mt-[10px]">
                  <PostcardContent 

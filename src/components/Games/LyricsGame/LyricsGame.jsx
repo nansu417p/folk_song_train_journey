@@ -22,7 +22,7 @@ function DropZone({ id, currentWord, correctWord, isHintActive }) {
   if (currentWord) {
     return (
       <div className="relative inline-flex items-center justify-center px-4 py-1 mx-2 bg-white border border-gray-100 text-gray-700 shadow-md rounded-xl -rotate-1 font-bold text-xl transition-all z-10">
-        <div className="absolute -top-1.5 left-2 w-6 h-3 bg-red-200/50 backdrop-blur-sm border border-red-300/50 shadow-sm rotate-6"></div>
+        <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 w-8 h-4 bg-yellow-100/60 backdrop-blur-sm border border-yellow-200/50 shadow-sm rotate-[-4deg]"></div>
         {currentWord}
       </div>
     );
@@ -30,7 +30,7 @@ function DropZone({ id, currentWord, correctWord, isHintActive }) {
   const shouldGlow = isHintActive && isHintActive.includes(id);
   return (
     <div ref={setNodeRef} className={`inline-flex items-center justify-center min-w-[250px] h-10 mx-2 border-b-4 transition-all duration-300 align-middle ${shouldGlow ? 'border-yellow-400 bg-yellow-100/50 shadow-[0_0_15px_rgba(250,204,21,0.5)] scale-105' : 'border-dashed border-gray-400 bg-gray-200/40'} ${isOver ? 'bg-blue-100/50 border-blue-400 scale-110' : ''}`}>
-      <span className="text-gray-400 text-sm tracking-widest opacity-50 font-bold">放置於此</span>
+      <span className="text-gray-400 text-sm tracking-widest opacity-50 font-bold">拖曳至此</span>
     </div>
   );
 }
@@ -121,17 +121,18 @@ const LyricsGamePlay = ({ song, gameData, initialStickers, onHome, onLyricsGener
     <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
        <div className="absolute top-6 right-8 z-50 flex gap-4">
          {!isCompleted && (
-           /* ★ 任務 2：修改為白色復古按鈕風格 */
-           <button onClick={handleQuickFix} className="px-6 py-3 bg-[#D2A679] text-white font-bold rounded-full shadow-md hover:bg-[#C09668] hover:shadow-lg hover:-translate-y-1 transition-all duration-300 tracking-widest flex items-center animate-pulse">
-             一鍵還原
+           <button onClick={handleQuickFix} className="px-6 py-3 bg-[#D2A679] text-white font-bold rounded-full shadow-md hover:bg-[#C09668] hover:shadow-lg hover:-translate-y-1 transition-all duration-300 tracking-widest flex items-center">
+             貼上全部歌詞
            </button>
          )}
        </div>
 
        <div className="w-full max-w-6xl h-full flex flex-col bg-[#FDFBF7] rounded-3xl shadow-xl border border-gray-100 overflow-hidden mt-8">
-            <div className="w-full bg-[#D64F3E] p-4 px-6 flex justify-between items-center shadow-md z-10">
+            <div className="w-full bg-[#D64F3E] p-4 px-6 flex justify-between items-center shadow-md z-10 border-b-4 border-[#B83E2F]">
               <div className="flex items-center gap-4 min-w-[200px]">
-                <img src="/images/cassette.png" alt="Cassette" className="w-12 h-8 object-contain drop-shadow" />
+                <div className="flex items-center justify-center mr-2">
+                   <img src="/images/cassette.png" alt="Cassette" className="w-12 h-8 object-contain drop-shadow-[0_2px_2px_rgba(0,0,0,0.5)]" />
+                </div>
                 <div className="flex flex-col">
                   <div className="flex items-baseline gap-3">
                     <h2 className="text-[#F5F5F5] text-xl font-bold tracking-widest font-serif drop-shadow">{song.title}</h2>
@@ -144,14 +145,14 @@ const LyricsGamePlay = ({ song, gameData, initialStickers, onHome, onLyricsGener
                   {isPlaying ? 'll' : '▶'}
                 </button>
                 <div className="flex-1 h-4 bg-black/30 rounded-full overflow-hidden relative shadow-inner cursor-pointer" onClick={handleProgressClick}>
-                  <div className="absolute top-0 left-0 h-full bg-yellow-400 transition-all" style={{ width: `${progress}%` }}></div>
+                  <div className="absolute top-0 left-0 h-full bg-yellow-400 transition-all duration-75 ease-linear pointer-events-none" style={{ width: `${progress}%` }}></div>
                 </div>
               </div>
             </div>
 
             <div className="flex flex-1 overflow-hidden relative">
               <div ref={lyricsScrollRef} {...lyricsScrollEvents} className="flex-[2] bg-white p-8 overflow-y-auto custom-scrollbar relative">
-                  <p className="text-center text-gray-500 font-bold tracking-widest mb-10 border-b border-dashed border-gray-200 pb-4">請將右側散落的歌詞 輕輕放回原本的位置</p>
+                  <p className="text-center text-gray-500 font-bold tracking-widest mb-10 border-b border-dashed border-gray-200 pb-4">拖曳右側的字句，拼貼那時代的歌詞</p>
                   <div className="flex flex-col gap-6 text-center font-serif text-xl md:text-2xl text-gray-800 leading-loose font-bold">
                     {gameData.lines.map((line) => {
                        if (!line.text) return <div key={line.id} className="h-4"></div>; 
@@ -166,15 +167,13 @@ const LyricsGamePlay = ({ song, gameData, initialStickers, onHome, onLyricsGener
 
               <div ref={stickersScrollRef} {...stickersScrollEvents} className="flex-[1] bg-[#F9F7F1] p-6 overflow-y-auto custom-scrollbar border-l border-gray-200 shadow-inner flex flex-col items-center gap-6">
                   {isCompleted ? (
-                    <div className="text-center flex flex-col items-center justify-center animate-fade-in-up w-full px-4">
-                       <div className="text-6xl mb-4"></div>
-                       <h3 className="text-2xl font-bold text-gray-800 mb-6 font-serif tracking-widest">歌詞拼貼完成</h3>
-                       <p className="text-gray-500 font-bold mb-8 text-sm"></p>
-                       <button onClick={onHome} className="w-[80%] py-4 bg-[#D2A679] text-white rounded-full font-bold shadow-md hover:bg-[#C09668] hover:shadow-lg hover:-translate-y-1 transition-all duration-300 tracking-widest">返回火車</button>
+                    <div className="text-center flex flex-col items-center justify-center animate-fade-in-up w-full px-4 mt-20">
+                       <h3 className="text-2xl font-bold text-gray-800 mb-6 font-serif tracking-widest">歌詞已完整重現</h3>
+                       <button onClick={onHome} className="w-[80%] py-4 bg-[#D2A679] text-white rounded-full font-bold shadow-md hover:bg-[#C09668] hover:shadow-lg hover:-translate-y-1 transition-all duration-300 tracking-widest">返回車廂</button>
                     </div>
                   ) : (
                     <>
-                      <h3 className="text-gray-500 font-bold tracking-widest text-sm bg-white px-6 py-2 rounded-full border border-gray-200 mb-2 shadow-sm">散落的記憶</h3>
+                      <h3 className="text-gray-500 font-bold tracking-widest text-sm bg-white px-6 py-2 rounded-full border border-gray-200 mb-2 shadow-sm">散落的字句</h3>
                       {stickers.map((item) => <StickerItem key={item.id} id={item.id} word={item.text} />)}
                     </>
                   )}
@@ -256,12 +255,10 @@ const LyricsGame = ({ song, onHome, onLyricsGenerated }) => {
     }
   };
 
-  if (gameState.status === 'loading') return <div className="text-white text-2xl font-bold p-8">讀取中...</div>;
+  if (gameState.status === 'loading') return <div className="text-white text-2xl font-bold p-8">正在尋找散落的筆記...</div>;
 
   return (
     <div className="relative w-full h-full flex flex-col items-center justify-center overflow-hidden bg-transparent pt-16 pb-8 px-8">
-      
-      {/* ★ 統一標題設計 (無副標題) */}
       <div className="absolute top-6 left-0 w-full flex justify-center pointer-events-none z-40">
         <h2 className="text-4xl font-bold text-white tracking-widest drop-shadow-md inline-block font-serif">
           {CARRIAGE_NAMES.LYRICS}

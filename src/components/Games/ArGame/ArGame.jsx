@@ -45,14 +45,18 @@ const ArGame = ({ onConfirmSong, onPreviewSong }) => {
 
   useEffect(() => {
     const initLandmarker = async () => {
-      const vision = await FilesetResolver.forVisionTasks("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.0/wasm");
-      const landmarker = await HandLandmarker.createFromOptions(vision, {
-        baseOptions: { modelAssetPath: `https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task`, delegate: "GPU" },
-        runningMode: "VIDEO", numHands: 1
-      });
-      setHandLandmarker(landmarker);
-      setIsLoading(false);
-      setTimeout(() => setShowHint(false), 6000);
+      try {
+        const vision = await FilesetResolver.forVisionTasks("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.0/wasm");
+        const landmarker = await HandLandmarker.createFromOptions(vision, {
+          baseOptions: { modelAssetPath: `https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task`, delegate: "GPU" },
+          runningMode: "VIDEO", numHands: 1
+        });
+        setHandLandmarker(landmarker);
+        setIsLoading(false);
+        setTimeout(() => setShowHint(false), 6000);
+      } catch (err) {
+        console.error("相機權限或模型載入失敗:", err);
+      }
     };
     initLandmarker();
   }, []);
@@ -213,14 +217,14 @@ const ArGame = ({ onConfirmSong, onPreviewSong }) => {
           onClick={handleConfirmClick} 
           className="absolute top-6 right-8 z-50 px-8 py-3 bg-rose-400 text-white font-bold text-lg rounded-full shadow-md hover:bg-rose-500 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 tracking-widest pointer-events-auto animate-pulse"
         >
-          選擇這首歌曲
+          選擇歌曲
         </button>
       )}
 
       {isLoading && (
         <div className="absolute inset-0 z-40 flex flex-col items-center justify-center bg-[#FDFBF7] text-gray-800">
           <div className="w-16 h-16 border-8 border-gray-300 border-t-red-600 rounded-full animate-spin mb-6"></div>
-          <p className="animate-pulse text-2xl font-bold tracking-widest border-b-2 border-rose-400 pb-2">正在為您準備卡帶機，請稍候片刻</p>
+          <p className="animate-pulse text-2xl font-bold tracking-widest border-b-2 border-rose-400 pb-2">為您準備播放器中，請稍候片刻</p>
         </div>
       )}
 
@@ -233,7 +237,7 @@ const ArGame = ({ onConfirmSong, onPreviewSong }) => {
         {showHint && !isLoading && (
           <div className="absolute top-32 left-0 w-full text-center animate-bounce z-40">
             <span className="bg-[#FDFBF7] text-gray-800 border border-gray-200 px-8 py-4 rounded-full shadow-lg font-bold tracking-widest text-lg">
-              請輕觸卡帶，將它輕輕放入播放器中
+              用手指拖曳卡帶，將卡帶放入播放器中
             </span>
           </div>
         )}
@@ -272,7 +276,7 @@ const ArGame = ({ onConfirmSong, onPreviewSong }) => {
                   </div>
                 ) : (
                   <div className="text-gray-400 font-bold text-xs tracking-widest flex flex-col items-center justify-center gap-1 w-full h-full border border-dashed border-gray-600 bg-black/60 rounded">
-                    置入卡帶
+                    
                   </div>
                 )}
              </div>

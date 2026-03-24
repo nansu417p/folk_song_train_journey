@@ -14,14 +14,12 @@ const DETAILED_PROMPTS = {
   male: [
     "1boy, handsome young taiwanese male singer, 1980s retro hairstyle, holding acoustic guitar, looking at viewer, retro portrait photography",
     "1boy, handsome young taiwanese male student singer, split turtleneck sweater, black rimmed glasses, soft melancholic eyes, 80s neat short hair, holding book, retro campus photography",
-    "1boy, cool taiwanese male rock singer, dishevelled curly hair, leather jacket, torn jeans, defiant expression, holding electric guitar, neon city lights background, gritty retro film noise",
     "1boy, mature taiwanese male folk singer, slightly unshaven, linen shirt, warm smile, wool vest, holding acoustic guitar close to body, closed eyes singing, natural sunlight"
   ],
   female: [
     "1girl, beautiful young taiwanese female singer, 1980s retro long hair, gentle smile, looking at viewer, retro portrait photography",
     "1girl, beautiful young taiwanese female singer, straight black hair with bangs (omega hair style), polka dot dress, gentle smile, holding microphone with two hands, studio light, city pop aesthetic",
-    "1girl, etherial taiwanese female singer-songwriter, long wavy perm hair, bohemian style long flowing dress, playing piano, looking away inspired, misty atmosphere, soft focus photography",
-    "1girl, short hair taiwanese female singer, 80s power suit with shoulder pads, confident bold makeup, microphone held high, dynamic pose, punk rock elements, dramatic contrast lighting"
+    "1girl, etherial taiwanese female singer-songwriter, long wavy perm hair, bohemian style long flowing dress, playing piano, looking away inspired, misty atmosphere, soft focus photography"
   ],
   scenery: [
     "pure beautiful scenery, no humans, empty landscape, scenic view",
@@ -178,7 +176,7 @@ const AiCoverGame_zimage = ({ song, onHome, coverStatus, generatedCoverImg, onSt
               disabled={coverStatus === 'generating'}
               className="w-full py-4 bg-rose-400 text-white font-bold rounded-full shadow-md hover:bg-rose-500 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 tracking-widest text-lg flex justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-               {isExtracted ? "再找找其他靈感" : "從歌詞中找尋靈感"}
+               {isExtracted ? "再看看其他的靈感" : "從歌詞中尋找靈感"}
             </button>
           </div>
         </div>
@@ -188,27 +186,27 @@ const AiCoverGame_zimage = ({ song, onHome, coverStatus, generatedCoverImg, onSt
             {coverStatus === 'generating' ? (
               <div className="flex flex-col items-center justify-center h-full gap-6 text-center w-full">
                   <div className="w-16 h-16 border-8 border-gray-300 border-t-red-600 rounded-full animate-spin"></div>
-                  <h3 className="text-3xl font-bold text-gray-800 tracking-widest">畫筆正為您揮灑</h3>
-                  <p className="text-gray-500 leading-relaxed font-bold text-lg">這會需要片刻時間，<br/>您可以先回車廂稍作休息，欣賞沿途風景。</p>
+                  <h3 className="text-3xl font-bold text-gray-800 tracking-widest">正在為您揮灑畫筆</h3>
+                  <p className="text-gray-500 leading-relaxed font-bold text-lg">這會稍微需要一點時間，<br/>您可以先去其他車廂走走，稍後再來領取喔。</p>
                   <button onClick={onHome} className="w-full py-4 mt-6 bg-[#D2A679] text-white font-bold rounded-full shadow-md hover:bg-[#C09668] hover:shadow-lg hover:-translate-y-1 transition-all duration-300 tracking-widest text-xl">
                       返回火車
                   </button>
               </div>
             ) : !isExtracted ? (
               <div className="flex flex-col items-center justify-center h-full text-gray-400 font-bold tracking-widest">
-                <p className="text-xl">點擊左側，從歌詞中尋找靈感</p>
+                <p className="text-xl">點擊左側按鈕，從歌詞中尋找靈感，繪製專輯封面</p>
               </div>
             ) : (
               <div className="animate-fade-in-up flex flex-col h-full w-full">
                 
                 <div className="w-full flex-1 overflow-y-auto pr-3 pb-4 custom-scrollbar mb-4">
-                  <p className="text-sm text-gray-500 mb-6 tracking-wider font-bold">挑選觸動您的元素，或是交給車廂畫家自由揮灑吧</p>
+                  <p className="text-sm text-gray-500 mb-6 tracking-wider font-bold">挑選觸動您的靈感，或是交給畫筆自由揮灑</p>
                   
                   {[ 
-                    { id: 'subjects', title: '主角設定' },
-                    { id: 'seasons', title: '季節氛圍' }, 
-                    { id: 'elements', title: '歌詞元素' }, 
-                    { id: 'styles', title: '藝術風格' } 
+                    { id: 'subjects', title: '相片主角' },
+                    { id: 'seasons', title: '季節光影' }, 
+                    { id: 'elements', title: '歌詞記憶' }, 
+                    { id: 'styles', title: '藝術筆觸' } 
                   ].map((group) => (
                     <div key={group.id} className="mb-6 w-full">
                       <h3 className="text-red-600 font-bold mb-3 text-base uppercase tracking-widest border-l-4 border-red-500 pl-3">{group.title}</h3>
@@ -233,16 +231,16 @@ const AiCoverGame_zimage = ({ song, onHome, coverStatus, generatedCoverImg, onSt
 
                   <div className="mb-2 w-full mt-4">
                      <h3 className="text-gray-700 font-bold mb-3 text-base uppercase tracking-widest border-l-4 border-stone-400 pl-3">有什麼特別想留下的畫面嗎？</h3>
-                     <input type="text" value={customWord} onChange={(e) => setCustomWord(e.target.value)} placeholder="例如：眼淚、腳踏車..." className="w-full p-4 border-2 border-gray-200 rounded-xl font-serif text-base focus:outline-none focus:border-rose-300 bg-white" />
+                     <input type="text" value={customWord} onChange={(e) => setCustomWord(e.target.value)} placeholder="例如：吉他、腳踏車..." className="w-full p-4 border-2 border-gray-200 rounded-xl font-serif text-base focus:outline-none focus:border-rose-300 bg-white" />
                   </div>
                 </div>
 
                 <div className="mt-auto shrink-0 flex flex-col gap-4 w-full pt-4">
                   <button onClick={triggerGenerate} className="w-full py-4 bg-rose-400 text-white font-bold rounded-full shadow-md hover:bg-rose-500 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 text-xl tracking-widest">
-                    開始繪製專屬封面
+                    繪製專輯封面
                   </button>
                   <button onClick={() => onSetMockCover(`/images/${song.audioFileName.replace('.mp3', '.jpg')}`)} className="w-full py-3 bg-[#D2A679] text-white font-bold rounded-full shadow-md hover:bg-[#C09668] hover:shadow-lg hover:-translate-y-1 transition-all duration-300 text-base tracking-widest">
-                    先保留經典封面
+                    經典封面
                   </button>
                 </div>
               </div>
@@ -252,7 +250,6 @@ const AiCoverGame_zimage = ({ song, onHome, coverStatus, generatedCoverImg, onSt
         {/* 右側結果區 */}
         <div className="w-[35%] flex flex-col items-center justify-center p-6 h-full relative">
            <div ref={resultRef} className="relative w-full shadow-xl bg-gray-200 flex flex-col rounded-xl overflow-hidden border-2 border-gray-300 transition-all" style={{ aspectRatio: '1024/720' }}>
-              {/* ★ 防呆：確定不在 generating 狀態才顯示圖片 */}
               {coverStatus === 'done' && generatedCoverImg ? (
                  <img src={generatedCoverImg} className="w-full h-full object-cover animate-fade-in" crossOrigin="anonymous" alt="AI Generated Cover" />
               ) : (
@@ -268,10 +265,10 @@ const AiCoverGame_zimage = ({ song, onHome, coverStatus, generatedCoverImg, onSt
              {coverStatus === 'done' && generatedCoverImg && (
                <div className="flex flex-col items-center gap-4 animate-fade-in-up w-full">
                  <h3 className="text-2xl font-bold text-white tracking-widest drop-shadow-md ">
-                  您的專屬封面已經繪製完成了
+                 
                  </h3>
                  <button onClick={handleClaim} className="px-10 py-4 bg-rose-400 text-white rounded-full font-bold shadow-md hover:bg-rose-500 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 tracking-widest text-xl">
-                  領取專屬封面
+                  領取專輯封面
                  </button>
                </div>
              )}

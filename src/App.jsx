@@ -1,12 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-// 資料
 import { folkSongs } from './data/folkSongs';
 
 export const CARRIAGE_NAMES = {
   MOOD_TRAIN: "心情車票",
-  AR_CATCH: "民歌卡帶播放器",
+  AR_CATCH: "旋律播放器",
   AI_COVER: "自製專輯封面",
   SING_ALONG: "民歌錄音室",
   FACE_SWAP: "一日歌手", 
@@ -14,25 +13,14 @@ export const CARRIAGE_NAMES = {
   CAPSULE: "民歌回憶"
 };
 
-// ==========================================
-// ★ 跨平台排版微調中控台 (解決脫軌與對齊)
-// ==========================================
 export const LAYOUT_CONFIG = {
-  // 1. 全域背景圖設定 (含遠山背景)
   BG_SCALE: 1.0, 
   BG_POSITION: 'center bottom',
-
-  // 2. 獨立鐵軌層 (rail.png) 設定
-  // 預設縮放與定位跟背景一樣，這樣就能還原切分前的比例。
-  RAIL_SCALE: 1.0,         // 鐵軌的縮放大小 (若覺得鐵軌太小可調為 1.05)
-  RAIL_Y_OFFSET: '100px',    // 鐵軌的上下微調 (例如 '10px' 往下移)
-
-  // 3. 火車車廂設定
-  TRAIN_Y_OFFSET: '0px',   // 火車的上下微調 (對準輪子與鐵軌用)
+  RAIL_SCALE: 1.0,         
+  RAIL_Y_OFFSET: '100px',    
+  TRAIN_Y_OFFSET: '0px',   
 };
-// ==========================================
 
-// 元件
 import TrainPage from './components/Train/TrainPage';
 import MoodTrainGame from './components/Games/MoodTrainGame/MoodTrainGame'; 
 import AiCoverGame_zimage from './components/Games/AiCoverGame/AiCoverGame_zimage'; 
@@ -95,7 +83,7 @@ const GlobalMoodEffects = ({ mood }) => {
 };
 
 function App() {
-  const [currentView, setCurrentView] = useState('home'); // home, story, train, game, outro
+  const [currentView, setCurrentView] = useState('home'); 
   const [activeMode, setActiveMode] = useState(null); 
   const [mainSong, setMainSong] = useState(null);
 
@@ -218,7 +206,7 @@ function App() {
   const handleModeSelect = (mode) => {
     if (mode.locked) return;
     if (mode.id === 'faceswap' && mainSong && !mainSong.hasFace) {
-      alert("此歌曲的經典封面沒有人臉，無法進行換臉喔！");
+      alert("這首歌曲的封面不適用此體驗喔！");
       return;
     }
     if (mode.id === 'ar' || mode.id === 'lyrics' || mode.id === 'sing-along') {
@@ -249,7 +237,7 @@ function App() {
       }
     } catch (error) {
       console.error(error);
-      alert(`繪製錯誤: ${error.message}\n請確認伺服器與 Ngrok 已正常開啟。`);
+      alert(`繪製錯誤: ${error.message}\n請確認伺服器已正常開啟。`);
       setCoverStatus('idle');
     }
   };
@@ -266,18 +254,18 @@ function App() {
         }, 
         body: JSON.stringify(payload) 
       });
-      if (!response.ok) throw new Error(`換臉 API 錯誤 (狀態碼: ${response.status})`);
+      if (!response.ok) throw new Error(`合成錯誤 (狀態碼: ${response.status})`);
       const data = await response.json();
       setGeneratedSwappedImg(`data:image/png;base64,${data.image}`);
       setFaceswapStatus('done');
     } catch (error) {
       console.error(error);
-      alert(`融合失敗: ${error.message}\n請確認伺服器與 Ngrok 已正常開啟。`);
+      alert(`照片合成失敗: ${error.message}\n請確認伺服器已正常開啟。`);
       setFaceswapStatus('idle');
     }
   };
 
-  const UnifiedBackButton = ({ onClick, text = " 返回火車" }) => (
+  const UnifiedBackButton = ({ onClick, text = "返回火車" }) => (
     <button onClick={onClick} className="absolute top-6 left-8 z-50 px-6 py-3 bg-[#D2A679] text-white font-bold text-lg rounded-full shadow-md hover:bg-[#C09668] hover:shadow-lg hover:-translate-y-1 transition-all duration-300 tracking-widest flex items-center">
       {text}
     </button>
@@ -285,7 +273,7 @@ function App() {
 
   const RequireMainSongPrompt = () => (
     <div className="flex flex-col items-center bg-[#FDFBF7] p-12 rounded-3xl shadow-xl text-center max-w-2xl border border-gray-200">
-      <h2 className="text-3xl font-bold text-gray-800 mb-6 tracking-widest pb-4">似乎還沒選好這趟旅程的專屬歌曲呢</h2>
+      <h2 className="text-3xl font-bold text-gray-800 mb-6 tracking-widest pb-4">還沒選好這趟旅程的專屬歌曲呢</h2>
       <p className="text-gray-600 mb-10 text-xl leading-loose font-medium">
         請先到「{CARRIAGE_NAMES.AR_CATCH}」挑選一首最觸動您的歌，<br/>它將會化作旋律，陪伴我們走過接下來的每一個車廂。
       </p>
@@ -298,7 +286,6 @@ function App() {
     </div>
   );
 
-  // 共用的背景樣式生成器
   const getBgStyle = (url) => ({
     backgroundImage: `url('${url}')`,
     backgroundSize: 'cover',
@@ -315,14 +302,14 @@ function App() {
       <AnimatePresence mode="wait">
         {currentView === 'home' && (
           <motion.div key="home" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.8 }} className="absolute inset-0 w-full h-full flex flex-col items-center justify-center overflow-hidden">
-            <div className="absolute inset-0 pointer-events-none z-0" style={getBgStyle('/home-bg.jpg')} />
+            <div className="absolute inset-0 pointer-events-none z-0" style={getBgStyle('/home-bg.png')} />
             <div className="absolute inset-0 bg-black/20 z-0 pointer-events-none"></div>
             
             <div className="relative z-20 text-center flex flex-col items-center">
               <h1 className="text-7xl md:text-8xl font-bold tracking-[0.25em] mb-6 text-white drop-shadow-lg font-serif">民歌旅程</h1>
               <p className="text-2xl md:text-3xl text-gray-100 tracking-[0.35em] mb-12 drop-shadow-md font-serif font-medium">乘著歌聲，回到最純粹的年代</p>
               <button onClick={handleStartIntro} className="px-12 py-5 bg-rose-400 text-white rounded-full text-xl font-bold tracking-widest shadow-md hover:bg-rose-500 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 mt-6">
-                準備出發
+                踏上旅程
               </button>
             </div>
           </motion.div>
@@ -330,19 +317,19 @@ function App() {
 
         {currentView === 'story' && (
           <motion.div key="story" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.8 }} className="absolute inset-0 w-full h-full flex flex-col items-center justify-center overflow-hidden">
-            <div className="absolute inset-0 pointer-events-none opacity-70 z-0" style={getBgStyle('/train-bg_2.jpg')} />
+            <div className="absolute inset-0 pointer-events-none opacity-70 z-0" style={getBgStyle('/train-bg_2.png')} />
             <div className="absolute inset-0 bg-black/30 z-0 pointer-events-none"></div>
             
             <div className="relative z-20 text-center flex flex-col items-center max-w-4xl px-8">
-              <h2 className="text-4xl md:text-5xl font-bold text-white tracking-widest mb-10 drop-shadow-lg font-serif">嘿，準備好來場時光旅行了嗎？</h2>
+              <h2 className="text-4xl md:text-5xl font-bold text-white tracking-widest mb-10 drop-shadow-lg font-serif">準備好開始這趟民歌旅程了嗎？</h2>
               <div className="text-xl md:text-2xl text-gray-50 leading-loose tracking-[0.15em] mb-16 text-center drop-shadow-md space-y-6 font-medium font-serif">
-                  <p>這是一趟沒有喧囂，只有吉他與純粹嗓音的專屬旅程。</p>
-                  <p>我們將穿梭於車廂之間，留下屬於你的獨特印記。</p>
+                  <p>這是一趟沒有喧囂，只有吉他與歌聲的旅程。</p>
+                  <p>我們將穿梭於車廂之間，留下屬於您的獨特回憶。</p>
                   <p>跟著熟悉的旋律，放鬆心情，</p>
                   <p>讓我們一起重溫那段充滿生命力的青春時光吧！</p>
               </div>
               <button onClick={handleEnterTrain} className="px-12 py-5 bg-rose-400 text-white rounded-full text-xl font-bold tracking-widest shadow-md hover:bg-rose-500 hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
-                  一起出發
+                  準備登車
               </button>
             </div>
           </motion.div>
@@ -359,13 +346,12 @@ function App() {
                         <img src="/images/cassette.png" alt="Cassette" className="w-12 h-8 object-contain drop-shadow-sm" />
                     </div>
                     <div className="flex flex-col mr-8 min-w-[120px]">
-                      <span className="text-xs text-gray-500 font-bold tracking-widest"></span>
                       <span className="text-lg text-gray-800 font-bold tracking-wider truncate max-w-[150px]">
-                        {mainSong ? mainSong.title : (currentTrackName === 'bg_music.mp3' ? '經典民歌放送中' : (currentTrackName || '').replace('.mp3', ''))}
+                        {mainSong ? mainSong.title : (currentTrackName === 'bg_music.mp3' ? '經典民歌播放中' : (currentTrackName || '').replace('.mp3', ''))}
                       </span>
                     </div>
                     <button onClick={togglePlayPause} className="w-12 h-12 flex items-center justify-center bg-[#D2A679] text-white text-xl font-bold rounded-full shadow-md hover:bg-[#C09668] transition-colors duration-300 border border-transparent pb-1">
-                      {isPlaying ? 'll' : '▶'}
+                      {isPlaying ? ' || ' : ' ▶'}
                     </button>
                  </div>
               </div>
@@ -460,7 +446,7 @@ function App() {
                  <div className="w-full h-full flex flex-col items-center justify-center relative">
                    <UnifiedBackButton onClick={handleLeaveGame} text="返回火車" />
                    <button onClick={handleEndJourney} className="absolute top-6 right-8 z-50 px-8 py-3 bg-rose-500 text-white font-bold text-lg rounded-full shadow-md hover:bg-rose-600 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 tracking-widest flex items-center">
-                     滿載回憶 結束旅程
+                      準備下車
                    </button>
 
                    {!mainSong ? <RequireMainSongPrompt /> : <CapsuleGame song={mainSong} ticket={ticketData} cover={coverData} swapped={swappedData} lyrics={lyricsData} recording={recordingData} onHome={handleLeaveGame} />}
@@ -472,16 +458,16 @@ function App() {
 
         {currentView === 'outro' && (
           <motion.div key="outro" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.8 }} className="absolute inset-0 w-full h-full flex flex-col items-center justify-center overflow-hidden">
-            <div className="absolute inset-0 pointer-events-none opacity-50 z-0" style={getBgStyle('/train-bg_2.jpg')} />
+            <div className="absolute inset-0 pointer-events-none opacity-50 z-0" style={getBgStyle('/train-bg_2.png')} />
             <div className="absolute inset-0 bg-black/30 z-0 pointer-events-none"></div>
             <div className="relative z-20 text-center flex flex-col items-center max-w-3xl px-8">
-               <h2 className="text-4xl md:text-5xl font-bold text-white tracking-widest mb-10 drop-shadow-lg">列車即將抵達終點</h2>
+               <h2 className="text-4xl md:text-5xl font-bold text-white tracking-widest mb-10 drop-shadow-lg">列車即將到站</h2>
                <p className="text-xl md:text-2xl text-gray-100 leading-loose tracking-[0.15em] mb-16 drop-shadow-md text-center font-medium">
-                 這段專屬於你的民歌回憶已經打包完成囉！<br/>希望這份溫暖的感動，能繼續在你心中輕輕傳唱。
+                 這段專屬於您的民歌回憶已化作旋律，，<br/>希望這份溫暖的感動，能繼續在心中傳唱。
                </p>
                <div className="flex gap-6 w-full justify-center">
                  <button onClick={handleFullReset} className="px-12 py-5 bg-[#D2A679] text-white rounded-full text-xl font-bold tracking-widest shadow-md hover:bg-[#C09668] hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
-                    重新開始
+                    再次啟程
                  </button>
                  <button onClick={handleFullReset} className="px-12 py-5 bg-rose-400 text-white rounded-full text-xl font-bold tracking-widest shadow-md hover:bg-rose-500 hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
                     填寫回饋問卷

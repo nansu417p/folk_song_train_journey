@@ -274,12 +274,12 @@ const CapsuleGame = ({ song, ticket, cover, swapped, lyrics, recording, onHome }
             </div>
 
             <div className="flex flex-col gap-4 mt-6 shrink-0">
-               <button onClick={handleDownloadImage} disabled={isGenerating || isCapturingImage} className={`w-full py-4 text-white text-base md:text-lg rounded-full font-bold transition-all duration-300 tracking-widest flex items-center justify-center ${isGenerating || isCapturingImage ? 'bg-gray-400 cursor-wait shadow-sm' : 'bg-rose-400 shadow-md hover:bg-rose-500 hover:shadow-lg hover:-translate-y-1'}`}>
+               <button onClick={handleDownloadImage} disabled={isGenerating || isCapturingImage} className={`w-full text-base md:text-lg flex items-center justify-center ${isGenerating || isCapturingImage ? 'py-4 bg-gray-400 text-white rounded-full font-bold tracking-widest cursor-wait shadow-sm' : 'btn-primary'}`}>
                  {isCapturingImage ? "正在為您印製..." : isGenerating ? "處理中..." : "下載回憶明信片"}
                </button>
                
                {recording ? (
-                 <button disabled={isCapturingImage} onClick={handleDownloadAudio} className="w-full py-3 bg-[#D2A679] text-white text-sm md:text-base rounded-full font-bold shadow-md hover:bg-[#C09668] hover:shadow-lg hover:-translate-y-1 transition-all duration-300 tracking-widest">下載您的歌聲錄音</button>
+                 <button disabled={isCapturingImage} onClick={handleDownloadAudio} className="btn-secondary w-full py-3 text-sm md:text-base">下載您的歌聲錄音</button>
                ) : (
                  <div className="w-full py-3 bg-[#FDFBF7] text-gray-500 text-center rounded font-bold text-sm tracking-widest border-[3px] border-gray-400 border-dashed">此次無錄音紀錄</div>
                )}
@@ -295,7 +295,7 @@ const CapsuleGame = ({ song, ticket, cover, swapped, lyrics, recording, onHome }
                    提示：滑鼠移至元件上，可點擊縮放或旋轉來自由調整排版
                  </div>
                </div>
-               <button disabled={isCapturingImage} onClick={handleResetLayout} className="px-8 py-3 bg-[#D2A679] text-white text-sm font-bold tracking-widest rounded-full hover:bg-[#C09668] hover:shadow-lg hover:-translate-y-1 shadow-md transition-all duration-300 mt-2">
+               <button disabled={isCapturingImage} onClick={handleResetLayout} className="btn-secondary px-8 py-3 text-sm mt-2">
                  重新排版
                </button>
             </div>

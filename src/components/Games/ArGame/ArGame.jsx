@@ -215,7 +215,7 @@ const ArGame = ({ onConfirmSong, onPreviewSong }) => {
       {playingSong && (
         <button 
           onClick={handleConfirmClick} 
-          className="absolute top-6 right-8 z-50 px-8 py-3 bg-rose-400 text-white font-bold text-lg rounded-full shadow-md hover:bg-rose-500 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 tracking-widest pointer-events-auto animate-pulse"
+          className="btn-primary absolute top-6 right-8 z-50 px-8 py-3 text-lg pointer-events-auto"
         >
           選擇歌曲
         </button>

@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { 
-  DndContext, useDraggable, useDroppable, DragOverlay, 
-  useSensor, useSensors, PointerSensor 
+import {
+  DndContext, useDraggable, useDroppable, DragOverlay,
+  useSensor, useSensors, PointerSensor
 } from '@dnd-kit/core';
 import { useDraggable as useScrollDraggable } from 'react-use-draggable-scroll';
 import { lyricsData } from '../../../data/lyricsData';
-import { CARRIAGE_NAMES } from '../../../data/gameModes'; 
+import { CARRIAGE_NAMES } from '../../../data/gameModes';
 
 function StickerItem({ id, word }) {
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({ id, data: { word } });
@@ -38,7 +38,7 @@ function DropZone({ id, currentWord, correctWord, isHintActive }) {
 const LyricsGamePlay = ({ song, gameData, initialStickers, onHome, onLyricsGenerated, isPlaying, progress, togglePlay, audioRef }) => {
   const [filledGaps, setFilledGaps] = useState({});
   const [stickers, setStickers] = useState(initialStickers);
-  const [hintIds, setHintIds] = useState([]); 
+  const [hintIds, setHintIds] = useState([]);
   const [activeStickerData, setActiveStickerData] = useState(null);
   const [isCompleted, setIsCompleted] = useState(false);
 
@@ -73,7 +73,7 @@ const LyricsGamePlay = ({ song, gameData, initialStickers, onHome, onLyricsGener
     const fakeGaps = [];
 
     emptyGaps.forEach(gap => {
-      if (gap.text === sticker.text && !correctGapId) correctGapId = gap.id; 
+      if (gap.text === sticker.text && !correctGapId) correctGapId = gap.id;
       else fakeGaps.push(gap.id);
     });
 
@@ -83,7 +83,7 @@ const LyricsGamePlay = ({ song, gameData, initialStickers, onHome, onLyricsGener
 
   const handleDragEnd = (event) => {
     const { active, over } = event;
-    setHintIds([]); 
+    setHintIds([]);
     setActiveStickerData(null);
     if (!over) return;
 
@@ -99,7 +99,7 @@ const LyricsGamePlay = ({ song, gameData, initialStickers, onHome, onLyricsGener
           setTimeout(() => {
             setIsCompleted(true);
             if (onLyricsGenerated) onLyricsGenerated({ title: song.title, content: lyricsData[song.id] });
-          }, 500); 
+          }, 500);
         }
         return newStickers;
       });
@@ -119,75 +119,75 @@ const LyricsGamePlay = ({ song, gameData, initialStickers, onHome, onLyricsGener
 
   return (
     <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
-       <div className="absolute top-6 right-8 z-50 flex gap-4">
-         {!isCompleted && (
-           <button onClick={handleQuickFix} className="px-6 py-3 bg-[#D2A679] text-white font-bold rounded-full shadow-md hover:bg-[#C09668] hover:shadow-lg hover:-translate-y-1 transition-all duration-300 tracking-widest flex items-center">
-             貼上全部歌詞
-           </button>
-         )}
-       </div>
+      <div className="absolute top-6 right-8 z-50 flex gap-4">
+        {!isCompleted && (
+          <button onClick={handleQuickFix} className="btn-secondary flex items-center">
+            貼上全部歌詞
+          </button>
+        )}
+      </div>
 
-       <div className="w-full max-w-6xl h-full flex flex-col bg-[#FDFBF7] rounded-3xl shadow-xl border border-gray-100 overflow-hidden mt-8">
-            <div className="w-full bg-[#D64F3E] p-4 px-6 flex justify-between items-center shadow-md z-10 border-b-4 border-[#B83E2F]">
-              <div className="flex items-center gap-4 min-w-[200px]">
-                <div className="flex items-center justify-center mr-2">
-                   <img src="/images/cassette.png" alt="Cassette" className="w-12 h-8 object-contain drop-shadow-[0_2px_2px_rgba(0,0,0,0.5)]" />
-                </div>
-                <div className="flex flex-col">
-                  <div className="flex items-baseline gap-3">
-                    <h2 className="text-[#F5F5F5] text-xl font-bold tracking-widest font-serif drop-shadow">{song.title}</h2>
-                    <span className="text-white/80 text-sm font-serif tracking-wider">{song.singer}</span>
-                  </div>
-                </div>
-              </div>
-              <div className="flex-1 flex items-center gap-6 max-w-xl">
-                <button onClick={togglePlay} className="w-12 h-12 bg-[#FDFBF7] text-gray-700 rounded-full flex items-center justify-center shadow-md border border-gray-100 text-xl font-bold pb-1 transition-colors hover:bg-white">
-                  {isPlaying ? 'll' : '▶'}
-                </button>
-                <div className="flex-1 h-4 bg-black/30 rounded-full overflow-hidden relative shadow-inner cursor-pointer" onClick={handleProgressClick}>
-                  <div className="absolute top-0 left-0 h-full bg-yellow-400 transition-all duration-75 ease-linear pointer-events-none" style={{ width: `${progress}%` }}></div>
-                </div>
+      <div className="w-full max-w-6xl h-full flex flex-col bg-[#FDFBF7] rounded-3xl shadow-xl border border-gray-100 overflow-hidden mt-8">
+        <div className="w-full bg-[#D64F3E] p-4 px-6 flex justify-between items-center shadow-md z-10 border-b-4 border-[#B83E2F]">
+          <div className="flex items-center gap-4 min-w-[200px]">
+            <div className="flex items-center justify-center mr-2">
+              <img src="/images/cassette.png" alt="Cassette" className="w-12 h-8 object-contain drop-shadow-[0_2px_2px_rgba(0,0,0,0.5)]" />
+            </div>
+            <div className="flex flex-col">
+              <div className="flex items-baseline gap-3">
+                <h2 className="text-[#F5F5F5] text-xl font-bold tracking-widest font-serif drop-shadow">{song.title}</h2>
+                <span className="text-white/80 text-sm font-serif tracking-wider">{song.singer}</span>
               </div>
             </div>
-
-            <div className="flex flex-1 overflow-hidden relative">
-              <div ref={lyricsScrollRef} {...lyricsScrollEvents} className="flex-[2] bg-white p-8 overflow-y-auto custom-scrollbar relative">
-                  <p className="text-center text-gray-500 font-bold tracking-widest mb-10 border-b border-dashed border-gray-200 pb-4">拖曳右側的字句，拼貼那時代的歌詞</p>
-                  <div className="flex flex-col gap-6 text-center font-serif text-xl md:text-2xl text-gray-800 leading-loose font-bold">
-                    {gameData.lines.map((line) => {
-                       if (!line.text) return <div key={line.id} className="h-4"></div>; 
-                       if (line.isGap) {
-                          return <div key={line.id}><DropZone id={line.id} currentWord={filledGaps[line.id]} correctWord={line.text} isHintActive={hintIds} /></div>;
-                       }
-                       return <div key={line.id} className="tracking-wide">{line.text}</div>;
-                    })}
-                  </div>
-                  <div className="h-20"></div>
-              </div>
-
-              <div ref={stickersScrollRef} {...stickersScrollEvents} className="flex-[1] bg-[#F9F7F1] p-6 overflow-y-auto custom-scrollbar border-l border-gray-200 shadow-inner flex flex-col items-center gap-6">
-                  {isCompleted ? (
-                    <div className="text-center flex flex-col items-center justify-center animate-fade-in-up w-full px-4 mt-20">
-                       <h3 className="text-2xl font-bold text-gray-800 mb-6 font-serif tracking-widest">歌詞已完整重現</h3>
-                       <button onClick={onHome} className="w-[80%] py-4 bg-[#D2A679] text-white rounded-full font-bold shadow-md hover:bg-[#C09668] hover:shadow-lg hover:-translate-y-1 transition-all duration-300 tracking-widest">返回車廂</button>
-                    </div>
-                  ) : (
-                    <>
-                      <h3 className="text-gray-500 font-bold tracking-widest text-sm bg-white px-6 py-2 rounded-full border border-gray-200 mb-2 shadow-sm">散落的字句</h3>
-                      {stickers.map((item) => <StickerItem key={item.id} id={item.id} word={item.text} />)}
-                    </>
-                  )}
-              </div>
+          </div>
+          <div className="flex-1 flex items-center gap-6 max-w-xl">
+            <button onClick={togglePlay} className="w-12 h-12 bg-[#FDFBF7] text-gray-700 rounded-full flex items-center justify-center shadow-md border border-gray-100 text-xl font-bold pb-1 transition-colors hover:bg-white">
+              {isPlaying ? 'II' : '▶'}
+            </button>
+            <div className="flex-1 h-4 bg-black/30 rounded-full overflow-hidden relative shadow-inner cursor-pointer" onClick={handleProgressClick}>
+              <div className="absolute top-0 left-0 h-full bg-yellow-400 transition-all duration-75 ease-linear pointer-events-none" style={{ width: `${progress}%` }}></div>
             </div>
-       </div>
+          </div>
+        </div>
 
-       <DragOverlay dropAnimation={null}>
-          {activeStickerData ? (
-            <div className="px-4 py-3 bg-white text-gray-700 border border-gray-100 font-serif text-xl rounded-xl shadow-2xl rotate-2 scale-105 opacity-95">
-              {activeStickerData.text}
+        <div className="flex flex-1 overflow-hidden relative">
+          <div ref={lyricsScrollRef} {...lyricsScrollEvents} className="flex-[2] bg-white p-8 overflow-y-auto custom-scrollbar relative">
+            <p className="text-center text-gray-500 font-bold tracking-widest mb-10 border-b border-dashed border-gray-200 pb-4">拖曳右側的字句，拼貼那時代的歌詞</p>
+            <div className="flex flex-col gap-6 text-center font-serif text-xl md:text-2xl text-gray-800 leading-loose font-bold">
+              {gameData.lines.map((line) => {
+                if (!line.text) return <div key={line.id} className="h-4"></div>;
+                if (line.isGap) {
+                  return <div key={line.id}><DropZone id={line.id} currentWord={filledGaps[line.id]} correctWord={line.text} isHintActive={hintIds} /></div>;
+                }
+                return <div key={line.id} className="tracking-wide">{line.text}</div>;
+              })}
             </div>
-          ) : null}
-       </DragOverlay>
+            <div className="h-20"></div>
+          </div>
+
+          <div ref={stickersScrollRef} {...stickersScrollEvents} className="flex-[1] bg-[#F9F7F1] p-6 overflow-y-auto custom-scrollbar border-l border-gray-200 shadow-inner flex flex-col items-center gap-6">
+            {isCompleted ? (
+              <div className="text-center flex flex-col items-center justify-center animate-fade-in-up w-full px-4 mt-20">
+                <h3 className="text-2xl font-bold text-gray-800 mb-6 font-serif tracking-widest">歌詞已完整重現</h3>
+                <button onClick={onHome} className="btn-secondary w-[80%]">返回車廂</button>
+              </div>
+            ) : (
+              <>
+                <h3 className="text-gray-500 font-bold tracking-widest text-sm bg-white px-6 py-2 rounded-full border border-gray-200 mb-2 shadow-sm">散落的字句</h3>
+                {stickers.map((item) => <StickerItem key={item.id} id={item.id} word={item.text} />)}
+              </>
+            )}
+          </div>
+        </div>
+      </div>
+
+      <DragOverlay dropAnimation={null}>
+        {activeStickerData ? (
+          <div className="px-4 py-3 bg-white text-gray-700 border border-gray-100 font-serif text-xl rounded-xl shadow-2xl rotate-2 scale-105 opacity-95">
+            {activeStickerData.text}
+          </div>
+        ) : null}
+      </DragOverlay>
     </DndContext>
   );
 };
@@ -207,9 +207,9 @@ const LyricsGame = ({ song, onHome, onLyricsGenerated }) => {
           .filter(l => l.length > 0);
 
         const totalLines = allLines.length;
-        const targetGaps = 7; 
-        const segmentSize = Math.floor(totalLines / targetGaps); 
-        
+        const targetGaps = 7;
+        const segmentSize = Math.floor(totalLines / targetGaps);
+
         const chosenIndices = [];
 
         for (let i = 0; i < targetGaps; i++) {
@@ -228,16 +228,16 @@ const LyricsGame = ({ song, onHome, onLyricsGenerated }) => {
         const finalStickers = finalLines
           .filter(l => l.isGap)
           .map(l => ({ id: `sticker-${l.id}`, text: l.text }))
-          .sort(() => Math.random() - 0.5); 
+          .sort(() => Math.random() - 0.5);
 
-        setGameState({ 
-          status: 'playing', 
-          data: { lines: finalLines }, 
-          stickers: finalStickers 
+        setGameState({
+          status: 'playing',
+          data: { lines: finalLines },
+          stickers: finalStickers
         });
       }
     }
-  }, [song]); 
+  }, [song]);
 
   const handleTimeUpdate = () => {
     if (audioRef.current) {
@@ -266,15 +266,15 @@ const LyricsGame = ({ song, onHome, onLyricsGenerated }) => {
       </div>
 
       <audio ref={audioRef} src={`/music/${song.audioFileName}`} autoPlay loop onTimeUpdate={handleTimeUpdate} className="hidden" />
-      <LyricsGamePlay 
-        song={song} 
-        gameData={gameState.data} 
-        initialStickers={gameState.stickers} 
-        onHome={onHome} 
-        onLyricsGenerated={onLyricsGenerated} 
-        isPlaying={isPlaying} 
-        progress={progress} 
-        togglePlay={togglePlay} 
+      <LyricsGamePlay
+        song={song}
+        gameData={gameState.data}
+        initialStickers={gameState.stickers}
+        onHome={onHome}
+        onLyricsGenerated={onLyricsGenerated}
+        isPlaying={isPlaying}
+        progress={progress}
+        togglePlay={togglePlay}
         audioRef={audioRef}
       />
     </div>

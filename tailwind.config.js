@@ -8,13 +8,15 @@ export default {
     extend: {
       colors: {
         'folk-bg': '#FDFBF7', // 米黃色紙質感背景
-        'folk-red': '#D64F3E', // 復古紅
-        'folk-green': '#2A9D8F', // 湖水綠 (參考木棉道卡帶)
+        'folk-paper': '#FFF9E6', // 更亮一點的卡片紙質色
+        'folk-red': '#D64F3E', // 復古紅 (Primary Action)
+        'folk-green': '#2A9D8F', // 湖水綠 
         'folk-dark': '#264653', // 深色文字
-        'folk-gold': '#E9C46A', // 點綴金黃
+        'folk-gold': '#E9C46A', // 點綴金黃 (Secondary Action)
+        'folk-wood': '#D2A679', // 木質返回鍵/次要按鈕
+        'folk-wood-dark': '#C09668', // 木質 hover 狀態
       },
       fontFamily: {
-        // 建議之後引入 Google Fonts 的 Noto Serif TC 更有民歌感
         serif: ['"Noto Serif TC"', 'serif'], 
       },
       backgroundImage: {

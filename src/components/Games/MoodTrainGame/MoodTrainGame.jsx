@@ -186,11 +186,11 @@ const MoodTrainGame = ({ onMoodDetected, onTicketGenerated }) => {
             </div>
 
             <div className="mt-auto w-full relative z-10">
-              {step === 'intro' && <button onClick={startScan} disabled={!cameraReady} className="w-full py-4 bg-rose-400 text-white font-bold rounded-full shadow-md hover:bg-rose-500 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 tracking-widest text-lg disabled:bg-gray-300 disabled:text-gray-500 disabled:shadow-none disabled:hover:translate-y-0 disabled:cursor-not-allowed">點擊拍攝</button>}
+              {step === 'intro' && <button onClick={startScan} disabled={!cameraReady} className="btn-primary w-full text-lg disabled:bg-gray-300 disabled:text-gray-500 disabled:shadow-none disabled:hover:translate-y-0 disabled:cursor-not-allowed">點擊拍攝</button>}
               {step === 'scanning' && <div className="w-full py-4 text-center text-gray-600 font-bold animate-pulse tracking-widest bg-white rounded-full border border-gray-100 shadow-inner">正在為您印製專屬車票...</div>}
               {step === 'result' && (
                 <div className="flex w-full justify-center mt-2">
-                  <button onClick={handleReScan} className="w-[80%] py-4 bg-[#D2A679] text-white font-bold rounded-full shadow-md hover:bg-[#C09668] hover:shadow-lg hover:-translate-y-1 transition-all duration-300 tracking-widest">重新拍攝</button>
+                  <button onClick={handleReScan} className="btn-secondary w-[80%]">重新拍攝</button>
                 </div>
               )}
             </div>
@@ -200,7 +200,7 @@ const MoodTrainGame = ({ onMoodDetected, onTicketGenerated }) => {
         <div className="w-full md:w-[65%] md:pl-12 flex flex-col items-center justify-start gap-6 h-full relative">
             <div className="w-full bg-[#FDFBF7] p-6 rounded-3xl shadow-xl border border-gray-100 relative z-20">
               <h3 className="font-bold text-gray-800 mb-2 tracking-widest text-lg font-serif">車長廣播：</h3>
-              <p className="text-gray-700 leading-relaxed font-bold tracking-wide bg-transparent p-2 min-h-[60px]">
+              <p className="text-gray-700 leading-relaxed font-bold tracking-wide bg-transparent p-2 h-[80px] flex items-start">
                 {getConductorMessage()}
               </p>
             </div>
@@ -212,7 +212,7 @@ const MoodTrainGame = ({ onMoodDetected, onTicketGenerated }) => {
                 <TicketCard captureImg={captureImg} moodResult={moodResult} size="large" />
               </div>
               <div className="h-[80px] flex items-center justify-center w-full mt-4">
-                <button onClick={() => { setIsCameraActive(false); onTicketGenerated(captureImg, moodResult); }} className={`px-10 py-4 bg-rose-400 text-white font-bold text-lg rounded-full shadow-md hover:bg-rose-500 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 tracking-widest ${step === 'result' ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 translate-y-4 pointer-events-none'}`}>
+                <button onClick={() => { setIsCameraActive(false); onTicketGenerated(captureImg, moodResult); }} className={`btn-primary text-lg transition-all duration-700 ${step === 'result' ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 translate-y-4 pointer-events-none'}`}>
                   領取車票
                 </button>
               </div>

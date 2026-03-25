@@ -24,16 +24,9 @@ const CassetteUI = ({ title, size = 'normal' }) => {
       />
 
       {/* 2. 文字疊加層：移除了白底色和邊框 */}
-      <div className="absolute bottom-[65px] left-[5%] w-[90%] h-[24px] flex items-center justify-center px-4">
+      <div className="absolute bottom-[65px] left-[5%] w-[90%] h-[28px] flex items-center justify-center px-4">
          <span 
-           className="text-white drop-shadow-md font-bold tracking-[0.1em] text-center whitespace-nowrap overflow-hidden text-ellipsis w-full"
-           style={{ 
-             fontFamily: '"Noto Serif TC", serif', 
-             fontWeight: 900,
-             /* --- 【教學】在這裡調整字的大小 --- */
-             /* 您可以使用常見的單位如 px, em, rem */
-             fontSize: '30px' // 目前設為 20px，您可以隨意修改這個數值
-           }}
+           className="text-gray-800 tracking-[0.1em] text-center whitespace-nowrap overflow-hidden text-ellipsis w-full font-serif font-black text-[30px]"
          >
             {title || '時光民歌珍藏錄'}
          </span>

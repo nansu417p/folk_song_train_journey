@@ -19,6 +19,47 @@
   }
 }
 
+@layer components {
+  /* 統一按鈕樣式 */
+  .btn-primary {
+    @apply px-10 py-4 bg-folk-red text-white font-bold text-xl rounded-full shadow-md tracking-widest cursor-pointer;
+    transition: background-color 200ms ease, transform 200ms ease, box-shadow 200ms ease;
+  }
+  .btn-primary:hover {
+    @apply shadow-lg bg-[#A64A45];
+    transform: translateY(-2px);
+  }
+  
+  .btn-secondary {
+    @apply px-10 py-4 bg-folk-wood text-white font-bold text-xl rounded-full shadow-md tracking-widest cursor-pointer;
+    transition: background-color 200ms ease, transform 200ms ease, box-shadow 200ms ease;
+  }
+  .btn-secondary:hover {
+    @apply bg-folk-wood-dark shadow-lg;
+    transform: translateY(-2px);
+  }
+
+  .btn-back {
+    @apply absolute top-4 left-4 md:top-6 md:left-8 z-50 px-6 py-3 bg-folk-wood text-white font-bold text-lg rounded-full shadow-md tracking-widest flex items-center cursor-pointer;
+    transition: background-color 200ms ease, transform 200ms ease, box-shadow 200ms ease;
+  }
+  .btn-back:hover {
+    @apply bg-folk-wood-dark shadow-lg;
+    transform: translateY(-2px);
+  }
+
+  .btn-primary:active, .btn-secondary:active, .btn-back:active {
+    transform: translateY(0px) scale(0.98);
+    box-shadow: none;
+  }
+
+  /* 統一卡片樣式 */
+  .folk-card {
+    @apply flex flex-col items-center p-12 rounded-3xl text-center max-w-2xl border border-white/60 bg-gradient-to-b from-[#FDFBF7] to-[#F4F1EA];
+    box-shadow: 0 8px 30px -4px rgba(0,0,0,0.1);
+  }
+}
+
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }

@@ -1,8 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-import { folkSongs } from './data/folkSongs';
-
 export const CARRIAGE_NAMES = {
   MOOD_TRAIN: "心情車票",
   AR_CATCH: "旋律播放器",
@@ -109,6 +107,11 @@ function App() {
       globalAudioRef.current = new Audio(`/music/bg_music.mp3`);
       globalAudioRef.current.loop = true;
       globalAudioRef.current.volume = 0.5;
+
+      // 嘗試一進網站就立刻播放
+      globalAudioRef.current.play().then(() => {
+        setIsPlaying(true);
+      }).catch(e => console.log("瀏覽器阻擋自動播放，需等待使用者互動:", e));
     }
     return () => {
       if (globalAudioRef.current) {
@@ -118,23 +121,20 @@ function App() {
     };
   }, []);
 
-  const playTrack = (fileName) => {
+  const playTrack = (fileName, restart = false) => {
     if (!globalAudioRef.current || !fileName) return;
 
     const audio = globalAudioRef.current;
-    const currentSrc = audio.getAttribute('src') || '';
+    const currentSrc = audio.src || '';
 
-    if (currentSrc.includes(fileName)) {
-      if (audio.paused) {
-        audio.play().catch(e => console.log("播放攔截:", e));
-        setIsPlaying(true);
-      }
-      return;
+    if (!currentSrc.includes(fileName)) {
+      audio.pause();
+      audio.src = `/music/${fileName}`;
+      audio.load();
+    } else if (restart) {
+      audio.currentTime = 0;
     }
 
-    audio.pause();
-    audio.src = `/music/${fileName}`;
-    audio.load();
     audio.play().catch(e => console.log("播放攔截:", e));
 
     setCurrentTrackName(fileName);
@@ -178,7 +178,7 @@ function App() {
     setGeneratedSwappedImg(null);
     setLyricsData(null);
     setRecordingData(null);
-    pauseMusic();
+    playTrack('bg_music.mp3', true);
 
     if (trainRef.current) {
       trainRef.current.resetTrainPosition();
@@ -188,7 +188,7 @@ function App() {
   };
 
   const handleEndJourney = () => {
-    pauseMusic();
+    // 準備下車時，不改變音樂軌道且繼續播放目前的音樂
     setCurrentView('outro');
   };
 
@@ -301,7 +301,7 @@ function App() {
 
       <AnimatePresence mode="wait">
         {currentView === 'home' && (
-          <motion.div key="home" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.8 }} className="absolute inset-0 w-full h-full flex flex-col items-center justify-center overflow-hidden">
+          <motion.div key="home" onClick={() => !isPlaying && playTrack('bg_music.mp3')} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.8 }} className="absolute inset-0 w-full h-full flex flex-col items-center justify-center overflow-hidden">
             <div className="absolute inset-0 pointer-events-none z-0" style={getBgStyle('/home-bg.png')} />
             <div className="absolute inset-0 bg-black/20 z-0 pointer-events-none"></div>
 

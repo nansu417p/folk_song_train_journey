@@ -42,7 +42,6 @@ export const TicketCard = ({ captureImg, moodResult, size = "normal" }) => {
         
         <div className="absolute bottom-4 left-6 text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] z-20">
            <div className={`${isLarge ? 'text-4xl' : 'text-2xl'} font-black tracking-widest mb-1 leading-none text-left`}>民歌旅程</div>
-           {/* <div className={`${isLarge ? 'text-sm' : 'text-[10px]'} font-bold opacity-90 tracking-widest leading-none mt-2 text-left`}>民歌車站．二零二六</div> */}
         </div>
       </div>
 

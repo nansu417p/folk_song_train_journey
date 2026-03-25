@@ -67,7 +67,6 @@ const AiCoverGame_zimage = ({ song, onHome, coverStatus, generatedCoverImg, onSt
   const [currentOptions, setCurrentOptions] = useState({ subjects: [], seasons: [], elements: [], styles: [] });
   const [selections, setSelections] = useState({ subject: null, season: null, element: null, style: null });
   const [customWord, setCustomWord] = useState('');
-  const resultRef = useRef(null);
 
   const getRandomItems = (arr, num) => [...arr].sort(() => 0.5 - Math.random()).slice(0, num);
 
@@ -249,7 +248,7 @@ const AiCoverGame_zimage = ({ song, onHome, coverStatus, generatedCoverImg, onSt
 
         {/* 右側結果區 */}
         <div className="w-[35%] flex flex-col items-center justify-center p-6 h-full relative">
-          <div ref={resultRef} className="relative w-full shadow-xl bg-gray-200 flex flex-col rounded-xl overflow-hidden border-2 border-gray-300 transition-all" style={{ aspectRatio: '1024/720' }}>
+          <div className="relative w-full shadow-xl bg-gray-200 flex flex-col rounded-xl overflow-hidden border-2 border-gray-300 transition-all" style={{ aspectRatio: '1024/720' }}>
             {coverStatus === 'done' && generatedCoverImg ? (
               <img src={generatedCoverImg} className="w-full h-full object-cover animate-fade-in" crossOrigin="anonymous" alt="AI Generated Cover" />
             ) : (

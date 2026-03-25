@@ -514,7 +514,7 @@ const SingAlongGame = ({ song, onHome, onRecordingComplete }) => {
               disabled={!isFinished}
               className={`transition-all duration-300 text-lg w-full max-w-[320px] truncate shrink-0
                    ${isFinished
-                  ? 'btn-primary animate-pulse py-4'
+                  ? 'btn-primary py-4'
                   : 'py-4 rounded-full font-bold tracking-widest bg-[#141414] text-gray-100 cursor-not-allowed shadow-[0_4px_12px_rgba(0,0,0,0.6)] border border-gray-700'}`}
             >
               {isFinished ? '保存這段歌聲' : '請盡情享受歌唱時光'}

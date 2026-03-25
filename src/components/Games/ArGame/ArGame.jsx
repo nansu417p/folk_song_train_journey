@@ -36,7 +36,6 @@ const ArGame = ({ onConfirmSong, onPreviewSong }) => {
   const fingerPosRef = useRef({ x: -100, y: -100 });
 
   const [particles, setParticles] = useState([]); 
-  const [, setTriggerRender] = useState(0); 
   const [playingSong, setPlayingSong] = useState(null); 
   const [showHint, setShowHint] = useState(true);
 

@@ -65,10 +65,10 @@ const TrainPage = forwardRef(({ onSelectMode, onBack, ticket, cover, coverStatus
   const getHintModeId = () => {
     if (!ticket) return 'mood-train';
     if (!mainSong) return 'ar';
-    if (!cover) return coverStatus === 'generating' ? 'sing-along' : 'ai-zimage';
+    if (!cover && coverStatus !== 'generating') return 'ai-zimage';
     if (!recording) return 'sing-along';
-    if (mainSong && mainSong.hasFace && !swapped) {
-      return faceswapStatus === 'generating' ? 'lyrics' : 'faceswap';
+    if (mainSong && mainSong.hasFace && !swapped && faceswapStatus !== 'generating') {
+      return 'faceswap';
     }
     if (!lyrics) return 'lyrics';
     return 'capsule';

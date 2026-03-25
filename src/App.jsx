@@ -23,7 +23,7 @@ export const LAYOUT_CONFIG = {
 
 import TrainPage from './components/Train/TrainPage';
 import MoodTrainGame from './components/Games/MoodTrainGame/MoodTrainGame';
-import AiCoverGame_zimage from './components/Games/AiCoverGame/AiCoverGame_zimage';
+import AiCoverGame from './components/Games/AiCoverGame/AiCoverGame';
 import FaceSwapGame from './components/Games/FaceSwapGame/FaceSwapGame';
 import ArGame from './components/Games/ArGame/ArGame';
 import LyricsGame from './components/Games/LyricsGame/LyricsGame';
@@ -398,7 +398,7 @@ function App() {
                 <div className="w-full h-full flex flex-col items-center justify-center relative">
                   <UnifiedBackButton onClick={handleLeaveGame} text="返回火車" />
                   {!mainSong ? <RequireMainSongPrompt /> : (
-                    <AiCoverGame_zimage
+                    <AiCoverGame
                       song={mainSong}
                       onHome={handleLeaveGame}
                       coverStatus={coverStatus}

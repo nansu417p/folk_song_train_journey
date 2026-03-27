@@ -27,6 +27,8 @@ import ArGame from './components/Games/ArGame/ArGame';
 import LyricsGame from './components/Games/LyricsGame/LyricsGame';
 import SingAlongGame from './components/Games/SingAlongGame/SingAlongGame';
 import CapsuleGame from './components/Games/CapsuleGame/CapsuleGame';
+import UserTracker from './components/Shared/UserTracker';
+import LogDashboard from './components/Shared/LogDashboard';
 
 const API_URL = "https://cory-uninduced-ozell.ngrok-free.dev";
 
@@ -37,7 +39,7 @@ const GlobalMoodEffects = ({ mood }) => {
   const particles = Array.from({ length: isHappy ? 15 : 40 });
 
   return (
-    <div className="absolute inset-0 z-10 pointer-events-none overflow-hidden">
+    <div className="absolute inset-0 z-[60] pointer-events-none overflow-hidden">
       {isHappy ? (
         <div className="absolute inset-0 bg-gradient-to-br from-white/60 via-sky-100/10 to-transparent mix-blend-overlay transition-opacity duration-1000"></div>
       ) : (
@@ -81,9 +83,37 @@ const GlobalMoodEffects = ({ mood }) => {
 };
 
 function App() {
-  const [currentView, setCurrentView] = useState('home');
+  const getInitialView = () => {
+    const hash = window.location.hash.replace('#', '');
+    if (hash === 'log') return 'log';
+    return 'home';
+  };
+  const [currentView, setCurrentView] = useState(getInitialView());
   const [activeMode, setActiveMode] = useState(null);
   const [mainSong, setMainSong] = useState(null);
+  const [hasEnteredCarriage, setHasEnteredCarriage] = useState(false);
+  const isTrackingEnabled = true;
+  const [trackerSessionName, setTrackerSessionName] = useState('');
+
+  // 網址列同步與監聽
+  useEffect(() => {
+    const handleHashChange = () => {
+      const hash = window.location.hash.replace('#', '');
+      if (hash === 'log') setCurrentView('log');
+    };
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
+
+  useEffect(() => {
+    if (currentView === 'log') {
+      window.history.replaceState(null, '', `#log`);
+    } else if (currentView === 'game' && activeMode) {
+      window.history.replaceState(null, '', `#game/${activeMode}`);
+    } else {
+      window.history.replaceState(null, '', `#${currentView === 'home' ? '' : currentView}`);
+    }
+  }, [currentView, activeMode]);
 
   const [globalMood, setGlobalMood] = useState('neutral');
   const [ticketData, setTicketData] = useState(null);
@@ -97,6 +127,7 @@ function App() {
   const [recordingData, setRecordingData] = useState(null);
 
   const globalAudioRef = useRef(null);
+  const trackerRef = useRef(null);
   const [currentTrackName, setCurrentTrackName] = useState('bg_music.mp3');
   const [isPlaying, setIsPlaying] = useState(false);
 
@@ -157,6 +188,7 @@ function App() {
   };
 
   const handleStartIntro = () => {
+    if (trackerRef.current) trackerRef.current.startSession();
     playTrack('bg_music.mp3');
     setCurrentView('story');
   };
@@ -166,6 +198,11 @@ function App() {
   };
 
   const handleFullReset = () => {
+    // 只要移動到首頁就算是完成一次體驗，並且結算分析。
+    if (trackerRef.current) {
+      trackerRef.current.endSessionAndAnalyze();
+    }
+    setTrackerSessionName('');
     setActiveMode(null);
     setMainSong(null);
     setGlobalMood('neutral');
@@ -178,6 +215,7 @@ function App() {
     setGeneratedSwappedImg(null);
     setLyricsData(null);
     setRecordingData(null);
+    setHasEnteredCarriage(false);
     playTrack('bg_music.mp3', true);
 
     if (trainRef.current) {
@@ -213,6 +251,7 @@ function App() {
       pauseMusic();
     }
 
+    setHasEnteredCarriage(true);
     setActiveMode(mode.id);
     setCurrentView('game');
   };
@@ -298,45 +337,63 @@ function App() {
   return (
     <div className="w-full h-screen overflow-hidden bg-[#EAEAEA] text-folk-dark font-serif flex flex-col relative">
       <GlobalMoodEffects mood={globalMood} />
+      <UserTracker ref={trackerRef} isEnabled={isTrackingEnabled} currentView={currentView === 'game' && activeMode ? `game_${activeMode}` : currentView} sessionName={trackerSessionName} />
 
-      <AnimatePresence mode="wait">
+      <AnimatePresence>
         {currentView === 'home' && (
-          <motion.div key="home" onClick={() => !isPlaying && playTrack('bg_music.mp3')} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.8 }} className="absolute inset-0 w-full h-full flex flex-col items-center justify-center overflow-hidden">
+          <motion.div key="home" onClick={() => !isPlaying && playTrack('bg_music.mp3')} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 1.3 }} className="absolute inset-0 w-full h-full flex flex-col items-center justify-center overflow-hidden">
             <div className="absolute inset-0 pointer-events-none z-0" style={getBgStyle('/home-bg.png')} />
             <div className="absolute inset-0 bg-black/20 z-0 pointer-events-none"></div>
 
-            <div className="relative z-20 text-center flex flex-col items-center">
-              <h1 className="text-7xl md:text-8xl font-black tracking-[0.3em] mb-8 text-white drop-shadow-[0_4px_16px_rgba(255,255,255,0.4)] font-serif">民歌旅程</h1>
-              <p className="text-2xl md:text-3xl text-gray-100 tracking-[0.35em] mb-12 drop-shadow-md font-serif font-medium">乘著歌聲，回到最純粹的年代</p>
-              <button onClick={handleStartIntro} className="btn-primary mt-6">
-                踏上旅程
-              </button>
+            <div className="relative z-20 w-full max-w-4xl px-6 flex flex-col items-center justify-between h-[420px] md:h-[480px]">
+              <div className="flex flex-col items-center text-center mt-20">
+                <h1 className="text-7xl md:text-8xl font-black tracking-[0.3em] mb-6 text-white drop-shadow-[0_4px_16px_rgba(255,255,255,0.4)] font-serif">民歌旅程</h1>
+                <p className="text-2xl md:text-3xl text-gray-100 tracking-[0.35em] drop-shadow-md font-serif font-medium">乘著歌聲，回到最純粹的年代</p>
+              </div>
+
+              <div className="flex flex-col items-center gap-5 pointer-events-auto w-full mb-10">
+                <input
+                  type="text"
+                  placeholder="輸入名稱(選填)"
+                  value={trackerSessionName}
+                  onChange={(e) => setTrackerSessionName(e.target.value)}
+                  onClick={(e) => e.stopPropagation()}
+                  className="w-[280px] px-6 py-3.5 rounded-full border-2 border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.12)] focus:outline-none focus:ring-2 focus:ring-white/80 bg-white/95 backdrop-blur-sm text-gray-700 font-bold text-lg tracking-wider text-center placeholder-gray-400"
+                />
+                <button onClick={handleStartIntro} className="btn-primary mt-2">
+                  踏上旅程
+                </button>
+              </div>
             </div>
           </motion.div>
         )}
 
         {currentView === 'story' && (
-          <motion.div key="story" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.8 }} className="absolute inset-0 w-full h-full flex flex-col items-center justify-center overflow-hidden">
+          <motion.div key="story" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 1.3 }} className="absolute inset-0 w-full h-full flex flex-col items-center justify-center overflow-hidden">
             <div className="absolute inset-0 pointer-events-none opacity-70 z-0" style={getBgStyle('/train-bg_2.png')} />
             <div className="absolute inset-0 bg-black/30 z-0 pointer-events-none"></div>
 
-            <div className="relative z-20 text-center flex flex-col items-center max-w-4xl px-8">
-              <h2 className="text-4xl md:text-5xl font-bold text-white tracking-widest mb-10 drop-shadow-lg font-serif">準備好開始這趟民歌旅程了嗎？</h2>
-              <div className="text-xl md:text-2xl text-gray-50 leading-loose tracking-[0.15em] mb-16 text-center drop-shadow-md space-y-6 font-medium font-serif">
-                <p>這是一趟沒有喧囂，只有吉他與歌聲的旅程。</p>
-                <p>我們將穿梭於車廂之間，留下屬於您的獨特回憶。</p>
-                <p>跟著熟悉的旋律，放鬆心情，</p>
-                <p>讓我們一起重溫那段充滿生命力的青春時光吧！</p>
+            <div className="relative z-20 w-full max-w-4xl px-8 flex flex-col items-center justify-between h-[420px] md:h-[480px]">
+              <div className="flex flex-col items-center text-center mt-2">
+                <h2 className="text-4xl md:text-5xl font-bold text-white tracking-widest mb-10 drop-shadow-lg font-serif">準備好開始這趟民歌旅程了嗎？</h2>
+                <div className="text-xl md:text-2xl text-gray-50 leading-loose tracking-[0.15em] text-center drop-shadow-md space-y-6 font-medium font-serif">
+                  <p>這是一趟沒有喧囂，只有吉他與歌聲的旅程。</p>
+                  <p>我們將穿梭於車廂之間，留下屬於您的獨特回憶。</p>
+                  <p>跟著熟悉的旋律，放鬆心情，</p>
+                  <p>讓我們一起重溫那段充滿生命力的青春時光吧！</p>
+                </div>
               </div>
-              <button onClick={handleEnterTrain} className="btn-primary">
-                準備登車
-              </button>
+              <div className="flex flex-col items-center pointer-events-auto w-full mb-10">
+                <button onClick={handleEnterTrain} className="btn-primary">
+                  準備登車
+                </button>
+              </div>
             </div>
           </motion.div>
         )}
 
         {currentView === 'train' && (
-          <motion.div key="train" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.6 }} className="absolute inset-0 w-full h-full overflow-hidden">
+          <motion.div key="train" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 1.1 }} className="absolute inset-0 w-full h-full overflow-hidden">
             <div className="absolute inset-0 pointer-events-none z-0" style={getBgStyle('/train-bg.png')} />
 
             <div className="relative z-20 w-full h-full">
@@ -366,13 +423,14 @@ function App() {
                 lyrics={lyricsData} recording={recordingData}
                 onPauseMusic={pauseMusic} mainSong={mainSong}
                 layoutConfig={LAYOUT_CONFIG}
+                hasEnteredCarriage={hasEnteredCarriage}
               />
             </div>
           </motion.div>
         )}
 
         {currentView === 'game' && (
-          <motion.div key="game" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.6 }} className="absolute inset-0 w-full h-full overflow-hidden">
+          <motion.div key="game" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 1.1 }} className="absolute inset-0 w-full h-full overflow-hidden">
             <div className="absolute inset-0 pointer-events-none z-0" style={getBgStyle('/game-bg.jpg')} />
             <div className="absolute inset-0 bg-black/10 z-0 pointer-events-none"></div>
 
@@ -458,7 +516,7 @@ function App() {
         )}
 
         {currentView === 'outro' && (
-          <motion.div key="outro" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.8 }} className="absolute inset-0 w-full h-full flex flex-col items-center justify-center overflow-hidden">
+          <motion.div key="outro" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 1.3 }} className="absolute inset-0 w-full h-full flex flex-col items-center justify-center overflow-hidden">
             <div className="absolute inset-0 pointer-events-none opacity-50 z-0" style={getBgStyle('/train-bg_2.png')} />
             <div className="absolute inset-0 bg-black/30 z-0 pointer-events-none"></div>
             <div className="relative z-20 text-center flex flex-col items-center max-w-3xl px-8">
@@ -478,6 +536,10 @@ function App() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {currentView === 'log' && (
+        <LogDashboard onClose={() => { window.location.hash = ''; setCurrentView('home'); }} />
+      )}
     </div>
   );
 }

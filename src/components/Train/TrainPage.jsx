@@ -54,7 +54,7 @@ const CustomAudioPlayer = ({ src, onPlayCallback }) => {
   );
 };
 
-const TrainPage = forwardRef(({ onSelectMode, onBack, ticket, cover, coverStatus, swapped, faceswapStatus, lyrics, recording, mainSong, onPauseMusic, layoutConfig }, ref) => {
+const TrainPage = forwardRef(({ onSelectMode, onBack, ticket, cover, coverStatus, swapped, faceswapStatus, lyrics, recording, mainSong, onPauseMusic, layoutConfig, hasEnteredCarriage }, ref) => {
   const scrollRef = useRef(null);
   const [lightbox, setLightbox] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -143,9 +143,11 @@ const TrainPage = forwardRef(({ onSelectMode, onBack, ticket, cover, coverStatus
       />
 
       <div className="w-full flex flex-col items-center relative z-20 shrink-0">
-        <h3 className="text-gray-700 font-bold tracking-widest text-sm mb-4 bg-white/80 px-8 py-2.5 rounded-full border border-white/60 backdrop-blur-md shadow-md pointer-events-none mt-2">
-          旅程收集品
-        </h3>
+        {(ticket || cover || recording || swapped || lyrics) && (
+          <h3 className="text-gray-700 font-bold tracking-widest text-sm mb-4 bg-white/80 px-8 py-2.5 rounded-full border border-white/60 backdrop-blur-md shadow-md pointer-events-none mt-2">
+            旅程收集品
+          </h3>
+        )}
 
         <div className="flex flex-row justify-center items-center gap-8 w-full max-w-6xl h-[180px] pointer-events-auto mt-2">
           {ticket && (
@@ -202,9 +204,11 @@ const TrainPage = forwardRef(({ onSelectMode, onBack, ticket, cover, coverStatus
         </div>
       </div>
 
-      <div className="text-center z-10 pointer-events-none mt-auto mb-2 shrink-0">
-        <h2 className="text-5xl font-bold mb-2 text-[#FDFBF7] drop-shadow-[0_4px_12px_rgba(0,0,0,0.5)] tracking-widest">點選車廂，進入體驗</h2>
-      </div>
+      {!hasEnteredCarriage && (
+        <div className="text-center z-10 pointer-events-none mt-auto mb-2 shrink-0">
+          <h2 className="text-5xl font-bold mb-2 text-[#FDFBF7] drop-shadow-[0_4px_4px_rgba(0,0,0,0.6)] tracking-widest">點選車廂，進入體驗</h2>
+        </div>
+      )}
 
       <div
         className="w-full h-[400px] overflow-hidden relative z-10 shrink-0"

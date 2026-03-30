@@ -347,7 +347,7 @@ const SingAlongGame = ({ song, onHome, onRecordingComplete }) => {
     if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
       mediaRecorderRef.current.onstop = () => {
         if (audioChunksRef.current.length > 0) {
-          const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
+          const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/mp3' });
           const audioUrl = URL.createObjectURL(audioBlob);
           stopAllMedia();
           onRecordingComplete(audioUrl);
@@ -360,7 +360,7 @@ const SingAlongGame = ({ song, onHome, onRecordingComplete }) => {
     } else {
       let audioUrl = null;
       if (audioChunksRef.current.length > 0) {
-        const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
+        const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/mp3' });
         audioUrl = URL.createObjectURL(audioBlob);
       }
       stopAllMedia();

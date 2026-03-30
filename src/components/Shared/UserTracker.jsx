@@ -21,6 +21,17 @@ export const UserTracker = forwardRef(({ isEnabled, currentView, sessionName }, 
       console.log("[UserTracker] Session Started");
     },
     endSessionAndAnalyze: () => {
+      if (isEnabled) {
+        const duration = Date.now() - viewStartTime.current;
+        sessionRecords.current.push({
+          type: 'dwell',
+          page: currentView,
+          duration_ms: duration,
+          timestamp: Date.now()
+        });
+        viewStartTime.current = Date.now();
+      }
+
       if (sessionRecords.current.length === 0) return;
       console.log("[UserTracker] Session Ended, Analyzing Data...");
 

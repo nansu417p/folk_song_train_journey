@@ -2,9 +2,9 @@ import React, { useRef, useState, useEffect } from 'react';
 import Webcam from 'react-webcam';
 import { FilesetResolver, FaceLandmarker, ImageSegmenter } from '@mediapipe/tasks-vision';
 import { TicketCard } from '../../Shared/TicketCard';
-import { CARRIAGE_NAMES } from '../../../data/gameModes'; 
+import { CARRIAGE_NAMES } from '../../../data/gameModes';
 
-const BACKGROUND_IMAGE_SRC = '/images/MoodTrainGame.jpg';
+const BACKGROUND_IMAGE_SRC = '/images/MoodTrainGame.png';
 
 const MoodTrainGame = ({ onMoodDetected, onTicketGenerated }) => {
   const webcamRef = useRef(null);
@@ -13,15 +13,15 @@ const MoodTrainGame = ({ onMoodDetected, onTicketGenerated }) => {
   const maskCanvasRef = useRef(null);
   const blurredMaskCanvasRef = useRef(null);
   const bgImageCanvasRef = useRef(null);
-  
+
   const [faceLandmarker, setFaceLandmarker] = useState(null);
   const [imageSegmenter, setImageSegmenter] = useState(null);
   const [bgImageObj, setBgImageObj] = useState(null);
-  
+
   const [step, setStep] = useState('intro');
-  const [moodResult, setMoodResult] = useState(null); 
-  const [captureImg, setCaptureImg] = useState(null); 
-  const [flash, setFlash] = useState(false); 
+  const [moodResult, setMoodResult] = useState(null);
+  const [captureImg, setCaptureImg] = useState(null);
+  const [flash, setFlash] = useState(false);
   const [isCameraActive, setIsCameraActive] = useState(true);
   const [cameraReady, setCameraReady] = useState(false);
 
@@ -38,7 +38,7 @@ const MoodTrainGame = ({ onMoodDetected, onTicketGenerated }) => {
         const vision = await FilesetResolver.forVisionTasks("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.2/wasm");
         const landmarker = await FaceLandmarker.createFromOptions(vision, {
           baseOptions: { modelAssetPath: `https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task`, delegate: "GPU" },
-          runningMode: "VIDEO", numFaces: 1, outputFaceBlendshapes: true 
+          runningMode: "VIDEO", numFaces: 1, outputFaceBlendshapes: true
         });
         setFaceLandmarker(landmarker);
 
@@ -80,8 +80,8 @@ const MoodTrainGame = ({ onMoodDetected, onTicketGenerated }) => {
 
       const startTimeMs = performance.now();
       if (!imageSegmenter || !bgImageObj) {
-         ctx.save(); ctx.scale(-1, 1); ctx.translate(-width, 0); ctx.drawImage(video, 0, 0, width, height); ctx.restore();
-         animationFrameId = requestAnimationFrame(renderLoop); return;
+        ctx.save(); ctx.scale(-1, 1); ctx.translate(-width, 0); ctx.drawImage(video, 0, 0, width, height); ctx.restore();
+        animationFrameId = requestAnimationFrame(renderLoop); return;
       }
 
       imageSegmenter.segmentForVideo(video, startTimeMs, (result) => {
@@ -91,23 +91,23 @@ const MoodTrainGame = ({ onMoodDetected, onTicketGenerated }) => {
           const maskPixels = mask.getAsUint8Array();
           const maskCtx = maskCanvasRef.current.getContext('2d', { willReadFrequently: true });
           const maskImgData = new ImageData(width, height);
-          
+
           for (let y = 0; y < height; y++) {
             for (let x = 0; x < width; x++) {
               const maskIndex = y * width + (width - 1 - x);
               const pixelIndex = (y * width + x) * 4;
               const isPerson = maskPixels[maskIndex] === 0;
-              maskImgData.data[pixelIndex] = 255; maskImgData.data[pixelIndex + 1] = 255; maskImgData.data[pixelIndex + 2] = 255; maskImgData.data[pixelIndex + 3] = isPerson ? 255 : 0; 
+              maskImgData.data[pixelIndex] = 255; maskImgData.data[pixelIndex + 1] = 255; maskImgData.data[pixelIndex + 2] = 255; maskImgData.data[pixelIndex + 3] = isPerson ? 255 : 0;
             }
           }
           maskCtx.putImageData(maskImgData, 0, 0);
           const blurredCtx = blurredMaskCanvasRef.current.getContext('2d');
           blurredCtx.clearRect(0, 0, width, height); blurredCtx.filter = 'blur(5px)'; blurredCtx.drawImage(maskCanvasRef.current, 0, 0); blurredCtx.filter = 'none';
-          
+
           const tempCtx = tempCanvasRef.current.getContext('2d');
           tempCtx.clearRect(0, 0, width, height); tempCtx.save(); tempCtx.scale(-1, 1); tempCtx.translate(-width, 0); tempCtx.drawImage(video, 0, 0, width, height); tempCtx.restore();
-          tempCtx.globalCompositeOperation = 'destination-in'; tempCtx.drawImage(blurredMaskCanvasRef.current, 0, 0); tempCtx.globalCompositeOperation = 'source-over'; 
-          
+          tempCtx.globalCompositeOperation = 'destination-in'; tempCtx.drawImage(blurredMaskCanvasRef.current, 0, 0); tempCtx.globalCompositeOperation = 'source-over';
+
           ctx.drawImage(bgImageCanvasRef.current, 0, 0, width, height); ctx.drawImage(tempCanvasRef.current, 0, 0, width, height);
         }
       });
@@ -118,42 +118,42 @@ const MoodTrainGame = ({ onMoodDetected, onTicketGenerated }) => {
   }, [isCameraActive, imageSegmenter, bgImageObj, step, cameraReady]);
 
   const startScan = () => {
-    if (!faceLandmarker || !webcamRef.current?.video) return; 
+    if (!faceLandmarker || !webcamRef.current?.video) return;
     setStep('scanning');
     let scanCount = 0; let smileScore = 0; let sadScore = 0;
     const interval = setInterval(() => {
-       const video = webcamRef.current.video;
-       if(video && video.readyState === 4 && faceLandmarker) {
-           const startTimeMs = performance.now();
-           const result = faceLandmarker.detectForVideo(video, startTimeMs);
-           if (result.faceBlendshapes && result.faceBlendshapes.length > 0) {
-               const shapes = result.faceBlendshapes[0].categories;
-               smileScore += Math.max(shapes.find(s => s.categoryName === 'mouthSmileLeft')?.score || 0, shapes.find(s => s.categoryName === 'mouthSmileRight')?.score || 0);
-               const currentSad = (Math.max(shapes.find(s => s.categoryName === 'mouthFrownLeft')?.score || 0, shapes.find(s => s.categoryName === 'mouthFrownRight')?.score || 0) * 1.5) + Math.max(shapes.find(s => s.categoryName === 'browDownLeft')?.score || 0, shapes.find(s => s.categoryName === 'browDownRight')?.score || 0);
-               sadScore += currentSad; scanCount++;
-           }
-       }
+      const video = webcamRef.current.video;
+      if (video && video.readyState === 4 && faceLandmarker) {
+        const startTimeMs = performance.now();
+        const result = faceLandmarker.detectForVideo(video, startTimeMs);
+        if (result.faceBlendshapes && result.faceBlendshapes.length > 0) {
+          const shapes = result.faceBlendshapes[0].categories;
+          smileScore += Math.max(shapes.find(s => s.categoryName === 'mouthSmileLeft')?.score || 0, shapes.find(s => s.categoryName === 'mouthSmileRight')?.score || 0);
+          const currentSad = (Math.max(shapes.find(s => s.categoryName === 'mouthFrownLeft')?.score || 0, shapes.find(s => s.categoryName === 'mouthFrownRight')?.score || 0) * 1.5) + Math.max(shapes.find(s => s.categoryName === 'browDownLeft')?.score || 0, shapes.find(s => s.categoryName === 'browDownRight')?.score || 0);
+          sadScore += currentSad; scanCount++;
+        }
+      }
     }, 100);
     setTimeout(() => {
-        clearInterval(interval); setFlash(true); setTimeout(() => setFlash(false), 300);
-        const avgSmile = scanCount > 0 ? smileScore / scanCount : 0; const avgSad = scanCount > 0 ? sadScore / scanCount : 0;
-        let finalMood = 'neutral'; if (avgSmile > 0.25) finalMood = 'happy'; else if (avgSad > 0.15) finalMood = 'sad';
-        let imageSrc = null;
-        if (canvasRef.current) imageSrc = canvasRef.current.toDataURL('image/jpeg', 0.85); else if (webcamRef.current) imageSrc = webcamRef.current.getScreenshot();
-        setCaptureImg(imageSrc); setMoodResult(finalMood); setStep('result'); onMoodDetected(finalMood);
+      clearInterval(interval); setFlash(true); setTimeout(() => setFlash(false), 300);
+      const avgSmile = scanCount > 0 ? smileScore / scanCount : 0; const avgSad = scanCount > 0 ? sadScore / scanCount : 0;
+      let finalMood = 'neutral'; if (avgSmile > 0.25) finalMood = 'happy'; else if (avgSad > 0.15) finalMood = 'sad';
+      let imageSrc = null;
+      if (canvasRef.current) imageSrc = canvasRef.current.toDataURL('image/jpeg', 0.85); else if (webcamRef.current) imageSrc = webcamRef.current.getScreenshot();
+      setCaptureImg(imageSrc); setMoodResult(finalMood); setStep('result'); onMoodDetected(finalMood);
     }, 2000);
   };
 
   const getConductorMessage = () => {
-    if(step === 'intro') return "歡迎搭乘！請望向鏡頭，讓我們為您記錄此刻的心情，印製專屬車票。無論您今天開心或難過，都帶上這份心情踏上旅程吧!";
-    if(step === 'scanning') return "請看著鏡頭，為這趟旅程留下一個微笑吧。";
-    switch(moodResult) {
+    if (step === 'intro') return "歡迎搭乘！請望向鏡頭，讓我們為您記錄此刻的心情，印製專屬車票。無論您今天開心或難過，都帶上這份心情踏上旅程吧!";
+    if (step === 'scanning') return "請看著鏡頭，為這趟旅程留下一個微笑吧。";
+    switch (moodResult) {
       case 'happy': return "看來您今天心情不錯呢！就讓這份好心情陪伴您接下來的音樂旅程。";
       case 'sad': return "今天似乎有些疲憊呢。沒關係，讓輕柔的民歌旋律為您洗去煩勞，放鬆享受旅程吧。";
       default: return "旅途的風景正美，請放鬆心情，悠閒享受這段純粹的民歌時光。";
     }
   };
-  
+
   const handleReScan = () => { setStep('intro'); setCaptureImg(null); setMoodResult(null); onMoodDetected('neutral'); };
 
   return (
@@ -167,13 +167,13 @@ const MoodTrainGame = ({ onMoodDetected, onTicketGenerated }) => {
       </div>
 
       <div className="flex flex-col md:flex-row gap-6 md:gap-8 w-full max-w-7xl items-center justify-center h-[65vh]">
-        
+
         <div className="flex flex-col gap-6 w-full md:w-[35%] h-full justify-center">
           <div className="bg-[#FDFBF7] p-6 rounded-3xl shadow-xl border border-gray-100 flex flex-col items-center relative overflow-hidden h-full">
             <h2 className="text-2xl font-bold text-gray-800 mb-6 tracking-widest border-b-2 border-rose-400 pb-2 w-full text-center font-serif">心情相機</h2>
-            
+
             <div className="w-full aspect-square md:aspect-[4/3] bg-gray-900 rounded-xl overflow-hidden relative border border-gray-200 shadow-inner flex items-center justify-center">
-              {isCameraActive && ( <Webcam ref={webcamRef} audio={false} screenshotFormat="image/jpeg" className="absolute opacity-0 w-[1px] h-[1px] pointer-events-none" mirrored={false} videoConstraints={{ width: 640, height: 480, facingMode: "user" }} /> )}
+              {isCameraActive && (<Webcam ref={webcamRef} audio={false} screenshotFormat="image/jpeg" className="absolute opacity-0 w-[1px] h-[1px] pointer-events-none" mirrored={false} videoConstraints={{ width: 640, height: 480, facingMode: "user" }} />)}
               <canvas ref={canvasRef} className={`absolute inset-0 w-full h-full object-cover z-10 transition-opacity duration-500 ${step === 'result' ? 'opacity-30 blur-sm' : 'opacity-100'} ${cameraReady ? 'bg-transparent' : 'bg-gray-900'}`} />
               {!cameraReady && isCameraActive && (
                 <div className="absolute inset-0 flex flex-col items-center justify-center z-20 bg-gray-900 gap-3">
@@ -198,25 +198,25 @@ const MoodTrainGame = ({ onMoodDetected, onTicketGenerated }) => {
         </div>
 
         <div className="w-full md:w-[65%] md:pl-12 flex flex-col items-center justify-start gap-6 h-full relative">
-            <div className="w-full bg-[#FDFBF7] p-6 rounded-3xl shadow-xl border border-gray-100 relative z-20">
-              <h3 className="font-bold text-gray-800 mb-2 tracking-widest text-lg font-serif">車長廣播：</h3>
-              <p className="text-gray-700 leading-relaxed font-bold tracking-wide bg-transparent p-2 h-[80px] flex items-start">
-                {getConductorMessage()}
-              </p>
-            </div>
+          <div className="w-full bg-[#FDFBF7] p-6 rounded-3xl shadow-xl border border-gray-100 relative z-20">
+            <h3 className="font-bold text-gray-800 mb-2 tracking-widest text-lg font-serif">車長廣播：</h3>
+            <p className="text-gray-700 leading-relaxed font-bold tracking-wide bg-transparent p-2 h-[80px] flex items-start">
+              {getConductorMessage()}
+            </p>
+          </div>
 
-            <div className={`transition-all duration-700 origin-center w-full flex flex-col items-center justify-start mt-6
+          <div className={`transition-all duration-700 origin-center w-full flex flex-col items-center justify-start mt-6
                 ${step === 'result' ? 'opacity-100 scale-100' : 'opacity-40 scale-95 blur-[2px] pointer-events-none'}
             `}>
-              <div className="drop-shadow-[0_10px_15px_rgba(0,0,0,0.5)]">
-                <TicketCard captureImg={captureImg} moodResult={moodResult} size="large" />
-              </div>
-              <div className="h-[80px] flex items-center justify-center w-full mt-4">
-                <button onClick={() => { setIsCameraActive(false); onTicketGenerated(captureImg, moodResult); }} className={`btn-primary text-lg transition-all duration-700 ${step === 'result' ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 translate-y-4 pointer-events-none'}`}>
-                  領取車票
-                </button>
-              </div>
+            <div className="drop-shadow-[0_10px_15px_rgba(0,0,0,0.5)]">
+              <TicketCard captureImg={captureImg} moodResult={moodResult} size="large" />
             </div>
+            <div className="h-[80px] flex items-center justify-center w-full mt-4">
+              <button onClick={() => { setIsCameraActive(false); onTicketGenerated(captureImg, moodResult); }} className={`btn-primary text-lg transition-all duration-700 ${step === 'result' ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 translate-y-4 pointer-events-none'}`}>
+                領取車票
+              </button>
+            </div>
+          </div>
         </div>
 
       </div>

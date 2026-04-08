@@ -2,33 +2,33 @@ import React, { useEffect, useRef, useState } from 'react';
 import Webcam from 'react-webcam';
 import { FilesetResolver, HandLandmarker } from '@mediapipe/tasks-vision';
 import { folkSongs } from '../../../data/folkSongs';
-import CassetteUI from '../../Shared/CassetteUI'; 
-import { CARRIAGE_NAMES } from '../../../data/gameModes'; 
+import CassetteUI from '../../Shared/CassetteUI';
+import { CARRIAGE_NAMES } from '../../../data/gameModes';
 
-const radioPlayerUrl = '/images/cassette_player.png'; 
+const radioPlayerUrl = '/images/cassette_player.png';
 
 const ArGame = ({ onConfirmSong, onPreviewSong }) => {
   const webcamRef = useRef(null);
-  
+
   const [handLandmarker, setHandLandmarker] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isCameraActive, setIsCameraActive] = useState(true);
 
   const cassetteRefs = useRef([]);
   const fingerDomRef = useRef(null);
-  
+
   const elementsDataRef = useRef(
     folkSongs.map((song, index) => {
       const angle = Math.random() * Math.PI * 2;
-      const speed = 0.25; 
+      const speed = 0.25;
       return {
         id: song.id,
         title: song.title,
         cassetteImage: song.cassetteImage,
         x: 15 + Math.random() * 70,
         y: 15 + Math.random() * 40,
-        vx: Math.cos(angle) * speed, 
-        vy: Math.sin(angle) * speed  
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed
       };
     })
   );
@@ -36,8 +36,8 @@ const ArGame = ({ onConfirmSong, onPreviewSong }) => {
   const grabbedIdRef = useRef(null);
   const fingerPosRef = useRef({ x: -100, y: -100 });
 
-  const [particles, setParticles] = useState([]); 
-  const [playingSong, setPlayingSong] = useState(null); 
+  const [particles, setParticles] = useState([]);
+  const [playingSong, setPlayingSong] = useState(null);
   const [showHint, setShowHint] = useState(true);
 
   const callbacksRef = useRef({ onPreviewSong });
@@ -53,7 +53,7 @@ const ArGame = ({ onConfirmSong, onPreviewSong }) => {
         });
         setHandLandmarker(landmarker);
         setIsLoading(false);
-        setTimeout(() => setShowHint(false), 6000);
+        // setShowHint is basically always true now, removed setTimeout
       } catch (err) {
         console.error("相機權限或模型載入失敗:", err);
       }
@@ -88,14 +88,14 @@ const ArGame = ({ onConfirmSong, onPreviewSong }) => {
       let currentGrab = grabbedIdRef.current;
 
       els.forEach(el => {
-        if (el.id === currentGrab) return; 
+        if (el.id === currentGrab) return;
         el.x += el.vx;
         el.y += el.vy;
-        
+
         if (el.x < 8) { el.x = 8; el.vx = Math.abs(el.vx); }
         if (el.x > 92) { el.x = 92; el.vx = -Math.abs(el.vx); }
         if (el.y < 8) { el.y = 8; el.vy = Math.abs(el.vy); }
-        if (el.y > 65) { el.y = 65; el.vy = -Math.abs(el.vy); } 
+        if (el.y > 65) { el.y = 65; el.vy = -Math.abs(el.vy); }
       });
 
       for (let i = 0; i < els.length; i++) {
@@ -107,13 +107,13 @@ const ArGame = ({ onConfirmSong, onPreviewSong }) => {
           let dx = e2.x - e1.x;
           let dy = e2.y - e1.y;
           let dist = Math.hypot(dx, dy);
-          let minDist = 22; 
+          let minDist = 22;
 
           if (dist < minDist && dist > 0) {
             let overlap = minDist - dist;
             let nx = dx / dist;
             let ny = dy / dist;
-            
+
             e1.x -= nx * (overlap / 2);
             e1.y -= ny * (overlap / 2);
             e2.x += nx * (overlap / 2);
@@ -127,7 +127,7 @@ const ArGame = ({ onConfirmSong, onPreviewSong }) => {
       }
 
       const isInPlayerZone = (fX > 30 && fX < 70 && fY > 70);
-      
+
       if (currentGrab) {
         let grabbedEl = els.find(el => el.id === currentGrab);
         if (grabbedEl) {
@@ -143,15 +143,15 @@ const ArGame = ({ onConfirmSong, onPreviewSong }) => {
               callbacksRef.current.onPreviewSong(originalSong);
             }
           }
-          
-          triggerParticles(); 
+
+          triggerParticles();
           grabbedIdRef.current = null;
-          
+
           if (grabbedEl) {
-             grabbedEl.x = 20 + Math.random() * 60;
-             grabbedEl.y = 10 + Math.random() * 20;
-             grabbedEl.vx = (Math.random() - 0.5) * 0.8;
-             grabbedEl.vy = (Math.random() - 0.5) * 0.8;
+            grabbedEl.x = 20 + Math.random() * 60;
+            grabbedEl.y = 10 + Math.random() * 20;
+            grabbedEl.vx = (Math.random() - 0.5) * 0.8;
+            grabbedEl.vy = (Math.random() - 0.5) * 0.8;
           }
         }
       } else {
@@ -176,12 +176,12 @@ const ArGame = ({ onConfirmSong, onPreviewSong }) => {
         fingerDomRef.current.style.left = `${fX}%`;
         fingerDomRef.current.style.top = `${fY}%`;
         fingerDomRef.current.style.transform = `translate(-50%, -50%) scale(${isGrabbing ? 1.5 : 1})`;
-        fingerDomRef.current.style.backgroundColor = isGrabbing ? '#facc15' : '#ef4444'; 
+        fingerDomRef.current.style.backgroundColor = isGrabbing ? '#facc15' : '#ef4444';
       }
 
       animationFrameId = requestAnimationFrame(loop);
     };
-    
+
     animationFrameId = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(animationFrameId);
   }, [handLandmarker, isCameraActive]);
@@ -195,17 +195,17 @@ const ArGame = ({ onConfirmSong, onPreviewSong }) => {
       vy: -Math.random() * 3 - 2,
     }));
     setParticles(newParticles);
-    setTimeout(() => setParticles([]), 1500); 
+    setTimeout(() => setParticles([]), 1500);
   };
 
   const handleConfirmClick = () => {
-    setIsCameraActive(false); 
-    onConfirmSong(playingSong); 
+    setIsCameraActive(false);
+    onConfirmSong(playingSong);
   };
 
   return (
     <div className="relative w-full h-full bg-gray-900 overflow-hidden select-none shadow-xl">
-      
+
       <div className="absolute top-6 left-0 w-full flex flex-col justify-center items-center pointer-events-none z-40">
         <h2 className="text-4xl font-bold text-white tracking-widest drop-shadow-md inline-block font-serif">
           {CARRIAGE_NAMES.AR_CATCH}
@@ -213,8 +213,8 @@ const ArGame = ({ onConfirmSong, onPreviewSong }) => {
       </div>
 
       {playingSong && (
-        <button 
-          onClick={handleConfirmClick} 
+        <button
+          onClick={handleConfirmClick}
           className="btn-primary absolute top-6 right-8 z-50 px-8 py-3 text-lg pointer-events-auto"
         >
           選擇歌曲
@@ -233,25 +233,25 @@ const ArGame = ({ onConfirmSong, onPreviewSong }) => {
       )}
 
       <div className="absolute inset-0 pointer-events-none">
-        
+
         {showHint && !isLoading && (
           <div className="absolute top-32 left-0 w-full text-center animate-bounce z-40">
-            <span className="bg-[#FDFBF7] text-gray-800 border border-gray-200 px-8 py-4 rounded-full shadow-lg font-bold tracking-widest text-lg">
-              用手指拖曳卡帶，將卡帶放入播放器中
+            <span className="bg-[#FDFBF7]/85 backdrop-blur-sm text-gray-800 border border-gray-200/50 px-8 py-4 rounded-full shadow-lg font-bold tracking-widest text-lg">
+              將手指移入畫面中，拖曳卡帶放入播放器中
             </span>
           </div>
         )}
 
         {particles.map(p => (
           <div key={p.id} className="absolute w-3 h-3 rounded-full bg-yellow-300 shadow-[0_0_10px_#facc15] transition-transform duration-1000 ease-out"
-               style={{ left: `${p.x + p.vx * 10}%`, top: `${p.y + p.vy * 10}%`, opacity: 0 }} />
+            style={{ left: `${p.x + p.vx * 10}%`, top: `${p.y + p.vy * 10}%`, opacity: 0 }} />
         ))}
 
         {elementsDataRef.current.map((el, i) => (
-          <div 
-            key={el.id} 
-            ref={node => cassetteRefs.current[i] = node} 
-            className="absolute flex flex-col items-center justify-center transition-transform duration-100" 
+          <div
+            key={el.id}
+            ref={node => cassetteRefs.current[i] = node}
+            className="absolute flex flex-col items-center justify-center transition-transform duration-100"
             style={{ left: `${el.x}%`, top: `${el.y}%`, transform: 'translate(-50%, -50%)' }}
           >
             <CassetteUI title={el.title} size="small" image={el.cassetteImage} />
@@ -259,27 +259,27 @@ const ArGame = ({ onConfirmSong, onPreviewSong }) => {
         ))}
 
         {!isLoading && (
-          <div 
+          <div
             ref={fingerDomRef}
-            className="absolute w-8 h-8 rounded-full border-4 border-[#FDFBF7] shadow-[0_0_15px_rgba(0,0,0,0.5)] transition-colors duration-150" 
+            className="absolute w-8 h-8 rounded-full border-4 border-[#FDFBF7] shadow-[0_0_15px_rgba(0,0,0,0.5)] transition-colors duration-150"
             style={{ left: '-100%', top: '-100%', transform: 'translate(-50%, -50%)' }}
           ></div>
         )}
 
         <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-[600px] h-[300px]">
           <div className="w-full h-full relative flex items-end justify-center drop-shadow-2xl">
-             <img src={radioPlayerUrl} alt="收音機" className="absolute bottom-[-20px] w-full object-contain pointer-events-none z-10" />
-             <div className="absolute bottom-[55px] w-[180px] h-[110px] z-20 flex items-center justify-center bg-transparent">
-                {playingSong ? (
-                  <div className="animate-fade-in-up transform scale-[0.6] origin-center mt-2">
-                    <CassetteUI title={playingSong.title} size="normal" image={playingSong.cassetteImage} />
-                  </div>
-                ) : (
-                  <div className="text-gray-400 font-bold text-xs tracking-widest flex flex-col items-center justify-center gap-1 w-full h-full border border-dashed border-gray-600 bg-black/60 rounded">
-                    
-                  </div>
-                )}
-             </div>
+            <img src={radioPlayerUrl} alt="收音機" className="absolute bottom-[-20px] w-full object-contain pointer-events-none z-10" />
+            <div className="absolute bottom-[55px] w-[180px] h-[110px] z-20 flex items-center justify-center bg-transparent">
+              {playingSong ? (
+                <div className="animate-fade-in-up transform scale-[0.6] origin-center mt-2">
+                  <CassetteUI title={playingSong.title} size="normal" image={playingSong.cassetteImage} />
+                </div>
+              ) : (
+                <div className="text-gray-400 font-bold text-xs tracking-widest flex flex-col items-center justify-center gap-1 w-full h-full border border-dashed border-gray-600 bg-black/60 rounded">
+
+                </div>
+              )}
+            </div>
           </div>
         </div>
 

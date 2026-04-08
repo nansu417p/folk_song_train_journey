@@ -253,7 +253,7 @@ const ArGame = ({ onConfirmSong, onPreviewSong }) => {
   };
 
   return (
-    <div 
+    <div
       className="relative w-full h-full bg-gray-900 overflow-hidden select-none shadow-xl"
       onMouseDown={(e) => {
         isMouseDownRef.current = true;
@@ -275,11 +275,7 @@ const ArGame = ({ onConfirmSong, onPreviewSong }) => {
       onMouseLeave={() => { isMouseDownRef.current = false; }}
     >
 
-      <div className="absolute top-6 left-0 w-full flex flex-col justify-center items-center pointer-events-none z-40">
-        <h2 className="text-4xl font-bold text-white tracking-widest drop-shadow-md inline-block font-serif">
-          {CARRIAGE_NAMES.AR_CATCH}
-        </h2>
-      </div>
+      {/* 已移除 AR 車廂標題 */}
 
       {/* 已根據要求移除右上角的選擇歌曲按鈕 */}
 
@@ -338,7 +334,7 @@ const ArGame = ({ onConfirmSong, onPreviewSong }) => {
                 onClick={handleConfirmClick}
                 className="bg-red-600 text-white border border-red-500 px-8 py-4 rounded-full shadow-lg font-bold tracking-widest text-lg hover:bg-red-500 transition-colors pointer-events-auto"
               >
-                (點擊選擇)
+                點擊選擇
               </button>
             )}
           </div>

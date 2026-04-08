@@ -406,12 +406,6 @@ const SingAlongGame = ({ song, onHome, onRecordingComplete }) => {
   return (
     <div className="relative w-full h-full flex flex-col items-center justify-center overflow-hidden bg-transparent pt-16 pb-8 px-8">
 
-      <div className="absolute top-6 left-0 w-full flex justify-center pointer-events-none z-40">
-        <h2 className="text-4xl font-bold text-white tracking-widest drop-shadow-md inline-block font-serif">
-          {CARRIAGE_NAMES.SING_ALONG}
-        </h2>
-      </div>
-
       <audio
         ref={audioRef}
         src={`/music/${song.audioFileName}`}
@@ -430,7 +424,7 @@ const SingAlongGame = ({ song, onHome, onRecordingComplete }) => {
         className="hidden"
       />
 
-      <div className="w-full max-w-5xl h-full flex flex-col bg-[#E0D8C3] rounded-xl shadow-2xl border-4 border-[#C0B8A3] overflow-hidden relative mt-8">
+      <div className="flex w-full max-w-[80vw] h-[82vh] bg-[#FDFBF7] flex-col rounded-3xl shadow-xl border border-gray-300 overflow-hidden relative z-30 mt-6">
 
         {/* 依要求移除原本點擊播放的提示文字 */}
 
@@ -462,7 +456,7 @@ const SingAlongGame = ({ song, onHome, onRecordingComplete }) => {
           </div>
         </div>
 
-        <div className="flex-1 w-full bg-white overflow-hidden relative flex flex-col items-center py-0 px-8 border-b border-gray-200">
+        <div className="flex-1 w-full bg-[#F9F7F1] overflow-hidden relative flex flex-col items-center py-0 px-8 border-b border-gray-300">
 
           <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[80%] h-[4.5rem] border-y border-rose-300/40 bg-rose-50/20 pointer-events-none rounded-xl z-10 shadow-sm"></div>
 
@@ -498,21 +492,7 @@ const SingAlongGame = ({ song, onHome, onRecordingComplete }) => {
           <div className="absolute bottom-0 left-0 w-full h-40 bg-gradient-to-t from-white via-white/80 to-transparent pointer-events-none z-20"></div>
         </div>
 
-        <div className="h-28 w-full bg-[#2A2A2A] flex flex-row items-center justify-between relative px-8 shadow-inner z-20">
-
-          <div className="flex flex-col flex-1 justify-center">
-            <div className="w-full max-w-xl h-10 bg-[#111] rounded border-2 border-gray-600 shadow-inner flex items-center overflow-hidden px-4">
-              {liveTranscript ? (
-                <span className="text-green-400 font-mono text-sm tracking-wider animate-fade-in truncate">
-                  &gt; {liveTranscript}
-                </span>
-              ) : (
-                <span className="text-gray-600 font-mono text-sm tracking-wider">
-                  {isListening ? '> (等待聲音輸入)' : '> 聲音紀錄'}
-                </span>
-              )}
-            </div>
-          </div>
+        <div className="h-28 w-full bg-[#2A2A2A] flex flex-row items-center justify-between relative px-8 shadow-inner z-20 gap-8">
 
           <div className="flex items-center justify-center w-full max-w-sm">
             <button
@@ -530,6 +510,20 @@ const SingAlongGame = ({ song, onHome, onRecordingComplete }) => {
             >
               {!hasStarted ? '開始錄音' : '錄音完成'}
             </button>
+          </div>
+
+          <div className="flex flex-col flex-1 justify-center">
+            <div className="w-full h-10 bg-[#111] rounded border-2 border-gray-600 shadow-inner flex items-center overflow-hidden px-4">
+              {liveTranscript ? (
+                <span className="text-green-400 font-mono text-sm tracking-wider animate-fade-in truncate">
+                  &gt; {liveTranscript}
+                </span>
+              ) : (
+                <span className="text-gray-600 font-mono text-sm tracking-wider">
+                  {isListening ? '> (等待聲音輸入)' : '> 聲音紀錄'}
+                </span>
+              )}
+            </div>
           </div>
         </div>
 

@@ -157,65 +157,65 @@ const MoodTrainGame = ({ onMoodDetected, onTicketGenerated }) => {
   const handleReScan = () => { setStep('intro'); setCaptureImg(null); setMoodResult(null); onMoodDetected('neutral'); };
 
   return (
-    <div className="relative w-full h-full bg-transparent flex flex-col items-center p-6 md:p-8 overflow-hidden font-sans">
+    <div className="relative w-full h-full bg-transparent flex flex-col items-center justify-center p-8 overflow-hidden font-sans">
       <div className={`absolute inset-0 bg-white z-[100] pointer-events-none transition-opacity duration-300 ${flash ? 'opacity-100' : 'opacity-0'}`}></div>
 
-      <div className="text-center mb-6 mt-2 shrink-0 relative z-10 pointer-events-none">
-        <h2 className="text-4xl font-bold text-white tracking-widest drop-shadow-md inline-block font-serif">
-          {CARRIAGE_NAMES.MOOD_TRAIN}
-        </h2>
-      </div>
+      <div className="flex w-full max-w-[80vw] h-[82vh] gap-8 items-center justify-center mt-6">
+        {/* 左側：相機與拍攝 */}
+        <div className="w-1/2 flex flex-col items-center bg-white rounded-3xl shadow-xl border border-gray-300 p-6 h-full">
+          <h3 className="text-xl font-bold text-gray-800 mb-4 w-full text-center tracking-widest font-serif">
+            心情相機
+          </h3>
 
-      <div className="flex flex-col md:flex-row gap-6 md:gap-8 w-full max-w-7xl items-center justify-center h-[65vh]">
+          <div className="w-full relative shadow-inner border border-gray-300 bg-gray-200 flex-1 flex items-center justify-center overflow-hidden rounded-xl" style={{ aspectRatio: '1024/720' }}>
+            {isCameraActive && (<Webcam ref={webcamRef} audio={false} screenshotFormat="image/jpeg" className="absolute opacity-0 w-[1px] h-[1px] pointer-events-none" mirrored={false} videoConstraints={{ width: 640, height: 480, facingMode: "user" }} />)}
+            <canvas ref={canvasRef} className={`absolute inset-0 w-full h-full object-cover z-10 transition-opacity duration-500 ${step === 'result' ? 'opacity-30 blur-sm' : 'opacity-100'} ${cameraReady ? 'bg-transparent' : 'bg-gray-900'}`} />
+            {!cameraReady && isCameraActive && (
+              <div className="absolute inset-0 flex flex-col items-center justify-center z-20 bg-gray-900 gap-3">
+                <div className="w-8 h-8 border-4 border-gray-400 border-t-white rounded-full animate-spin"></div>
+                <span className="text-gray-400 font-bold tracking-widest text-sm">準備相機中...</span>
+              </div>
+            )}
+            {!isCameraActive && <span className="text-gray-500 font-bold tracking-widest bg-gray-900 inset-0 absolute flex items-center justify-center z-20">相機休息中</span>}
+            {step === 'scanning' && cameraReady && <div className="absolute inset-0 flex items-center justify-center z-30 pointer-events-none"><div className="w-[45%] h-[70%] border-[4px] border-yellow-400 border-dashed rounded-[50%] animate-pulse shadow-[0_0_15px_rgba(250,204,21,0.6)]"></div></div>}
+          </div>
 
-        <div className="flex flex-col gap-6 w-full md:w-[35%] h-full justify-center">
-          <div className="bg-[#FDFBF7] p-6 rounded-3xl shadow-xl border border-gray-100 flex flex-col items-center relative overflow-hidden h-full">
-            <h2 className="text-2xl font-bold text-gray-800 mb-6 tracking-widest border-b-2 border-rose-400 pb-2 w-full text-center font-serif">心情相機</h2>
-
-            <div className="w-full aspect-square md:aspect-[4/3] bg-gray-900 rounded-xl overflow-hidden relative border border-gray-200 shadow-inner flex items-center justify-center">
-              {isCameraActive && (<Webcam ref={webcamRef} audio={false} screenshotFormat="image/jpeg" className="absolute opacity-0 w-[1px] h-[1px] pointer-events-none" mirrored={false} videoConstraints={{ width: 640, height: 480, facingMode: "user" }} />)}
-              <canvas ref={canvasRef} className={`absolute inset-0 w-full h-full object-cover z-10 transition-opacity duration-500 ${step === 'result' ? 'opacity-30 blur-sm' : 'opacity-100'} ${cameraReady ? 'bg-transparent' : 'bg-gray-900'}`} />
-              {!cameraReady && isCameraActive && (
-                <div className="absolute inset-0 flex flex-col items-center justify-center z-20 bg-gray-900 gap-3">
-                  <div className="w-8 h-8 border-4 border-gray-400 border-t-white rounded-full animate-spin"></div>
-                  <span className="text-gray-400 font-bold tracking-widest text-sm">準備相機中...</span>
-                </div>
-              )}
-              {!isCameraActive && <span className="text-gray-500 font-bold tracking-widest bg-gray-900 inset-0 absolute flex items-center justify-center z-20">相機休息中</span>}
-              {step === 'scanning' && cameraReady && <div className="absolute inset-0 flex items-center justify-center z-30 pointer-events-none"><div className="w-[45%] h-[70%] border-[4px] border-yellow-400 border-dashed rounded-[50%] animate-pulse shadow-[0_0_15px_rgba(250,204,21,0.6)]"></div></div>}
-            </div>
-
-            <div className="mt-auto w-full relative z-10">
-              {step === 'intro' && <button onClick={startScan} disabled={!cameraReady} className="btn-primary w-full text-lg disabled:bg-gray-300 disabled:text-gray-500 disabled:shadow-none disabled:hover:translate-y-0 disabled:cursor-not-allowed">點擊拍攝</button>}
-              {step === 'scanning' && <div className="w-full py-4 text-center text-gray-600 font-bold animate-pulse tracking-widest bg-white rounded-full border border-gray-100 shadow-inner">正在為您印製專屬車票...</div>}
-              {step === 'result' && (
-                <div className="flex w-full justify-center mt-2">
-                  <button onClick={handleReScan} className="btn-secondary w-[80%]">重新拍攝</button>
-                </div>
-              )}
-            </div>
+          <div className="flex w-full gap-4 mt-6 h-14 shrink-0 flex-col justify-center relative">
+            {step === 'intro' && <button onClick={startScan} disabled={!cameraReady} className="btn-primary w-full text-lg py-4 h-full disabled:bg-gray-300 disabled:text-gray-500 disabled:shadow-none disabled:hover:translate-y-0 disabled:cursor-not-allowed">點擊拍攝，捕捉心情</button>}
+            {step === 'scanning' && <div className="w-full h-full flex items-center justify-center text-gray-600 font-bold animate-pulse tracking-widest bg-white rounded-full border border-gray-200 shadow-inner">正在為您印製專屬車票...</div>}
+            {step === 'result' && (
+              <button onClick={handleReScan} className="btn-secondary w-full h-full text-lg py-0 border-gray-300">重新拍攝</button>
+            )}
           </div>
         </div>
 
-        <div className="w-full md:w-[65%] md:pl-12 flex flex-col items-center justify-start gap-6 h-full relative">
-          <div className="w-full bg-[#FDFBF7] p-6 rounded-3xl shadow-xl border border-gray-100 relative z-20">
-            <h3 className="font-bold text-gray-800 mb-2 tracking-widest text-lg font-serif">車長廣播：</h3>
-            <p className="text-gray-700 leading-relaxed font-bold tracking-wide bg-transparent p-2 h-[80px] flex items-start">
+        {/* 右側：車長廣播與領取車票 */}
+        <div className="w-1/2 flex flex-col items-center bg-[#F9F7F1] rounded-3xl shadow-xl border border-gray-300 p-6 h-full relative">
+          
+          <div className="w-full bg-white py-2 px-4 rounded-2xl shadow-md border border-gray-300 relative mb-4 shrink-0">
+            <h3 className="font-bold text-gray-800 mb-1 tracking-widest text-base font-serif border-b-2 border-rose-300 pb-1 inline-block">車長廣播</h3>
+            <p className="text-gray-800 leading-snug font-bold tracking-widest text-sm px-1 py-1 flex items-start">
               {getConductorMessage()}
             </p>
           </div>
 
-          <div className={`transition-all duration-700 origin-center w-full flex flex-col items-center justify-start mt-6
-                ${step === 'result' ? 'opacity-100 scale-100' : 'opacity-40 scale-95 blur-[2px] pointer-events-none'}
+          <div className={`transition-all duration-700 w-full relative shadow-inner border border-gray-300 bg-[#F4F1EA] rounded-xl flex-1 flex flex-col items-center justify-center overflow-hidden
+                ${step === 'result' ? 'opacity-100 scale-100 blur-[0px]' : 'opacity-40 scale-95 blur-[4px] pointer-events-none'}
             `}>
-            <div className="drop-shadow-[0_10px_15px_rgba(0,0,0,0.5)]">
+            <div className="drop-shadow-[0_10px_15px_rgba(0,0,0,0.5)] transform scale-[0.85]">
               <TicketCard captureImg={captureImg} moodResult={moodResult} size="large" />
             </div>
-            <div className="h-[80px] flex items-center justify-center w-full mt-4">
-              <button onClick={() => { setIsCameraActive(false); onTicketGenerated(captureImg, moodResult); }} className={`btn-primary text-lg transition-all duration-700 ${step === 'result' ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 translate-y-4 pointer-events-none'}`}>
+          </div>
+
+          <div className="flex h-14 mt-6 w-full shrink-0">
+            {step === 'result' && (
+              <button 
+                onClick={() => { setIsCameraActive(false); onTicketGenerated(captureImg, moodResult); }} 
+                className="btn-primary flex-1 text-lg h-full transition-all duration-700 opacity-100 translate-y-0"
+              >
                 領取車票
               </button>
-            </div>
+            )}
           </div>
         </div>
 

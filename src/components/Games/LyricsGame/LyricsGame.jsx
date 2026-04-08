@@ -143,7 +143,7 @@ const LyricsGamePlay = ({ song, gameData, initialStickers, onHome, onLyricsGener
         )}
       </div>
 
-      <div className="w-full max-w-6xl h-full flex flex-col bg-[#FDFBF7] rounded-3xl shadow-xl border border-gray-100 overflow-hidden mt-8">
+      <div className="flex w-full max-w-[80vw] h-[82vh] bg-[#FDFBF7] flex-col rounded-3xl shadow-xl border border-gray-300 overflow-hidden relative z-30 mt-6">
         <div className="w-full bg-[#D64F3E] p-4 px-6 flex justify-between items-center shadow-md z-10 border-b-4 border-[#B83E2F]">
           <div className="flex items-center gap-4 min-w-[200px]">
             <div className="flex items-center justify-center mr-2">
@@ -167,8 +167,22 @@ const LyricsGamePlay = ({ song, gameData, initialStickers, onHome, onLyricsGener
         </div>
 
         <div className="flex flex-1 overflow-hidden relative">
-          <div ref={lyricsScrollRef} {...lyricsScrollEvents} className="flex-[2] bg-white p-8 overflow-y-auto custom-scrollbar relative">
-            <p className="text-center text-gray-500 font-bold tracking-widest mb-10 border-b border-dashed border-gray-200 pb-4">拖曳右側的句子，拼貼歌詞</p>
+          <div ref={stickersScrollRef} {...stickersScrollEvents} className="flex-[1] bg-white p-6 overflow-y-auto custom-scrollbar border-r border-gray-300 shadow-inner flex flex-col items-center gap-6">
+            {isCompleted ? (
+              <div className="text-center flex flex-col items-center justify-center animate-fade-in-up w-full px-4 mt-20">
+                <h3 className="text-2xl font-bold text-gray-800 mb-6 font-serif tracking-widest">歌詞已完整重現</h3>
+                <button onClick={onHome} className="btn-secondary w-[80%]">返回火車</button>
+              </div>
+            ) : (
+              <>
+                <h3 className="text-gray-500 font-bold tracking-widest text-sm bg-gray-100 px-6 py-2 rounded-full border border-gray-200 mb-2 shadow-sm">散落的字句</h3>
+                {stickers.map((item) => <StickerItem key={item.id} id={item.id} word={item.text} />)}
+              </>
+            )}
+          </div>
+
+          <div ref={lyricsScrollRef} {...lyricsScrollEvents} className="flex-[2] bg-[#F9F7F1] p-8 overflow-y-auto custom-scrollbar relative">
+            <p className="text-center text-gray-500 font-bold tracking-widest mb-10 border-b border-dashed border-gray-200 pb-4">拖曳左側的句子，拼貼歌詞</p>
             <div className="flex flex-col gap-6 text-center font-serif text-xl md:text-2xl text-gray-800 leading-loose font-bold">
               {gameData.lines.map((line) => {
                 if (!line.text) return <div key={line.id} className="h-4"></div>;
@@ -179,20 +193,6 @@ const LyricsGamePlay = ({ song, gameData, initialStickers, onHome, onLyricsGener
               })}
             </div>
             <div className="h-20"></div>
-          </div>
-
-          <div ref={stickersScrollRef} {...stickersScrollEvents} className="flex-[1] bg-[#F9F7F1] p-6 overflow-y-auto custom-scrollbar border-l border-gray-200 shadow-inner flex flex-col items-center gap-6">
-            {isCompleted ? (
-              <div className="text-center flex flex-col items-center justify-center animate-fade-in-up w-full px-4 mt-20">
-                <h3 className="text-2xl font-bold text-gray-800 mb-6 font-serif tracking-widest">歌詞已完整重現</h3>
-                <button onClick={onHome} className="btn-secondary w-[80%]">返回火車</button>
-              </div>
-            ) : (
-              <>
-                <h3 className="text-gray-500 font-bold tracking-widest text-sm bg-white px-6 py-2 rounded-full border border-gray-200 mb-2 shadow-sm">散落的字句</h3>
-                {stickers.map((item) => <StickerItem key={item.id} id={item.id} word={item.text} />)}
-              </>
-            )}
           </div>
         </div>
       </div>
@@ -275,11 +275,7 @@ const LyricsGame = ({ song, onHome, onLyricsGenerated }) => {
 
   return (
     <div className="relative w-full h-full flex flex-col items-center justify-center overflow-hidden bg-transparent pt-16 pb-8 px-8">
-      <div className="absolute top-6 left-0 w-full flex justify-center pointer-events-none z-40">
-        <h2 className="text-4xl font-bold text-white tracking-widest drop-shadow-md inline-block font-serif">
-          {CARRIAGE_NAMES.LYRICS}
-        </h2>
-      </div>
+      {/* 已移除車廂標題 */}
 
       <audio ref={audioRef} src={`/music/${song.audioFileName}`} autoPlay onTimeUpdate={handleTimeUpdate} className="hidden" />
       <LyricsGamePlay

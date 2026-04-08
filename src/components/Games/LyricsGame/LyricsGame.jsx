@@ -41,6 +41,7 @@ const LyricsGamePlay = ({ song, gameData, initialStickers, onHome, onLyricsGener
   const [hintIds, setHintIds] = useState([]);
   const [activeStickerData, setActiveStickerData] = useState(null);
   const [isCompleted, setIsCompleted] = useState(false);
+  const [isEnded, setIsEnded] = useState(false);
 
   const lyricsScrollRef = useRef(null);
   const { events: lyricsScrollEvents } = useScrollDraggable(lyricsScrollRef);
@@ -52,7 +53,22 @@ const LyricsGamePlay = ({ song, gameData, initialStickers, onHome, onLyricsGener
     setFilledGaps({});
     setStickers(initialStickers);
     setIsCompleted(false);
+    setIsEnded(false);
   }, [initialStickers]);
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    const handleAudEnded = () => setIsEnded(true);
+    audio.addEventListener('ended', handleAudEnded);
+    return () => audio.removeEventListener('ended', handleAudEnded);
+  }, [audioRef]);
+
+  useEffect(() => {
+    if (isCompleted && isEnded) {
+      onHome();
+    }
+  }, [isCompleted, isEnded, onHome]);
 
   const handleProgressClick = (e) => {
     if (!audioRef.current) return;
@@ -169,7 +185,7 @@ const LyricsGamePlay = ({ song, gameData, initialStickers, onHome, onLyricsGener
             {isCompleted ? (
               <div className="text-center flex flex-col items-center justify-center animate-fade-in-up w-full px-4 mt-20">
                 <h3 className="text-2xl font-bold text-gray-800 mb-6 font-serif tracking-widest">歌詞已完整重現</h3>
-                <button onClick={onHome} className="btn-secondary w-[80%]">返回車廂</button>
+                <button onClick={onHome} className="btn-secondary w-[80%]">返回火車</button>
               </div>
             ) : (
               <>
@@ -265,7 +281,7 @@ const LyricsGame = ({ song, onHome, onLyricsGenerated }) => {
         </h2>
       </div>
 
-      <audio ref={audioRef} src={`/music/${song.audioFileName}`} autoPlay loop onTimeUpdate={handleTimeUpdate} className="hidden" />
+      <audio ref={audioRef} src={`/music/${song.audioFileName}`} autoPlay onTimeUpdate={handleTimeUpdate} className="hidden" />
       <LyricsGamePlay
         song={song}
         gameData={gameState.data}

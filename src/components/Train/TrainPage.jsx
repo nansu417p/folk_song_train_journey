@@ -97,7 +97,7 @@ const TrainPage = forwardRef(({ onSelectMode, onBack, ticket, cover, coverStatus
     scrollToHintCarriage();
     const frame = requestAnimationFrame(() => scrollToHintCarriage());
     return () => cancelAnimationFrame(frame);
-  }, [ticket, cover, swapped, lyrics, recording, mainSong, faceswapStatus, coverStatus]);
+  }, []);
 
   const handleMouseDown = (e) => {
     if (!scrollRef.current) return;

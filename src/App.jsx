@@ -41,9 +41,9 @@ const GlobalMoodEffects = ({ mood }) => {
   return (
     <div className="absolute inset-0 z-[60] pointer-events-none overflow-hidden">
       {isHappy ? (
-        <div className="absolute inset-0 bg-gradient-to-br from-white/60 via-sky-100/10 to-transparent mix-blend-overlay transition-opacity duration-1000"></div>
+        <div className="absolute inset-0 bg-gradient-to-bl opacity-80 from-white/60 via-sky-100/10 to-transparent mix-blend-overlay transition-opacity duration-1000"></div>
       ) : (
-        <div className="absolute inset-0 bg-slate-800/50 mix-blend-multiply transition-opacity duration-1000"></div>
+        <div className="absolute inset-0 bg-slate-800/35 mix-blend-multiply transition-opacity duration-1000"></div>
       )}
 
       {particles.map((_, i) => {
@@ -271,8 +271,15 @@ function App() {
       if (!response.ok) throw new Error(`API 無回應或網路錯誤 (狀態碼: ${response.status})`);
       const data = await response.json();
       if (data.images && data.images.length > 0) {
-        setGeneratedCoverImg(`data:image/png;base64,${data.images[0]}`);
-        setCoverStatus('done');
+        const coverBase64 = `data:image/png;base64,${data.images[0]}`;
+        if (!coverData) {
+          setCoverData({ image: coverBase64, title: mainSong?.title });
+          setGeneratedCoverImg(null);
+          setCoverStatus('idle');
+        } else {
+          setGeneratedCoverImg(coverBase64);
+          setCoverStatus('done');
+        }
       }
     } catch (error) {
       console.error(error);
@@ -295,8 +302,15 @@ function App() {
       });
       if (!response.ok) throw new Error(`合成錯誤 (狀態碼: ${response.status})`);
       const data = await response.json();
-      setGeneratedSwappedImg(`data:image/png;base64,${data.image}`);
-      setFaceswapStatus('done');
+      const swappedBase64 = `data:image/png;base64,${data.image}`;
+      if (!swappedData) {
+        setSwappedData({ image: swappedBase64, title: mainSong?.title });
+        setGeneratedSwappedImg(null);
+        setFaceswapStatus('idle');
+      } else {
+        setGeneratedSwappedImg(swappedBase64);
+        setFaceswapStatus('done');
+      }
     } catch (error) {
       console.error(error);
       alert(`照片合成失敗: ${error.message}\n請確認伺服器已正常開啟。`);
@@ -394,7 +408,7 @@ function App() {
         )}
 
         {currentView === 'train' && (
-          <motion.div key="train" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 1.1 }} className="absolute inset-0 w-full h-full overflow-hidden">
+          <motion.div key="train" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 1.65 }} className="absolute inset-0 w-full h-full overflow-hidden">
             <div className="absolute inset-0 pointer-events-none z-0" style={getBgStyle('/train-bg.png')} />
 
             <div className="relative z-20 w-full h-full">
@@ -431,7 +445,7 @@ function App() {
         )}
 
         {currentView === 'game' && (
-          <motion.div key="game" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 1.1 }} className="absolute inset-0 w-full h-full overflow-hidden">
+          <motion.div key="game" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 1.65 }} className="absolute inset-0 w-full h-full overflow-hidden">
             <div className="absolute inset-0 pointer-events-none z-0" style={getBgStyle('/game-bg.png')} />
             <div className="absolute inset-0 bg-black/10 z-0 pointer-events-none"></div>
 
@@ -463,8 +477,19 @@ function App() {
                       coverStatus={coverStatus}
                       generatedCoverImg={generatedCoverImg}
                       onStartGenerate={handleStartGenerateCover}
-                      onSetMockCover={(url) => { setGeneratedCoverImg(url); setCoverStatus('done'); }}
-                      onCoverGenerated={(img) => { setCoverData({ image: img, title: mainSong.title }); setCoverStatus('idle'); handleLeaveGame(); }}
+                      hasExistingCover={!!coverData}
+                      onSetMockCover={(url) => {
+                        if (!coverData) {
+                          setCoverData({ image: url, title: mainSong?.title });
+                          setCoverStatus('idle');
+                          setGeneratedCoverImg(null);
+                        } else {
+                          setGeneratedCoverImg(url);
+                          setCoverStatus('done');
+                        }
+                      }}
+                      onCoverGenerated={(img) => { setCoverData({ image: img, title: mainSong.title }); setCoverStatus('idle'); setGeneratedCoverImg(null); handleLeaveGame(); }}
+                      onCancelCover={() => { setCoverStatus('idle'); setGeneratedCoverImg(null); }}
                     />
                   )}
                 </div>
@@ -481,8 +506,19 @@ function App() {
                       generatedSwappedImg={generatedSwappedImg}
                       onStartGenerate={handleStartFaceSwap}
                       generatedCoverImg={coverData ? coverData.image : generatedCoverImg}
-                      onSetMockSwap={(url) => { setGeneratedSwappedImg(url); setFaceswapStatus('done'); }}
-                      onSwapGenerated={(img) => { setSwappedData({ image: img, title: mainSong.title }); setFaceswapStatus('idle'); handleLeaveGame(); }}
+                      hasExistingSwap={!!swappedData}
+                      onSetMockSwap={(url) => {
+                        if (!swappedData) {
+                          setSwappedData({ image: url, title: mainSong?.title });
+                          setFaceswapStatus('idle');
+                          setGeneratedSwappedImg(null);
+                        } else {
+                          setGeneratedSwappedImg(url);
+                          setFaceswapStatus('done');
+                        }
+                      }}
+                      onSwapGenerated={(img) => { setSwappedData({ image: img, title: mainSong.title }); setFaceswapStatus('idle'); setGeneratedSwappedImg(null); handleLeaveGame(); }}
+                      onCancelSwap={() => { setFaceswapStatus('idle'); setGeneratedSwappedImg(null); }}
                     />
                   )}
                 </div>

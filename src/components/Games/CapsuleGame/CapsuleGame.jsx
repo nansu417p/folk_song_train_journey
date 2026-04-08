@@ -241,7 +241,7 @@ const CapsuleGame = ({ song, ticket, cover, swapped, lyrics, recording, onHome }
   return (
     <div className="relative w-full h-full flex items-center justify-center overflow-hidden bg-transparent p-4 md:p-6 lg:p-8 font-sans">
 
-      <div className="w-full max-w-[98%] h-[92vh] bg-[#EAEAEA] rounded-xl shadow-2xl border-[4px] border-[#C0B8A3] flex overflow-hidden relative transform translate-y-[30px]">
+      <div className="w-full max-w-[98%] h-[82vh] bg-[#EAEAEA] rounded-xl shadow-2xl border-[4px] border-[#C0B8A3] flex overflow-hidden relative">
 
         {isCapturingImage && (
           <div className="fixed inset-0 bg-black/60 z-[9999] flex flex-col items-center justify-center backdrop-blur-sm pointer-events-auto">
@@ -250,7 +250,7 @@ const CapsuleGame = ({ song, ticket, cover, swapped, lyrics, recording, onHome }
           </div>
         )}
 
-        <div className="w-[32%] bg-[#FDFBF7] p-6 lg:p-8 border-r border-gray-200 flex flex-col justify-between z-20 min-w-[340px] shrink-0">
+        <div className="w-[32%] bg-[#FDFBF7] p-6 lg:p-8 border-r border-gray-200 flex flex-col justify-start z-20 min-w-[340px] shrink-0">
           <div className="flex flex-col gap-2 shrink-0">
             <div className="flex items-center justify-between border-b-2 border-rose-400 pb-2">
               <h2 className="text-3xl font-bold text-gray-800 tracking-widest font-serif m-0">旅程回憶明信片</h2>
@@ -274,11 +274,11 @@ const CapsuleGame = ({ song, ticket, cover, swapped, lyrics, recording, onHome }
             </div>
           </div>
 
-          <div className="flex-1 flex flex-col mt-6">
-            <textarea disabled={isCapturingImage} value={customMessage} onChange={(e) => setCustomMessage(e.target.value)} placeholder="為這趟旅程留下一段文字紀念吧..." className="flex-1 w-full bg-[#F4F1EA] border border-gray-300 rounded-xl p-4 font-serif text-gray-800 font-bold resize-none focus:outline-none focus:border-rose-400 shadow-inner leading-relaxed text-sm"></textarea>
+          <div className="flex flex-col mt-6">
+            <textarea disabled={isCapturingImage} value={customMessage} onChange={(e) => setCustomMessage(e.target.value)} placeholder="為這趟旅程留下一段文字紀念吧..." className="w-full h-32 md:h-40 bg-[#F4F1EA] border border-gray-300 rounded-xl p-4 font-serif text-gray-800 font-bold resize-none focus:outline-none focus:border-rose-400 shadow-inner leading-relaxed text-sm"></textarea>
           </div>
 
-          <div className="flex gap-4 mt-6 shrink-0 h-[56px] w-full items-center">
+          <div className="flex gap-4 mt-auto shrink-0 h-[56px] w-full items-center mb-4">
             {recording ? (
               <button disabled={isCapturingImage} onClick={handleDownloadAudio} title="下載您的歌聲錄音" className="bg-[#6B5A4B] w-[72px] shrink-0 flex justify-center items-center h-[56px] rounded-full shadow-md hover:bg-gray-700 transition-all z-10 border border-white/20">
                 <img src={song.cassetteImage || "/images/cassette_1.png"} alt="錄音" className="w-[42px] h-[42px] object-contain drop-shadow-md pb-1" />

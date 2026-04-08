@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect } from 'react';
 import Webcam from 'react-webcam';
 import { CARRIAGE_NAMES } from '../../../data/gameModes';
 
-const FaceSwapGame = ({ song, onHome, faceswapStatus, generatedSwappedImg, onStartGenerate, onSetMockSwap, onSwapGenerated, generatedCoverImg }) => {
+const FaceSwapGame = ({ song, onHome, faceswapStatus, generatedSwappedImg, onStartGenerate, onSetMockSwap, onSwapGenerated, generatedCoverImg, hasExistingSwap, onCancelSwap }) => {
   const webcamRef = useRef(null);
   const [base64Template, setBase64Template] = useState(null);
   const [isCameraReady, setIsCameraReady] = useState(false);
@@ -61,6 +61,7 @@ const FaceSwapGame = ({ song, onHome, faceswapStatus, generatedSwappedImg, onSta
         };
 
         onStartGenerate(payload, 'faceswap');
+        onHome();
       }
     }, 2000);
   };
@@ -132,9 +133,16 @@ const FaceSwapGame = ({ song, onHome, faceswapStatus, generatedSwappedImg, onSta
               <div className="w-full relative shadow-md border border-gray-200 rounded-xl flex-1 flex items-center justify-center overflow-hidden" style={{ aspectRatio: '1024/720' }}>
                 <img src={generatedSwappedImg} alt="Swapped" className="absolute inset-0 w-full h-full object-cover" />
               </div>
-              <div className="mt-6 w-full flex justify-center">
+              <div className="mt-6 w-full flex justify-center items-center gap-3">
                 <button onClick={handleClaim} disabled={isClaiming} className="btn-primary w-[80%] text-lg disabled:opacity-50 disabled:cursor-not-allowed">
-                  {isClaiming ? "沖洗中..." : "領取專輯封面"}
+                  {isClaiming ? "處理中..." : (hasExistingSwap ? "替換封面" : "領取專輯封面")}
+                </button>
+                <button 
+                  onClick={onCancelSwap}
+                  disabled={isClaiming}
+                  className="btn-secondary flex-shrink-0 flex items-center justify-center !p-0 w-14 h-14 rounded-full border-2 border-gray-300 text-gray-500 hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <span className="text-2xl font-black mb-[2px]">✕</span>
                 </button>
               </div>
             </div>
@@ -171,7 +179,7 @@ const FaceSwapGame = ({ song, onHome, faceswapStatus, generatedSwappedImg, onSta
 
               <div className="flex w-full gap-4 mt-auto">
                 <button
-                  onClick={() => onSetMockSwap(`/images/${song.audioFileName.replace('.mp3', '.jpg')}`)}
+                  onClick={() => { onSetMockSwap(`/images/${song.audioFileName.replace('.mp3', '.jpg')}`); onHome(); }}
                   disabled={faceswapStatus === 'generating' || isScanning}
                   className="btn-secondary py-4 disabled:opacity-50 disabled:cursor-not-allowed"
                 >

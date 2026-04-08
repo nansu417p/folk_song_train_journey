@@ -60,7 +60,7 @@ const STYLES_BANK = [
   { label: "極簡線條", value: "minimalist line art, clean vector illustration, white background" }
 ];
 
-const AiCoverGame_zimage = ({ song, onHome, coverStatus, generatedCoverImg, onStartGenerate, onSetMockCover, onCoverGenerated }) => {
+const AiCoverGame_zimage = ({ song, onHome, coverStatus, generatedCoverImg, onStartGenerate, onSetMockCover, onCoverGenerated, hasExistingCover, onCancelCover }) => {
   const currentLyrics = useMemo(() => lyricsData[song.id] || "（找不到歌詞）", [song.id]);
   const [isExtracted, setIsExtracted] = useState(false);
 
@@ -145,6 +145,7 @@ const AiCoverGame_zimage = ({ song, onHome, coverStatus, generatedCoverImg, onSt
     };
 
     onStartGenerate(payload, 'txt2img');
+    onHome();
   };
 
   const handleClaim = () => {
@@ -238,7 +239,7 @@ const AiCoverGame_zimage = ({ song, onHome, coverStatus, generatedCoverImg, onSt
                 <button onClick={triggerGenerate} className="btn-primary w-full text-xl">
                   繪製專輯封面
                 </button>
-                <button onClick={() => onSetMockCover(`/images/${song.audioFileName.replace('.mp3', '.jpg')}`)} className="btn-secondary w-full py-3 text-base">
+                <button onClick={() => { onSetMockCover(`/images/${song.audioFileName.replace('.mp3', '.jpg')}`); onHome(); }} className="btn-secondary w-full py-3 text-base">
                   經典封面
                 </button>
               </div>
@@ -266,9 +267,17 @@ const AiCoverGame_zimage = ({ song, onHome, coverStatus, generatedCoverImg, onSt
                 <h3 className="text-2xl font-bold text-white tracking-widest drop-shadow-md ">
 
                 </h3>
-                <button onClick={handleClaim} className="btn-primary text-xl">
-                  領取專輯封面
-                </button>
+                <div className="flex items-center gap-3 w-full justify-center">
+                  <button onClick={handleClaim} className="btn-primary text-xl">
+                    {hasExistingCover ? "替換封面" : "領取專輯封面"}
+                  </button>
+                  <button 
+                    onClick={onCancelCover} 
+                    className="btn-secondary flex-shrink-0 flex items-center justify-center !p-0 w-14 h-14 rounded-full border-2 border-red-200 text-red-500 hover:bg-red-50 hover:text-red-700 transition-colors"
+                  >
+                    <span className="text-2xl font-black mb-[2px]">✕</span>
+                  </button>
+                </div>
               </div>
             )}
           </div>

@@ -33,7 +33,7 @@ const SingAlongGame = ({ song, onHome, onRecordingComplete }) => {
 
   const startRecognitionRef = useRef(null);
   const restartIntervalRef = useRef(null);
-  
+
   const savedTranscriptRef = useRef("");
   const tempTranscriptRef = useRef("");
 
@@ -300,7 +300,7 @@ const SingAlongGame = ({ song, onHome, onRecordingComplete }) => {
       }
     }
 
-      if (isPlaying) {
+    if (isPlaying) {
       audioRef.current.pause();
       if (recognitionRef.current) {
         recognitionRef.current.onend = null;
@@ -432,13 +432,7 @@ const SingAlongGame = ({ song, onHome, onRecordingComplete }) => {
 
       <div className="w-full max-w-5xl h-full flex flex-col bg-[#E0D8C3] rounded-xl shadow-2xl border-4 border-[#C0B8A3] overflow-hidden relative mt-8">
 
-        {!hasStarted && (
-          <div className="absolute top-4 right-1/4 z-50 flex flex-col items-center animate-bounce pointer-events-none">
-            <div className="bg-yellow-400 text-gray-900 font-bold px-6 py-2 rounded-full shadow-[2px_2px_0_#ca8a04] tracking-widest text-base border-2 border-yellow-600">
-              點擊播放，一同歌唱
-            </div>
-          </div>
-        )}
+        {/* 依要求移除原本點擊播放的提示文字 */}
 
         <div className="w-full bg-[#D64F3E] p-4 px-6 flex justify-between items-center shadow-md z-20 border-b-4 border-[#B83E2F]">
           <div className="flex items-center gap-4 min-w-[200px]">
@@ -506,13 +500,7 @@ const SingAlongGame = ({ song, onHome, onRecordingComplete }) => {
 
         <div className="h-28 w-full bg-[#2A2A2A] flex flex-row items-center justify-between relative px-8 shadow-inner z-20">
 
-          <div className="flex flex-col flex-1">
-            <div className="flex items-center gap-3 mb-2">
-              <div className={`w-3 h-3 rounded-full border border-gray-600 ${isListening ? 'bg-green-500 shadow-[0_0_8px_#22c55e] animate-pulse' : 'bg-gray-500'}`}></div>
-              <span className="text-gray-400 text-xs tracking-widest font-bold">
-                {isListening ? '正在記錄您的歌聲...' : '錄音室已準備就緒，請跟著音樂輕聲哼唱'}
-              </span>
-            </div>
+          <div className="flex flex-col flex-1 justify-center">
             <div className="w-full max-w-xl h-10 bg-[#111] rounded border-2 border-gray-600 shadow-inner flex items-center overflow-hidden px-4">
               {liveTranscript ? (
                 <span className="text-green-400 font-mono text-sm tracking-wider animate-fade-in truncate">
@@ -528,14 +516,19 @@ const SingAlongGame = ({ song, onHome, onRecordingComplete }) => {
 
           <div className="flex items-center justify-center w-full max-w-sm">
             <button
-              onClick={handleFinishAndSave}
-              disabled={!isFinished}
+              onClick={() => {
+                if (!hasStarted) {
+                  togglePlayAndMic();
+                } else {
+                  handleFinishAndSave();
+                }
+              }}
               className={`transition-all duration-300 text-lg w-full max-w-[320px] truncate shrink-0
-                   ${isFinished
-                  ? 'btn-primary py-4'
-                  : 'py-4 rounded-full font-bold tracking-widest bg-[#141414] text-gray-100 cursor-not-allowed shadow-[0_4px_12px_rgba(0,0,0,0.6)] border border-gray-700'}`}
+                   ${!hasStarted
+                  ? 'btn-primary py-4 '
+                  : 'bg-[#B83E2F] hover:bg-red-700 text-white py-4 rounded-full font-bold tracking-widest shadow-[0_4px_12px_rgba(0,0,0,0.6)] border border-red-900'}`}
             >
-              {isFinished ? '保存這段歌聲' : '請盡情享受歌唱時光'}
+              {!hasStarted ? '開始錄音' : '錄音完成'}
             </button>
           </div>
         </div>

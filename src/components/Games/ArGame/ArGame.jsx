@@ -35,6 +35,9 @@ const ArGame = ({ onConfirmSong, onPreviewSong }) => {
 
   const grabbedIdRef = useRef(null);
   const fingerPosRef = useRef({ x: -100, y: -100 });
+  const isMouseDownRef = useRef(false);
+  const mousePosRef = useRef({ x: -100, y: -100 });
+  const lastTimeRef = useRef(performance.now());
 
   const [particles, setParticles] = useState([]);
   const [playingSong, setPlayingSong] = useState(null);
@@ -94,17 +97,30 @@ const ArGame = ({ onConfirmSong, onPreviewSong }) => {
       let fX = fingerPosRef.current.x;
       let fY = fingerPosRef.current.y;
 
+      let dt = now - lastTimeRef.current;
+      lastTimeRef.current = now;
+      let speedScale = dt / 16.666;
+      if (speedScale > 3) speedScale = 3;
+
       if (webcamRef.current && webcamRef.current.video) {
         const video = webcamRef.current.video;
         if (video.readyState === 4) {
           const result = handLandmarker.detectForVideo(video, now);
           if (result.landmarks && result.landmarks.length > 0) {
             const indexTip = result.landmarks[0][8];
-            fX = (1 - indexTip.x) * 100;
-            fY = indexTip.y * 100;
-            fingerPosRef.current = { x: fX, y: fY };
+            if (!isMouseDownRef.current) {
+              fX = (1 - indexTip.x) * 100;
+              fY = indexTip.y * 100;
+              fingerPosRef.current = { x: fX, y: fY };
+            }
           }
         }
+      }
+
+      if (isMouseDownRef.current) {
+        fX = mousePosRef.current.x;
+        fY = mousePosRef.current.y;
+        fingerPosRef.current = { x: fX, y: fY };
       }
 
       let els = elementsDataRef.current;
@@ -112,13 +128,20 @@ const ArGame = ({ onConfirmSong, onPreviewSong }) => {
 
       els.forEach(el => {
         if (el.id === currentGrab) return;
-        el.x += el.vx;
-        el.y += el.vy;
+        el.x += el.vx * speedScale;
+        el.y += el.vy * speedScale;
 
         if (el.x < 8) { el.x = 8; el.vx = Math.abs(el.vx); }
         if (el.x > 92) { el.x = 92; el.vx = -Math.abs(el.vx); }
         if (el.y < 8) { el.y = 8; el.vy = Math.abs(el.vy); }
         if (el.y > 65) { el.y = 65; el.vy = -Math.abs(el.vy); }
+
+        // 強制全部統一維持原先設計的恆定速度
+        const currentSpeed = Math.hypot(el.vx, el.vy);
+        if (currentSpeed > 0 && Math.abs(currentSpeed - 0.175) > 0.001) {
+          el.vx = (el.vx / currentSpeed) * 0.175;
+          el.vy = (el.vy / currentSpeed) * 0.175;
+        }
       });
 
       for (let i = 0; i < els.length; i++) {
@@ -174,8 +197,9 @@ const ArGame = ({ onConfirmSong, onPreviewSong }) => {
           if (grabbedEl) {
             grabbedEl.x = 20 + Math.random() * 60;
             grabbedEl.y = 10 + Math.random() * 20;
-            grabbedEl.vx = (Math.random() - 0.5) * 0.8;
-            grabbedEl.vy = (Math.random() - 0.5) * 0.8;
+            const angle = Math.random() * Math.PI * 2;
+            grabbedEl.vx = Math.cos(angle) * 0.175;
+            grabbedEl.vy = Math.sin(angle) * 0.175;
           }
         }
       } else {
@@ -229,7 +253,27 @@ const ArGame = ({ onConfirmSong, onPreviewSong }) => {
   };
 
   return (
-    <div className="relative w-full h-full bg-gray-900 overflow-hidden select-none shadow-xl">
+    <div 
+      className="relative w-full h-full bg-gray-900 overflow-hidden select-none shadow-xl"
+      onMouseDown={(e) => {
+        isMouseDownRef.current = true;
+        const rect = e.currentTarget.getBoundingClientRect();
+        mousePosRef.current = {
+          x: ((e.clientX - rect.left) / rect.width) * 100,
+          y: ((e.clientY - rect.top) / rect.height) * 100
+        };
+      }}
+      onMouseMove={(e) => {
+        if (!isMouseDownRef.current) return;
+        const rect = e.currentTarget.getBoundingClientRect();
+        mousePosRef.current = {
+          x: ((e.clientX - rect.left) / rect.width) * 100,
+          y: ((e.clientY - rect.top) / rect.height) * 100
+        };
+      }}
+      onMouseUp={() => { isMouseDownRef.current = false; }}
+      onMouseLeave={() => { isMouseDownRef.current = false; }}
+    >
 
       <div className="absolute top-6 left-0 w-full flex flex-col justify-center items-center pointer-events-none z-40">
         <h2 className="text-4xl font-bold text-white tracking-widest drop-shadow-md inline-block font-serif">
@@ -253,7 +297,7 @@ const ArGame = ({ onConfirmSong, onPreviewSong }) => {
       <div className="absolute inset-0 pointer-events-none">
 
         {showHint && !isLoading && (
-          <div className="absolute top-32 left-0 w-full text-center animate-bounce z-40">
+          <div className="absolute top-32 left-0 w-full text-center z-40">
             <span className="bg-[#FDFBF7]/85 backdrop-blur-sm text-gray-800 border border-gray-200/50 px-8 py-4 rounded-full shadow-lg font-bold tracking-widest text-lg transition-all duration-300">
               {playingSong && countdown !== null ? `選擇歌曲倒數 ${countdown}` : "將食指移入畫面中，拖曳卡帶放入播放器中"}
             </span>
@@ -292,7 +336,7 @@ const ArGame = ({ onConfirmSong, onPreviewSong }) => {
             ) : (
               <button
                 onClick={handleConfirmClick}
-                className="bg-[#FDFBF7] text-gray-800 border border-gray-200 px-8 py-4 rounded-full shadow-lg font-bold tracking-widest text-lg hover:bg-white hover:text-rose-600 transition-colors pointer-events-auto"
+                className="bg-red-600 text-white border border-red-500 px-8 py-4 rounded-full shadow-lg font-bold tracking-widest text-lg hover:bg-red-500 transition-colors pointer-events-auto"
               >
                 (點擊選擇)
               </button>

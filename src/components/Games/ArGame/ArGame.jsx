@@ -24,6 +24,7 @@ const ArGame = ({ onConfirmSong, onPreviewSong }) => {
       return {
         id: song.id,
         title: song.title,
+        cassetteImage: song.cassetteImage,
         x: 15 + Math.random() * 70,
         y: 15 + Math.random() * 40,
         vx: Math.cos(angle) * speed, 
@@ -253,7 +254,7 @@ const ArGame = ({ onConfirmSong, onPreviewSong }) => {
             className="absolute flex flex-col items-center justify-center transition-transform duration-100" 
             style={{ left: `${el.x}%`, top: `${el.y}%`, transform: 'translate(-50%, -50%)' }}
           >
-            <CassetteUI title={el.title} size="small" />
+            <CassetteUI title={el.title} size="small" image={el.cassetteImage} />
           </div>
         ))}
 
@@ -271,7 +272,7 @@ const ArGame = ({ onConfirmSong, onPreviewSong }) => {
              <div className="absolute bottom-[55px] w-[180px] h-[110px] z-20 flex items-center justify-center bg-transparent">
                 {playingSong ? (
                   <div className="animate-fade-in-up transform scale-[0.6] origin-center mt-2">
-                    <CassetteUI title={playingSong.title} size="normal" />
+                    <CassetteUI title={playingSong.title} size="normal" image={playingSong.cassetteImage} />
                   </div>
                 ) : (
                   <div className="text-gray-400 font-bold text-xs tracking-widest flex flex-col items-center justify-center gap-1 w-full h-full border border-dashed border-gray-600 bg-black/60 rounded">

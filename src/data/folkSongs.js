@@ -5,7 +5,8 @@ export const folkSongs = [
     singer: '邰肇玫',
     audioFileName: 'if.mp3',
     hasFace: true,
-    faceCount: 1
+    faceCount: 1,
+    cassetteImage: '/images/cassette_1.png'
   },
   {
     id: 'kapok_road',
@@ -13,7 +14,8 @@ export const folkSongs = [
     singer: '王夢麟',
     audioFileName: 'kapok_road.mp3',
     hasFace: true,
-    faceCount: 1
+    faceCount: 1,
+    cassetteImage: '/images/cassette_2.png'
   },
   {
     id: 'morning_wind',
@@ -21,7 +23,8 @@ export const folkSongs = [
     singer: '王新蓮、馬宜中',
     audioFileName: 'morning_wind.mp3',
     hasFace: true, 
-    faceCount: 1
+    faceCount: 1,
+    cassetteImage: '/images/cassette_3.png'
   },
   {
     id: 'season_rain',
@@ -29,7 +32,8 @@ export const folkSongs = [
     singer: '楊耀東',
     audioFileName: 'season_rain.mp3',
     hasFace: true,
-    faceCount: 1
+    faceCount: 1,
+    cassetteImage: '/images/cassette_4.png'
   },
   {
     id: 'visit_spring',
@@ -37,6 +41,7 @@ export const folkSongs = [
     singer: '施孝榮',
     audioFileName: 'visit_spring.mp3',
     hasFace: true,
-    faceCount: 4
+    faceCount: 4,
+    cassetteImage: '/images/cassette_5.png'
   }
 ];

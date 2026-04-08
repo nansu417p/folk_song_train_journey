@@ -174,7 +174,7 @@ const TrainPage = forwardRef(({ onSelectMode, onBack, ticket, cover, coverStatus
             <motion.div initial={{ opacity: 0, y: -20, rotate: -2 }} animate={{ opacity: 1, y: 0, rotate: -1 }} whileHover={{ rotate: 0, scale: 1.05 }} onClick={() => setLightbox({ type: 'recording', data: recording })} className="cursor-pointer z-20 drop-shadow-md w-[120px] flex items-center justify-center">
               <div className="relative transform scale-[0.45] origin-center pointer-events-none">
                 <div className="absolute -top-6 left-1/2 -translate-x-1/2 w-32 h-10 bg-green-100/80 backdrop-blur-[2px] shadow-sm z-30 rotate-1 border border-green-300/50"></div>
-                <CassetteUI title={recording.title} color="bg-green-700" size="normal" />
+                <CassetteUI title={recording.title} color="bg-green-700" size="normal" image={mainSong?.cassetteImage} />
               </div>
             </motion.div>
           )}
@@ -331,7 +331,7 @@ const TrainPage = forwardRef(({ onSelectMode, onBack, ticket, cover, coverStatus
                 <div className="bg-[#FDFBF7] p-10 rounded-none shadow-xl border border-gray-200 w-[500px] flex flex-col items-center relative pt-12">
                   <div className="my-6 relative transform scale-125 origin-center">
                     <div className="absolute -top-[50px] left-1/2 -translate-x-1/2 w-32 h-10 bg-green-100/90 backdrop-blur-[2px] shadow-sm z-[100] rotate-[1deg] border border-green-300 z-50"></div>
-                    <CassetteUI title={lightbox.data.title} color="bg-gray-800" size="normal" />
+                    <CassetteUI title={lightbox.data.title} color="bg-gray-800" size="normal" image={mainSong?.cassetteImage} />
                   </div>
                   <h2 className="text-2xl font-bold text-gray-800 text-center border-b-2 border-gray-300 pb-4 mb-2 tracking-widest font-serif w-full mt-6">{lightbox.data.title} - 金曲錄音</h2>
                   <CustomAudioPlayer src={lightbox.data.audioUrl} onPlayCallback={() => { if (onPauseMusic) onPauseMusic(); }} />

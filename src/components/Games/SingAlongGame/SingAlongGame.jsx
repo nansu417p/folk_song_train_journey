@@ -426,7 +426,7 @@ const SingAlongGame = ({ song, onHome, onRecordingComplete }) => {
           <div className="flex items-center gap-4 min-w-[200px]">
 
             <div className="flex items-center justify-center mr-2">
-              <img src="/images/cassette.png" alt="Cassette" className="w-12 h-8 object-contain drop-shadow-[0_2px_2px_rgba(0,0,0,0.5)]" />
+              <img src={song.cassetteImage || "/images/cassette_1.png"} alt="Cassette" className="w-12 h-8 object-contain drop-shadow-[0_2px_2px_rgba(0,0,0,0.5)]" />
             </div>
 
             <div className="flex flex-col">

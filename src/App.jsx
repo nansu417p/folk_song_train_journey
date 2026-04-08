@@ -370,7 +370,7 @@ function App() {
 
         {currentView === 'story' && (
           <motion.div key="story" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 1.3 }} className="absolute inset-0 w-full h-full flex flex-col items-center justify-center overflow-hidden">
-            <div className="absolute inset-0 pointer-events-none opacity-70 z-0" style={getBgStyle('/train-bg_2.png')} />
+            <div className="absolute inset-0 pointer-events-none opacity-70 z-0" style={getBgStyle('/home-bg_2.png')} />
             <div className="absolute inset-0 bg-black/30 z-0 pointer-events-none"></div>
 
             <div className="relative z-20 w-full max-w-4xl px-8 flex flex-col items-center justify-between h-[420px] md:h-[480px]">
@@ -401,7 +401,7 @@ function App() {
               <div className="absolute top-6 right-8 z-50">
                 <div className="flex items-center bg-[#FDFBF7]/85 backdrop-blur-md px-6 py-3 rounded-full border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.08)] relative z-20">
                   <div className="mr-4 flex items-center justify-center">
-                    <img src="/images/cassette.png" alt="Cassette" className="w-12 h-8 object-contain drop-shadow-sm" />
+                    <img src={mainSong ? mainSong.cassetteImage : "/images/cassette_1.png"} alt="Cassette" className="w-12 h-8 object-contain drop-shadow-sm" />
                   </div>
                   <div className="flex flex-col mr-8 min-w-[120px]">
                     <span className="text-lg text-folk-dark font-bold tracking-wider truncate max-w-[150px]">
@@ -431,7 +431,7 @@ function App() {
 
         {currentView === 'game' && (
           <motion.div key="game" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 1.1 }} className="absolute inset-0 w-full h-full overflow-hidden">
-            <div className="absolute inset-0 pointer-events-none z-0" style={getBgStyle('/game-bg.jpg')} />
+            <div className="absolute inset-0 pointer-events-none z-0" style={getBgStyle('/game-bg.png')} />
             <div className="absolute inset-0 bg-black/10 z-0 pointer-events-none"></div>
 
             <div className="relative z-20 w-full h-full flex flex-col items-center justify-center">
@@ -517,7 +517,7 @@ function App() {
 
         {currentView === 'outro' && (
           <motion.div key="outro" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 1.3 }} className="absolute inset-0 w-full h-full flex flex-col items-center justify-center overflow-hidden">
-            <div className="absolute inset-0 pointer-events-none opacity-50 z-0" style={getBgStyle('/train-bg_2.png')} />
+            <div className="absolute inset-0 pointer-events-none opacity-50 z-0" style={getBgStyle('/home-bg_2.png')} />
             <div className="absolute inset-0 bg-black/30 z-0 pointer-events-none"></div>
             <div className="relative z-20 text-center flex flex-col items-center max-w-3xl px-8">
               <h2 className="text-4xl md:text-5xl font-bold text-white tracking-widest mb-10 drop-shadow-lg">列車即將到站</h2>

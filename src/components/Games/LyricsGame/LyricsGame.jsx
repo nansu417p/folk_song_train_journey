@@ -131,7 +131,7 @@ const LyricsGamePlay = ({ song, gameData, initialStickers, onHome, onLyricsGener
         <div className="w-full bg-[#D64F3E] p-4 px-6 flex justify-between items-center shadow-md z-10 border-b-4 border-[#B83E2F]">
           <div className="flex items-center gap-4 min-w-[200px]">
             <div className="flex items-center justify-center mr-2">
-              <img src="/images/cassette.png" alt="Cassette" className="w-12 h-8 object-contain drop-shadow-[0_2px_2px_rgba(0,0,0,0.5)]" />
+              <img src={song.cassetteImage || "/images/cassette_1.png"} alt="Cassette" className="w-12 h-8 object-contain drop-shadow-[0_2px_2px_rgba(0,0,0,0.5)]" />
             </div>
             <div className="flex flex-col">
               <div className="flex items-baseline gap-3">

@@ -1,9 +1,6 @@
 import React from 'react';
 
-// 注意： public 目錄下的圖片在 JSX 中通常直接以 '/' 開頭引用
-const realisticCassetteUrl = '/images/cassette.png'; 
-
-const CassetteUI = ({ title, size = 'normal' }) => {
+const CassetteUI = ({ title, size = 'normal', image = '/images/cassette_1.png' }) => {
   // 透過 size 控制整體縮放比例
   const scaleClass = {
     small: 'scale-75',
@@ -15,9 +12,8 @@ const CassetteUI = ({ title, size = 'normal' }) => {
     <div 
       className={`relative w-[320px] h-[200px] transform ${scaleClass} origin-center select-none shrink-0 drop-shadow-2xl`}
     >
-      {/* 1. 底層：擬真卡帶圖片 */}
       <img 
-        src={realisticCassetteUrl} 
+        src={image} 
         alt="時光卡帶" 
         className="w-full h-full object-contain pointer-events-none" 
         draggable="false"

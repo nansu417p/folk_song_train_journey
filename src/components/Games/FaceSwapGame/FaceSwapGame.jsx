@@ -91,8 +91,8 @@ const FaceSwapGame = ({ song, onHome, faceswapStatus, generatedSwappedImg, onSta
               onClick={() => setCoverSource('original')}
               disabled={faceswapStatus === 'generating'}
               className={`flex-1 py-2 font-bold tracking-widest rounded-full transition-all ${coverSource === 'original'
-                  ? 'bg-[#D2A679] text-white shadow-md border border-transparent'
-                  : 'text-gray-500 hover:bg-[#FDFBF7] hover:shadow-sm'
+                ? 'bg-[#D2A679] text-white shadow-md border border-transparent'
+                : 'text-gray-500 hover:bg-[#FDFBF7] hover:shadow-sm'
                 } disabled:cursor-not-allowed`}
             >
               經典原曲封面
@@ -101,8 +101,8 @@ const FaceSwapGame = ({ song, onHome, faceswapStatus, generatedSwappedImg, onSta
               onClick={() => setCoverSource('ai')}
               disabled={!generatedCoverImg || faceswapStatus === 'generating'}
               className={`flex-1 py-2 font-bold tracking-widest rounded-full transition-all ${coverSource === 'ai'
-                  ? 'bg-rose-400 text-white shadow-md'
-                  : 'text-gray-500 hover:bg-[#FDFBF7] hover:shadow-sm'
+                ? 'bg-rose-400 text-white shadow-md'
+                : 'text-gray-500 hover:bg-[#FDFBF7] hover:shadow-sm'
                 } disabled:opacity-40 disabled:cursor-not-allowed`}
             >
               您創作的封面
@@ -137,7 +137,7 @@ const FaceSwapGame = ({ song, onHome, faceswapStatus, generatedSwappedImg, onSta
                 <button onClick={handleClaim} disabled={isClaiming} className="btn-primary w-[80%] text-lg disabled:opacity-50 disabled:cursor-not-allowed">
                   {isClaiming ? "處理中..." : (hasExistingSwap ? "替換封面" : "領取專輯封面")}
                 </button>
-                <button 
+                <button
                   onClick={onCancelSwap}
                   disabled={isClaiming}
                   className="btn-secondary flex-shrink-0 flex items-center justify-center !p-0 w-14 h-14 rounded-full border-2 border-gray-300 text-gray-500 hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"

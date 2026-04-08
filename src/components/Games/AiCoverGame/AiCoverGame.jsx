@@ -271,8 +271,8 @@ const AiCoverGame_zimage = ({ song, onHome, coverStatus, generatedCoverImg, onSt
                   <button onClick={handleClaim} className="btn-primary text-xl">
                     {hasExistingCover ? "替換封面" : "領取專輯封面"}
                   </button>
-                  <button 
-                    onClick={onCancelCover} 
+                  <button
+                    onClick={onCancelCover}
                     className="btn-secondary flex-shrink-0 flex items-center justify-center !p-0 w-14 h-14 rounded-full border-2 border-red-200 text-red-500 hover:bg-red-50 hover:text-red-700 transition-colors"
                   >
                     <span className="text-2xl font-black mb-[2px]">✕</span>

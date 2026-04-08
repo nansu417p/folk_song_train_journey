@@ -15,8 +15,8 @@ export const LAYOUT_CONFIG = {
   BG_SCALE: 1.0,
   BG_POSITION: 'center bottom',
   RAIL_SCALE: 1.0,
-  RAIL_Y_OFFSET: '100px',
-  TRAIN_Y_OFFSET: '0px',
+  RAIL_Y_OFFSET: '80px',
+  TRAIN_Y_OFFSET: '240px',
 };
 
 import TrainPage from './components/Train/TrainPage';
@@ -304,9 +304,10 @@ function App() {
     }
   };
 
-  const UnifiedBackButton = ({ onClick, text = "返回火車" }) => (
-    <button onClick={onClick} className="btn-back">
-      ‹ {text}
+  const UnifiedBackButton = ({ onClick, text = "" }) => (
+    <button onClick={onClick} className={`btn-back flex items-center justify-center min-h-[48px] px-5 py-2 ${text ? 'gap-2' : ''}`}>
+      <span className="inline-block transform scale-[1.3] origin-center leading-[0] mt-[-1px]">⬅</span>
+      {text && <span className="pt-[1px]">{text}</span>}
     </button>
   );
 
@@ -397,7 +398,7 @@ function App() {
             <div className="absolute inset-0 pointer-events-none z-0" style={getBgStyle('/train-bg.png')} />
 
             <div className="relative z-20 w-full h-full">
-              <UnifiedBackButton onClick={handleFullReset} text="返回首頁" />
+              <UnifiedBackButton onClick={handleFullReset} text="" />
               <div className="absolute top-6 right-8 z-50">
                 <div className="flex items-center bg-[#FDFBF7]/85 backdrop-blur-md px-6 py-3 rounded-full border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.08)] relative z-20">
                   <div className="mr-4 flex items-center justify-center">
@@ -440,21 +441,21 @@ function App() {
 
               {activeMode === 'mood-train' && (
                 <div className="w-full h-full relative">
-                  <UnifiedBackButton onClick={handleLeaveGame} text="返回火車" />
+                  <UnifiedBackButton onClick={handleLeaveGame} text="" />
                   <MoodTrainGame onMoodDetected={(mood) => setGlobalMood(mood)} onTicketGenerated={(img, finalMood) => { setTicketData({ image: img, mood: finalMood }); handleLeaveGame(); }} />
                 </div>
               )}
 
               {activeMode === 'ar' && (
                 <div className="w-full h-full relative">
-                  <UnifiedBackButton onClick={() => { playTrack(mainSong ? mainSong.audioFileName : 'bg_music.mp3'); handleLeaveGame(); }} text="返回火車" />
+                  <UnifiedBackButton onClick={() => { playTrack(mainSong ? mainSong.audioFileName : 'bg_music.mp3'); handleLeaveGame(); }} text="" />
                   <ArGame onPreviewSong={(song) => { playTrack(song.audioFileName || song.audioFile); }} onConfirmSong={(song) => { setMainSong(song); playTrack(song.audioFileName || song.audioFile); handleLeaveGame(); }} />
                 </div>
               )}
 
               {activeMode === 'ai-zimage' && (
                 <div className="w-full h-full flex flex-col items-center justify-center relative">
-                  <UnifiedBackButton onClick={handleLeaveGame} text="返回火車" />
+                  <UnifiedBackButton onClick={handleLeaveGame} text="" />
                   {!mainSong ? <RequireMainSongPrompt /> : (
                     <AiCoverGame
                       song={mainSong}
@@ -471,7 +472,7 @@ function App() {
 
               {activeMode === 'faceswap' && (
                 <div className="w-full h-full relative flex flex-col items-center justify-center">
-                  <UnifiedBackButton onClick={handleLeaveGame} text="返回火車" />
+                  <UnifiedBackButton onClick={handleLeaveGame} text="" />
                   {!mainSong ? <RequireMainSongPrompt /> : (
                     <FaceSwapGame
                       song={mainSong}
@@ -489,21 +490,21 @@ function App() {
 
               {activeMode === 'lyrics' && (
                 <div className="w-full h-full flex flex-col items-center justify-center relative">
-                  <UnifiedBackButton onClick={handleLeaveGame} text="返回火車" />
+                  <UnifiedBackButton onClick={handleLeaveGame} text="" />
                   {!mainSong ? <RequireMainSongPrompt /> : <LyricsGame song={mainSong} onRestart={() => handleModeSelect({ id: 'ar' })} onHome={handleLeaveGame} onLyricsGenerated={(data) => setLyricsData(data)} />}
                 </div>
               )}
 
               {activeMode === 'sing-along' && (
                 <div className="w-full h-full flex flex-col items-center justify-center relative">
-                  <UnifiedBackButton onClick={handleLeaveGame} text="返回火車" />
+                  <UnifiedBackButton onClick={handleLeaveGame} text="" />
                   {!mainSong ? <RequireMainSongPrompt /> : <SingAlongGame song={mainSong} onHome={handleLeaveGame} onRecordingComplete={(audioUrl) => { if (audioUrl) setRecordingData({ audioUrl, title: mainSong.title }); handleLeaveGame(); }} />}
                 </div>
               )}
 
               {activeMode === 'capsule' && (
                 <div className="w-full h-full flex flex-col items-center justify-center relative">
-                  <UnifiedBackButton onClick={handleLeaveGame} text="返回火車" />
+                  <UnifiedBackButton onClick={handleLeaveGame} />
                   <button onClick={handleEndJourney} className="btn-primary absolute top-6 right-8 z-50 text-lg flex items-center">
                     準備下車
                   </button>

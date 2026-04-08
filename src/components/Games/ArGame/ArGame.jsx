@@ -20,7 +20,7 @@ const ArGame = ({ onConfirmSong, onPreviewSong }) => {
   const elementsDataRef = useRef(
     folkSongs.map((song, index) => {
       const angle = Math.random() * Math.PI * 2;
-      const speed = 0.25;
+      const speed = 0.175;
       return {
         id: song.id,
         title: song.title,
@@ -39,9 +39,32 @@ const ArGame = ({ onConfirmSong, onPreviewSong }) => {
   const [particles, setParticles] = useState([]);
   const [playingSong, setPlayingSong] = useState(null);
   const [showHint, setShowHint] = useState(true);
+  const [countdown, setCountdown] = useState(null);
+  const [dropCount, setDropCount] = useState(0);
 
   const callbacksRef = useRef({ onPreviewSong });
   useEffect(() => { callbacksRef.current = { onPreviewSong }; }, [onPreviewSong]);
+
+  useEffect(() => {
+    let timer;
+    if (playingSong) {
+      setCountdown(5);
+      timer = setInterval(() => {
+        setCountdown((prev) => {
+          if (prev <= 1) {
+            setIsCameraActive(false);
+            onConfirmSong(playingSong);
+            clearInterval(timer);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    } else {
+      setCountdown(null);
+    }
+    return () => clearInterval(timer);
+  }, [playingSong, dropCount, onConfirmSong]);
 
   useEffect(() => {
     const initLandmarker = async () => {
@@ -139,6 +162,7 @@ const ArGame = ({ onConfirmSong, onPreviewSong }) => {
           const originalSong = folkSongs.find(s => s.id === currentGrab);
           if (originalSong) {
             setPlayingSong(originalSong);
+            setDropCount(prev => prev + 1);
             if (callbacksRef.current.onPreviewSong) {
               callbacksRef.current.onPreviewSong(originalSong);
             }
@@ -199,6 +223,7 @@ const ArGame = ({ onConfirmSong, onPreviewSong }) => {
   };
 
   const handleConfirmClick = () => {
+    if (!playingSong) return;
     setIsCameraActive(false);
     onConfirmSong(playingSong);
   };
@@ -212,14 +237,7 @@ const ArGame = ({ onConfirmSong, onPreviewSong }) => {
         </h2>
       </div>
 
-      {playingSong && (
-        <button
-          onClick={handleConfirmClick}
-          className="btn-primary absolute top-6 right-8 z-50 px-8 py-3 text-lg pointer-events-auto"
-        >
-          選擇歌曲
-        </button>
-      )}
+      {/* 已根據要求移除右上角的選擇歌曲按鈕 */}
 
       {isLoading && (
         <div className="absolute inset-0 z-40 flex flex-col items-center justify-center bg-[#FDFBF7] text-gray-800">
@@ -236,8 +254,8 @@ const ArGame = ({ onConfirmSong, onPreviewSong }) => {
 
         {showHint && !isLoading && (
           <div className="absolute top-32 left-0 w-full text-center animate-bounce z-40">
-            <span className="bg-[#FDFBF7]/85 backdrop-blur-sm text-gray-800 border border-gray-200/50 px-8 py-4 rounded-full shadow-lg font-bold tracking-widest text-lg">
-              將手指移入畫面中，拖曳卡帶放入播放器中
+            <span className="bg-[#FDFBF7]/85 backdrop-blur-sm text-gray-800 border border-gray-200/50 px-8 py-4 rounded-full shadow-lg font-bold tracking-widest text-lg transition-all duration-300">
+              {playingSong && countdown !== null ? `選擇歌曲倒數 ${countdown}` : "將食指移入畫面中，拖曳卡帶放入播放器中"}
             </span>
           </div>
         )}
@@ -267,6 +285,20 @@ const ArGame = ({ onConfirmSong, onPreviewSong }) => {
         )}
 
         <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-[600px] h-[300px]">
+
+          <div className="absolute top-[45px] left-1/2 transform -translate-x-1/2 flex items-center justify-center z-50 w-full text-center">
+            {!playingSong ? (
+              <img src="/images/arrow.png" alt="向下放入" className="w-14 h-14 object-contain animate-bounce opacity-80" />
+            ) : (
+              <button
+                onClick={handleConfirmClick}
+                className="bg-[#FDFBF7] text-gray-800 border border-gray-200 px-8 py-4 rounded-full shadow-lg font-bold tracking-widest text-lg hover:bg-white hover:text-rose-600 transition-colors pointer-events-auto"
+              >
+                (點擊選擇)
+              </button>
+            )}
+          </div>
+
           <div className="w-full h-full relative flex items-end justify-center drop-shadow-2xl">
             <img src={radioPlayerUrl} alt="收音機" className="absolute bottom-[-20px] w-full object-contain pointer-events-none z-10" />
             <div className="absolute bottom-[55px] w-[180px] h-[110px] z-20 flex items-center justify-center bg-transparent">

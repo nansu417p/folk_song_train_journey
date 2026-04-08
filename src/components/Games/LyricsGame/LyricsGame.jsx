@@ -152,7 +152,7 @@ const LyricsGamePlay = ({ song, gameData, initialStickers, onHome, onLyricsGener
 
         <div className="flex flex-1 overflow-hidden relative">
           <div ref={lyricsScrollRef} {...lyricsScrollEvents} className="flex-[2] bg-white p-8 overflow-y-auto custom-scrollbar relative">
-            <p className="text-center text-gray-500 font-bold tracking-widest mb-10 border-b border-dashed border-gray-200 pb-4">拖曳右側的字句，拼貼那時代的歌詞</p>
+            <p className="text-center text-gray-500 font-bold tracking-widest mb-10 border-b border-dashed border-gray-200 pb-4">拖曳右側的句子，拼貼歌詞</p>
             <div className="flex flex-col gap-6 text-center font-serif text-xl md:text-2xl text-gray-800 leading-loose font-bold">
               {gameData.lines.map((line) => {
                 if (!line.text) return <div key={line.id} className="h-4"></div>;

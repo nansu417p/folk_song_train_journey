@@ -33,6 +33,9 @@ const SingAlongGame = ({ song, onHome, onRecordingComplete }) => {
 
   const startRecognitionRef = useRef(null);
   const restartIntervalRef = useRef(null);
+  
+  const savedTranscriptRef = useRef("");
+  const tempTranscriptRef = useRef("");
 
   useEffect(() => {
     activeLineIndexRef.current = activeLineIndex;
@@ -57,6 +60,8 @@ const SingAlongGame = ({ song, onHome, onRecordingComplete }) => {
       isPlayingRef.current = false;
       lastMatchTimeRef.current = 0;
       matchedWordsInCurrentLineRef.current = [];
+      savedTranscriptRef.current = "";
+      tempTranscriptRef.current = "";
     }
   }, [song]);
 
@@ -129,8 +134,11 @@ const SingAlongGame = ({ song, onHome, onRecordingComplete }) => {
           transcript += event.results[i][0].transcript;
         }
 
-        setLiveTranscript(transcript);
-        const cleanTranscript = transcript.replace(/[^\u4e00-\u9fa5a-zA-Z0-9]/g, '');
+        tempTranscriptRef.current = transcript;
+        const fullTranscript = savedTranscriptRef.current + transcript;
+
+        setLiveTranscript(fullTranscript);
+        const cleanTranscript = fullTranscript.replace(/[^\u4e00-\u9fa5a-zA-Z0-9]/g, '');
 
         if (cleanTranscript.length >= 2 && lyricsLines.length > 0) {
 
@@ -195,6 +203,8 @@ const SingAlongGame = ({ song, onHome, onRecordingComplete }) => {
 
             activeLineIndexRef.current = matchedIndex;
             matchedWordsInCurrentLineRef.current = [];
+            savedTranscriptRef.current = "";
+            tempTranscriptRef.current = "";
 
             if (lyricsContainerRef.current && lyricRefs.current[matchedIndex]) {
               const container = lyricsContainerRef.current;
@@ -218,7 +228,18 @@ const SingAlongGame = ({ song, onHome, onRecordingComplete }) => {
 
       recognition.onend = () => {
         setIsListening(false);
-      }
+        if (tempTranscriptRef.current) {
+          savedTranscriptRef.current += tempTranscriptRef.current;
+          tempTranscriptRef.current = "";
+        }
+        if (isPlayingRef.current && startRecognitionRef.current) {
+          setTimeout(() => {
+            if (isPlayingRef.current && startRecognitionRef.current) {
+              startRecognitionRef.current();
+            }
+          }, 100);
+        }
+      };
 
       try {
         recognition.start();
@@ -238,14 +259,9 @@ const SingAlongGame = ({ song, onHome, onRecordingComplete }) => {
       restartIntervalRef.current = setInterval(() => {
         if (isPlayingRef.current && recognitionRef.current) {
           try { recognitionRef.current.abort(); } catch (e) { }
-
-          setTimeout(() => {
-            if (isPlayingRef.current && startRecognitionRef.current) {
-              startRecognitionRef.current();
-            }
-          }, 50);
+          // abort 會觸發 onend，我們在裡面加入了自動保存之前的句字並重啟的機制。
         }
-      }, 50000);
+      }, 20000);
     } else {
       if (restartIntervalRef.current) {
         clearInterval(restartIntervalRef.current);
@@ -284,7 +300,7 @@ const SingAlongGame = ({ song, onHome, onRecordingComplete }) => {
       }
     }
 
-    if (isPlaying) {
+      if (isPlaying) {
       audioRef.current.pause();
       if (recognitionRef.current) {
         recognitionRef.current.onend = null;
@@ -292,6 +308,8 @@ const SingAlongGame = ({ song, onHome, onRecordingComplete }) => {
       }
       setIsListening(false);
       setLiveTranscript("");
+      savedTranscriptRef.current = "";
+      tempTranscriptRef.current = "";
 
       if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
         mediaRecorderRef.current.pause();

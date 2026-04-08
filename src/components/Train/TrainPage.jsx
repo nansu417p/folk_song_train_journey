@@ -66,11 +66,11 @@ const TrainPage = forwardRef(({ onSelectMode, onBack, ticket, cover, coverStatus
     if (!ticket) return 'mood-train';
     if (!mainSong) return 'ar';
     if (!cover && coverStatus !== 'generating') return 'ai-zimage';
-    if (!recording) return 'sing-along';
+    if (!lyrics) return 'lyrics';
     if (mainSong && mainSong.hasFace && !swapped && faceswapStatus !== 'generating') {
       return 'faceswap';
     }
-    if (!lyrics) return 'lyrics';
+    if (!recording) return 'sing-along';
     return 'capsule';
   };
 
@@ -82,8 +82,8 @@ const TrainPage = forwardRef(({ onSelectMode, onBack, ticket, cover, coverStatus
     const safeIndex = targetIndex === -1 ? 0 : targetIndex;
 
     const containerWidth = scrollRef.current.offsetWidth;
-    const carriageWidth = 525;
-    const headWidth = 525;
+    const carriageWidth = 682;
+    const headWidth = 682;
     const paddingLeft = 80;
     const target = (paddingLeft + headWidth) + (safeIndex * carriageWidth) - (containerWidth / 2) + (carriageWidth / 2);
     scrollRef.current.scrollTo({ left: target, behavior: 'auto' });
@@ -142,28 +142,30 @@ const TrainPage = forwardRef(({ onSelectMode, onBack, ticket, cover, coverStatus
         }}
       />
 
-      <div className="w-full flex flex-col items-center relative z-20 shrink-0">
+      <div className="w-full flex flex-col items-center absolute top-2 left-0 z-40 pointer-events-none shrink-0">
+        {/* 暫時隱藏旅程收集品文字區域
         {(ticket || cover || recording || swapped || lyrics) && (
-          <h3 className="text-gray-700 font-bold tracking-widest text-sm mb-4 bg-white/80 px-8 py-2.5 rounded-full border border-white/60 backdrop-blur-md shadow-md pointer-events-none mt-2">
+          <h3 className="text-gray-700 font-bold tracking-widest text-sm mb-2 bg-white/80 px-8 py-2.5 rounded-full border border-white/60 backdrop-blur-md shadow-md pointer-events-auto">
             旅程收集品
           </h3>
         )}
+        */}
 
-        <div className="flex flex-row justify-center items-center gap-8 w-full max-w-6xl h-[180px] pointer-events-auto mt-2">
+        <div className="flex flex-row justify-center items-center gap-4 w-full max-w-[1500px] h-[290px] pointer-events-auto px-2">
           {ticket && (
-            <motion.div initial={{ opacity: 0, y: -20, rotate: -5 }} animate={{ opacity: 1, y: 0, rotate: -2 }} whileHover={{ rotate: 0, scale: 1.05 }} onClick={() => setLightbox({ type: 'ticket', data: ticket })} className="cursor-pointer z-50 drop-shadow-md flex items-center justify-center w-[280px] h-[140px]">
-              <div className="relative transform scale-[0.45] origin-center">
-                <div className="absolute -top-6 left-1/2 -translate-x-1/2 w-32 h-10 bg-yellow-100/80 backdrop-blur-[2px] shadow-sm z-30 rotate-2 border border-yellow-200/50"></div>
+            <motion.div initial={{ opacity: 0, y: -20, rotate: -5 }} animate={{ opacity: 1, y: 0, rotate: -2 }} whileHover={{ rotate: 0, scale: 1.05 }} onClick={() => setLightbox({ type: 'ticket', data: ticket })} className="cursor-pointer z-50 drop-shadow-md flex items-center justify-center w-[450px] h-[225px] shrink-0">
+              <div className="relative transform scale-[0.7] origin-center">
+                <div className="absolute -top-6 left-1/2 -translate-x-1/2 w-40 h-10 bg-yellow-100/80 backdrop-blur-[2px] shadow-sm z-30 rotate-2 border border-yellow-200/50"></div>
                 <TicketCard captureImg={ticket.image} moodResult={ticket.mood} size="normal" />
               </div>
             </motion.div>
           )}
 
           {cover && (
-            <motion.div initial={{ opacity: 0, y: -20, rotate: 3 }} animate={{ opacity: 1, y: 0, rotate: 1 }} whileHover={{ rotate: 0, scale: 1.05 }} onClick={() => setLightbox({ type: 'cover', data: cover })} className="cursor-pointer z-40 drop-shadow-md w-[170px] flex items-center justify-center">
+            <motion.div initial={{ opacity: 0, y: -20, rotate: 3 }} animate={{ opacity: 1, y: 0, rotate: 1 }} whileHover={{ rotate: 0, scale: 1.05 }} onClick={() => setLightbox({ type: 'cover', data: cover })} className="cursor-pointer z-40 drop-shadow-md w-[270px] shrink-0 flex items-center justify-center">
               <div className="relative w-full aspect-[16/9]">
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-12 h-4 bg-[#fca5a5]/80 backdrop-blur-[2px] shadow-sm z-30 rotate-[-3deg] border border-red-200/50"></div>
-                <div className="bg-white p-1.5 pb-1 border border-gray-300 flex flex-col pointer-events-none w-full h-full">
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-16 h-5 bg-[#fca5a5]/80 backdrop-blur-[2px] shadow-sm z-30 rotate-[-3deg] border border-red-200/50"></div>
+                <div className="bg-white p-2 pb-1 border border-gray-300 flex flex-col pointer-events-none w-full h-full">
                   <img src={cover.image} className="w-full h-full object-cover border border-gray-200" draggable="false" />
                 </div>
               </div>
@@ -171,19 +173,19 @@ const TrainPage = forwardRef(({ onSelectMode, onBack, ticket, cover, coverStatus
           )}
 
           {recording && (
-            <motion.div initial={{ opacity: 0, y: -20, rotate: -2 }} animate={{ opacity: 1, y: 0, rotate: -1 }} whileHover={{ rotate: 0, scale: 1.05 }} onClick={() => setLightbox({ type: 'recording', data: recording })} className="cursor-pointer z-20 drop-shadow-md w-[120px] flex items-center justify-center">
-              <div className="relative transform scale-[0.45] origin-center pointer-events-none">
-                <div className="absolute -top-6 left-1/2 -translate-x-1/2 w-32 h-10 bg-green-100/80 backdrop-blur-[2px] shadow-sm z-30 rotate-1 border border-green-300/50"></div>
+            <motion.div initial={{ opacity: 0, y: -20, rotate: -2 }} animate={{ opacity: 1, y: 0, rotate: -1 }} whileHover={{ rotate: 0, scale: 1.05 }} onClick={() => setLightbox({ type: 'recording', data: recording })} className="cursor-pointer z-20 drop-shadow-md w-[190px] shrink-0 flex items-center justify-center">
+              <div className="relative transform scale-[0.7] origin-center pointer-events-none">
+                <div className="absolute -top-6 left-1/2 -translate-x-1/2 w-40 h-10 bg-green-100/80 backdrop-blur-[2px] shadow-sm z-30 rotate-1 border border-green-300/50"></div>
                 <CassetteUI title={recording.title} color="bg-green-700" size="normal" image={mainSong?.cassetteImage} />
               </div>
             </motion.div>
           )}
 
           {swapped && (
-            <motion.div initial={{ opacity: 0, y: -20, rotate: -3 }} animate={{ opacity: 1, y: 0, rotate: -1 }} whileHover={{ rotate: 0, scale: 1.05 }} onClick={() => setLightbox({ type: 'swapped', data: swapped })} className="cursor-pointer z-30 drop-shadow-md w-[170px] flex items-center justify-center">
+            <motion.div initial={{ opacity: 0, y: -20, rotate: -3 }} animate={{ opacity: 1, y: 0, rotate: -1 }} whileHover={{ rotate: 0, scale: 1.05 }} onClick={() => setLightbox({ type: 'swapped', data: swapped })} className="cursor-pointer z-30 drop-shadow-md w-[270px] shrink-0 flex items-center justify-center">
               <div className="relative w-full aspect-[16/9]">
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-12 h-4 bg-[#bae6fd]/80 backdrop-blur-[2px] shadow-sm z-30 rotate-[2deg] border border-blue-200/50"></div>
-                <div className="bg-white p-1.5 pb-1 border border-gray-300 flex flex-col pointer-events-none w-full h-full">
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-16 h-5 bg-[#bae6fd]/80 backdrop-blur-[2px] shadow-sm z-30 rotate-[2deg] border border-blue-200/50"></div>
+                <div className="bg-white p-2 pb-1 border border-gray-300 flex flex-col pointer-events-none w-full h-full">
                   <img src={swapped.image} className="w-full h-full object-cover border border-gray-200" draggable="false" />
                 </div>
               </div>
@@ -191,12 +193,12 @@ const TrainPage = forwardRef(({ onSelectMode, onBack, ticket, cover, coverStatus
           )}
 
           {lyrics && (
-            <motion.div initial={{ opacity: 0, y: -20, rotate: 4 }} animate={{ opacity: 1, y: 0, rotate: 2 }} whileHover={{ rotate: 0, scale: 1.05 }} onClick={() => setLightbox({ type: 'lyrics', data: lyrics })} className="cursor-pointer z-20 drop-shadow-md w-[110px] flex items-center justify-center">
-              <div className="relative w-full h-[120px]">
-                <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-12 h-4 bg-yellow-100/80 backdrop-blur-[2px] shadow-sm z-30 rotate-[-2deg] border border-yellow-300/50"></div>
-                <div className="bg-[#FDFBF7] p-2 border border-[#C0B8A3] w-full h-full flex flex-col relative overflow-hidden pointer-events-none mt-2">
-                  <div className="text-[6px] text-gray-500 leading-tight font-serif whitespace-pre-wrap opacity-70">{lyrics.content.substring(0, 100)}...</div>
-                  <div className="absolute bottom-0 left-0 w-full h-8 bg-gradient-to-t from-[#FDFBF7] to-transparent"></div>
+            <motion.div initial={{ opacity: 0, y: -20, rotate: 4 }} animate={{ opacity: 1, y: 0, rotate: 2 }} whileHover={{ rotate: 0, scale: 1.05 }} onClick={() => setLightbox({ type: 'lyrics', data: lyrics })} className="cursor-pointer z-20 drop-shadow-md w-[175px] shrink-0 flex items-center justify-center">
+              <div className="relative w-full h-[190px]">
+                <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-16 h-5 bg-yellow-100/80 backdrop-blur-[2px] shadow-sm z-30 rotate-[-2deg] border border-yellow-300/50"></div>
+                <div className="bg-[#FDFBF7] p-3 border border-[#C0B8A3] w-full h-full flex flex-col relative overflow-hidden pointer-events-none mt-2">
+                  <div className="text-[10px] text-gray-500 leading-tight font-serif whitespace-pre-wrap opacity-70">{lyrics.content.substring(0, 100)}...</div>
+                  <div className="absolute bottom-0 left-0 w-full h-10 bg-gradient-to-t from-[#FDFBF7] to-transparent"></div>
                 </div>
               </div>
             </motion.div>
@@ -205,26 +207,26 @@ const TrainPage = forwardRef(({ onSelectMode, onBack, ticket, cover, coverStatus
       </div>
 
       {!hasEnteredCarriage && (
-        <div className="text-center z-10 pointer-events-none mt-auto mb-2 shrink-0">
-          <h2 className="text-5xl font-bold mb-2 text-[#FDFBF7] drop-shadow-[0_4px_4px_rgba(0,0,0,0.6)] tracking-widest">點選車廂，進入體驗</h2>
+        <div className="absolute w-full text-center z-20 pointer-events-none bottom-[500px]">
+          <h2 className="text-5xl font-bold text-[#FDFBF7] drop-shadow-[0_4px_4px_rgba(0,0,0,0.6)] tracking-widest">點選車廂，進入體驗</h2>
         </div>
       )}
 
       <div
-        className="w-full h-[400px] overflow-hidden relative z-10 shrink-0"
+        className="w-full h-[520px] overflow-hidden relative z-10 shrink-0"
         style={{ transform: `translateY(${layoutConfig?.TRAIN_Y_OFFSET || '0px'})` }}
       >
         <div
           ref={scrollRef}
-          className={`w-full h-[420px] overflow-x-scroll overflow-y-hidden no-scrollbar flex items-start pt-4 pb-10 ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
+          className={`w-full h-[540px] overflow-x-scroll overflow-y-hidden no-scrollbar flex items-start pt-4 pb-10 ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
           onMouseDown={handleMouseDown}
           onMouseLeave={handleMouseLeave}
           onMouseUp={handleMouseUp}
           onMouseMove={handleMouseMove}
         >
-          <div className="flex items-end px-20 min-w-max h-[350px] relative">
-            <div className="relative w-[525px] h-full flex items-center justify-center shrink-0 z-20 pointer-events-none">
-              <img src="/images/train-head.png" alt="train head" className="absolute inset-0 w-full h-full object-contain drop-shadow-2xl" draggable="false" style={{ transform: 'translateY(-3px)' }} />
+          <div className="flex items-end px-20 min-w-max h-[455px] relative">
+            <div className="relative w-[682px] h-full flex items-center justify-center shrink-0 z-20 pointer-events-none">
+              <img src="/images/train-head.png" alt="train head" className="absolute inset-0 w-full h-full object-contain drop-shadow-2xl" draggable="false" style={{ transform: 'translateY(-6px)' }} />
             </div>
 
             {gameModes.map((mode) => {
@@ -238,11 +240,11 @@ const TrainPage = forwardRef(({ onSelectMode, onBack, ticket, cover, coverStatus
                   whileHover={isLocked ? {} : { scale: 1.02 }}
                   whileTap={isLocked ? {} : { scale: 0.98 }}
                   onClickCapture={(e) => { if (isLocked) return; handleCarriageClick(mode, e); }}
-                  className={`group relative w-[525px] h-full flex flex-col items-center justify-center shrink-0 z-10 hover:z-50 ${isLocked ? 'opacity-50 cursor-not-allowed grayscale' : 'cursor-pointer'}`}
+                  className={`group relative w-[682px] h-full flex flex-col items-center justify-center shrink-0 z-10 hover:z-50 ${isLocked ? 'opacity-50 cursor-not-allowed grayscale' : 'cursor-pointer'}`}
                 >
                   {hintModeId === mode.id && !isLocked && (
                     <div className="absolute top-10 transform -translate-x-1/2 z-50 flex flex-col items-center animate-bounce pointer-events-none mb-1">
-                      <img src="/images/arrow.png" alt="箭頭" className="w-12 h-12 drop-shadow-md" />
+                      <img src="/images/arrow.png" alt="箭頭" className="w-16 h-16 drop-shadow-md" />
                     </div>
                   )}
 
@@ -255,16 +257,16 @@ const TrainPage = forwardRef(({ onSelectMode, onBack, ticket, cover, coverStatus
                   />
 
                   <div className="absolute bottom-[calc(28%+10px)] left-1/2 transform -translate-x-1/2 z-20 flex flex-col items-center justify-center w-[60%] pointer-events-none">
-                    <div className="absolute bottom-full mb-3 w-max flex justify-center z-[60]">
-                      {isAiCover && coverStatus === 'generating' && <div className="bg-amber-100 text-amber-700 px-5 py-2 text-sm rounded-full font-bold shadow-md  border border-amber-200">正在繪製封面...</div>}
-                      {isAiCover && coverStatus === 'done' && <div className="bg-emerald-100 text-emerald-700 px-5 py-2 text-sm rounded-full font-bold shadow-md animate-bounce border border-emerald-200">封面繪製完成</div>}
-                      {isFaceSwap && faceswapStatus === 'generating' && <div className="bg-amber-100 text-amber-700 px-5 py-2 text-sm rounded-full font-bold shadow-md  border border-amber-200">正在沖洗封面...</div>}
-                      {isFaceSwap && faceswapStatus === 'done' && <div className="bg-emerald-100 text-emerald-700 px-5 py-2 text-sm rounded-full font-bold shadow-md animate-bounce border border-emerald-200">封面沖洗完成</div>}
-                      {isFaceSwap && mainSong && !mainSong.hasFace && faceswapStatus === 'idle' && <div className="bg-gray-800 text-white px-4 py-1.5 text-sm rounded-full font-bold shadow-md border border-gray-600">這首歌的封面不適用此體驗喔</div>}
+                    <div className="absolute bottom-full mb-4 w-max flex justify-center z-[60]">
+                      {isAiCover && coverStatus === 'generating' && <div className="bg-amber-100 text-amber-700 px-6 py-2 text-base rounded-full font-bold shadow-md border border-amber-200">正在繪製封面...</div>}
+                      {isAiCover && coverStatus === 'done' && <div className="bg-emerald-100 text-emerald-700 px-6 py-2 text-base rounded-full font-bold shadow-md animate-bounce border border-emerald-200">封面繪製完成</div>}
+                      {isFaceSwap && faceswapStatus === 'generating' && <div className="bg-amber-100 text-amber-700 px-6 py-2 text-base rounded-full font-bold shadow-md border border-amber-200">正在沖洗封面...</div>}
+                      {isFaceSwap && faceswapStatus === 'done' && <div className="bg-emerald-100 text-emerald-700 px-6 py-2 text-base rounded-full font-bold shadow-md animate-bounce border border-emerald-200">封面沖洗完成</div>}
+                      {isFaceSwap && mainSong && !mainSong.hasFace && faceswapStatus === 'idle' && <div className="bg-gray-800 text-white px-5 py-2 text-base rounded-full font-bold shadow-md border border-gray-600">這首歌的封面不適用此體驗喔</div>}
                     </div>
 
                     <div className="w-full transition-all duration-300 relative flex items-center justify-center py-2">
-                      <h3 className={`text-3xl font-bold tracking-[0.2em] transition-colors duration-300 ml-2 translate-y-[4px] ${isLocked ? 'text-gray-400 opacity-60' : 'text-[#FDFBF7] group-hover:text-white'}`}>
+                      <h3 className={`text-4xl font-bold tracking-[0.2em] transition-colors duration-300 ml-2 translate-y-[-2px] ${isLocked ? 'text-gray-400 opacity-60' : 'text-[#FDFBF7] group-hover:text-white'}`}>
                         {mode.title}
                       </h3>
                     </div>
@@ -273,8 +275,8 @@ const TrainPage = forwardRef(({ onSelectMode, onBack, ticket, cover, coverStatus
               );
             })}
 
-            <div className="relative w-[525px] h-full flex items-center justify-center shrink-0 z-20 pointer-events-none transform scale-x-[-1]">
-              <img src="/images/train-head.png" alt="train tail" className="absolute inset-0 w-full h-full object-contain drop-shadow-2xl" draggable="false" style={{ transform: 'translateY(-3px)' }} />
+            <div className="relative w-[682px] h-full flex items-center justify-center shrink-0 z-20 pointer-events-none transform scale-x-[-1]">
+              <img src="/images/train-head.png" alt="train tail" className="absolute inset-0 w-full h-full object-contain drop-shadow-2xl" draggable="false" style={{ transform: 'translateY(-6px)' }} />
             </div>
           </div>
         </div>

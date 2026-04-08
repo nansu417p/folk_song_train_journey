@@ -2,7 +2,7 @@ import React, { useState, useRef, useMemo, useEffect } from 'react';
 import { lyricsData } from '../../../data/lyricsData';
 import { CARRIAGE_NAMES } from '../../../data/gameModes';
 
-const BASE_PROMPT = "high quality, masterpiece, best quality, 1980s vintage taiwanese aesthetic, pure visual art, pure background, strictly no text, completely textless, nostalgic atmosphere, edge-to-edge, detailed, vibrant";
+const BASE_PROMPT = "high quality, masterpiece, best quality, 1980s vintage taiwanese aesthetic, pure visual art, pure background, strictly no text, completely textless, unlabeled, no lettering, nostalgic atmosphere, edge-to-edge, detailed, vibrant";
 
 const SUBJECT_CATEGORIES = [
   { label: "男歌手", type: "male" },
@@ -10,54 +10,55 @@ const SUBJECT_CATEGORIES = [
   { label: "風景照", type: "scenery" }
 ];
 
-const DETAILED_PROMPTS = {
-  male: [
-    "1boy, handsome young taiwanese male singer, 1980s retro hairstyle, holding acoustic guitar, looking at viewer, retro portrait photography",
-    "1boy, handsome young taiwanese male student singer, split turtleneck sweater, black rimmed glasses, soft melancholic eyes, 80s neat short hair, holding book, retro campus photography",
-    "1boy, mature taiwanese male folk singer, slightly unshaven, linen shirt, warm smile, wool vest, holding acoustic guitar close to body, closed eyes singing, natural sunlight"
-  ],
-  female: [
-    "1girl, beautiful young taiwanese female singer, 1980s retro long hair, gentle smile, looking at viewer, retro portrait photography",
-    "1girl, beautiful young taiwanese female singer, straight black hair with bangs (omega hair style), polka dot dress, gentle smile, holding microphone with two hands, studio light, city pop aesthetic",
-    "1girl, etherial taiwanese female singer-songwriter, long wavy perm hair, bohemian style long flowing dress, playing piano, looking away inspired, misty atmosphere, soft focus photography"
-  ],
-  scenery: [
-    "pure beautiful scenery, no humans, empty landscape, scenic view",
-    "pure visual art, empty retro train cabin, looking out the window, nostalgic atmosphere",
-    "scenic view, retro taiwanese street, old bicycle, vintage vibe, no humans",
-    "beautiful sunset over a calm lake, distant mountains, reflection on water, pure nature, 80s aesthetic"
-  ]
+const SUBJECT_TRAITS = {
+  male: {
+    hair: ["retro 1980s hairstyle", "bowl cut", "neat short hair", "feathered hair", "mid-split hair", "retro perm"],
+    outfit: ["striped polo shirt", "v-neck knit sweater", "white linen shirt", "denim jacket", "colorful windbreaker", "checkered shirt", "classic suit"],
+    accessory: ["holding acoustic guitar", "wearing black rimmed glasses", "holding a vintage book", "wearing a red scarf", "holding a walkman", "holding a microphone"],
+    vibe: ["youthful student look", "mature folk singer", "cool rock star", "melancholic dreamer", "smiling and cheerful", "intellectual songwriter"]
+  },
+  female: {
+    hair: ["long hair with bangs", "wavy perm", "omega hairstyle", "straight black hair", "high ponytail", "short bob with headband"],
+    outfit: ["polka dot dress", "oversized wool sweater", "floral blouse", "denim overall", "graceful qipao", "trench coat", "school uniform"],
+    accessory: ["holding a sunflower", "wearing a beret", "playing acoustic guitar", "holding a cassette tape", "wearing a pearl necklace", "holding a folding fan"],
+    vibe: ["innocent girl next door", "elegant lady", "etherial singer-songwriter", "energetic pop idol", "contemplative artist", "cheerful student"]
+  },
+  scenery: {
+    landscape: ["empty landscape", "retro train cabin", "taiwanese old street", "sea side", "mountain view", "city park"],
+    object: ["an old bicycle", "a wooden bench", "a rusty gate", "a vintage lamp post", "fallen leaves", "blooming flowers"],
+    mood: ["nostalgic atmosphere", "peaceful vibe", "misty focus", "golden hour lighting", "retro film grain"]
+  }
 };
 
 const PROMPT_BANK = {
   'visit_spring': {
-    seasons: [{ label: "春風", value: "gentle spring breeze, warm light" }, { label: "微雨", value: "light misty rain, damp atmosphere" }, { label: "晨霧", value: "morning fog on a mountain peak" }],
-    elements: [{ label: "小山丘", value: "a small distant mountain peak" }, { label: "長髮", value: "long black hair blowing in the wind" }, { label: "詩集", value: "an open vintage poetry book" }]
+    seasons: [{ label: "春風", value: "spring breeze" }, { label: "微雨", value: "light rain" }, { label: "晨霧", value: "morning fog" }],
+    elements: [{ label: "小山丘", value: "small hills" }, { label: "長髮", value: "long hair" }, { label: "詩集", value: "poetry book" }]
   },
   'season_rain': {
-    seasons: [{ label: "黃昏", value: "golden hour, beautiful sunset sky" }, { label: "陰天", value: "cloudy rainy season, grey sky" }, { label: "霓虹光", value: "blurry lights through a rainy window" }],
-    elements: [{ label: "緞帶", value: "colorful ribbons floating in the sky" }, { label: "撐傘", value: "walking in the rain concept, umbrella" }, { label: "城市街景", value: "city neon lights reflecting on wet street" }]
+    seasons: [{ label: "黃昏", value: "sunset sky" }, { label: "陰天", value: "cloudy sky" }, { label: "霓虹光", value: "neon lights" }],
+    elements: [{ label: "緞帶", value: "colorful ribbons" }, { label: "撐傘", value: "holding umbrella" }, { label: "城市街景", value: "city street view" }]
   },
   'if': {
-    seasons: [{ label: "清晨", value: "early morning sunrise, fresh dew" }, { label: "藍天", value: "fluffy white clouds in a clear blue sky" }, { label: "星空", value: "beautiful starry night sky" }],
-    elements: [{ label: "綠草", value: "green grass with morning dew drops" }, { label: "細雨", value: "soft gentle rain falling" }, { label: "沙灘", value: "clean white sandy beach" }]
+    seasons: [{ label: "清晨", value: "early morning" }, { label: "藍天", value: "blue sky, white clouds" }, { label: "星空", value: "starry night sky" }],
+    elements: [{ label: "綠草", value: "green grass" }, { label: "細雨", value: "gentle rain" }, { label: "沙灘", value: "beach" }]
   },
   'morning_wind': {
-    seasons: [{ label: "破曉", value: "breaking dawn, first light of the day" }, { label: "月亮", value: "transition from sunset to moonrise" }, { label: "黎明", value: "dim light of dawn" }],
-    elements: [{ label: "窗戶", value: "a half-open wooden window" }, { label: "海浪", value: "ocean waves crashing on rocks" }, { label: "落葉", value: "leaves blowing in the strong wind" }]
+    seasons: [{ label: "破曉", value: "dawn" }, { label: "月亮", value: "moon" }, { label: "黎明", value: "first light of morning" }],
+    elements: [{ label: "窗戶", value: "window" }, { label: "海浪", value: "ocean waves" }, { label: "落葉", value: "falling leaves" }]
   },
   'kapok_road': {
-    seasons: [{ label: "盛夏", value: "peak of summer, intense heat, vibrant" }, { label: "夏夜", value: "heavy warm summer night" }, { label: "夕陽", value: "burning orange sunset" }],
-    elements: [{ label: "木棉花", value: "vibrant red kapok flowers blooming" }, { label: "街道", value: "a long empty street perspective" }, { label: "公路", value: "highway to California, freedom concept" }]
+    seasons: [{ label: "盛夏", value: "summer day" }, { label: "夏夜", value: "summer night" }, { label: "夕陽", value: "sunset glow" }],
+    elements: [{ label: "木棉花", value: "kapok flowers" }, { label: "街道", value: "empty street" }, { label: "公路", value: "highway" }]
   }
 };
 
 const STYLES_BANK = [
-  { label: "寫真", value: "hyper-realistic photography, ultra-detailed, 8k resolution, raw photo, highly detailed face" },
-  { label: "水彩", value: "watercolor painting style, soft brush strokes, artistic illustration" },
-  { label: "油畫", value: "impasto oil painting texture, rich vivid colors, traditional art" },
-  { label: "復古", value: "1970s vintage film photography, film grain, nostalgic vignette, polaroid" },
-  { label: "極簡", value: "minimalist line art, clean vector illustration, white background" }
+  { label: "寫真", value: "hyper-realistic photography, sharp focus, 8k resolution, high contrast, ultra-detailed" },
+  { label: "水彩", value: "watercolor painting, soft brush strokes, artistic" },
+  { label: "油畫", value: "oil painting, thick impasto, vivid colors" },
+  { label: "復古", value: "vintage film photography, 1980s texture, film grain, nostalgic colors" },
+  { label: "極簡", value: "minimalist illustration, clean lines, flat colors" }
 ];
 
 const AiCoverGame_zimage = ({ song, onHome, coverStatus, generatedCoverImg, onStartGenerate, onSetMockCover, onCoverGenerated, hasExistingCover, onCancelCover }) => {
@@ -107,38 +108,76 @@ const AiCoverGame_zimage = ({ song, onHome, coverStatus, generatedCoverImg, onSt
 
     const promptParts = [];
 
-    let isRealistic = false;
-    if (selections.style) {
-      promptParts.push(`(((${selections.style.value})))`);
-      if (selections.style.label === "真實寫真") isRealistic = true;
-    } else {
-      promptParts.push("(((vintage taiwanese illustration style)))");
-    }
-
+    // 固定基礎美學
     promptParts.push(BASE_PROMPT);
 
-    let subjectDetailPrompt = "";
-    if (selections.subject) {
-      const pool = DETAILED_PROMPTS[selections.subject.type];
-      subjectDetailPrompt = pool[Math.floor(Math.random() * pool.length)];
+    // 判斷是否為夜晚場景
+    const isNight = selections.season?.value.includes('night') || selections.season?.value.includes('starry') || selections.element?.value.includes('night');
+
+    // 藝術風格
+    if (selections.style) {
+      promptParts.push(selections.style.value);
     } else {
-      const types = Object.keys(DETAILED_PROMPTS);
-      const randomType = types[Math.floor(Math.random() * types.length)];
-      const pool = DETAILED_PROMPTS[randomType];
-      subjectDetailPrompt = pool[Math.floor(Math.random() * pool.length)];
+      promptParts.push("vintage taiwanese illustration style");
     }
-    promptParts.push(`(${subjectDetailPrompt})`);
 
-    if (selections.element) promptParts.push(`featuring (${selections.element.value})`);
-    if (selections.season) promptParts.push(`during (${selections.season.value})`);
-    if (customWord.trim()) promptParts.push(`containing (${customWord.trim()})`);
+    // 主角或場景生成
+    let subjectText = "";
+    if (selections.subject && (selections.subject.type === 'male' || selections.subject.type === 'female')) {
+      const pool = SUBJECT_TRAITS[selections.subject.type];
+      const h = pool.hair[Math.floor(Math.random() * pool.hair.length)];
+      const o = pool.outfit[Math.floor(Math.random() * pool.outfit.length)];
+      const a = pool.accessory[Math.floor(Math.random() * pool.accessory.length)];
+      const v = pool.vibe[Math.floor(Math.random() * pool.vibe.length)];
+      
+      const genderTerm = selections.subject.type === 'male' ? "1boy" : "1girl";
+      subjectText = `${genderTerm}, taiwanese person, ${h}, wearing ${o}, ${a}, ${v}, retro 1980s portrait photography`;
+    } else {
+      // 風景隨機組裝
+      const pool = SUBJECT_TRAITS.scenery;
+      const l = pool.landscape[Math.floor(Math.random() * pool.landscape.length)];
+      const o = pool.object[Math.floor(Math.random() * pool.object.length)];
+      const m = pool.mood[Math.floor(Math.random() * pool.mood.length)];
+      subjectText = `pure visual art, ${l}, featuring ${o}, ${m}, 80s aesthetic, no humans`;
+    }
 
+    // 如果是夜晚，過濾掉主角描述中的陽光關鍵字並加入夜間燈光
+    if (isNight) {
+      subjectText = subjectText.replace(/natural sunlight|warm glow|bright sun|sunlight|golden hour/gi, "dim lighting, moonlite glow");
+      promptParts.push("dark night scene, starry night sky, deep shadows");
+    }
+    promptParts.push(subjectText);
+
+    // 季節與物件
+    if (selections.element) promptParts.push(selections.element.value);
+    if (selections.season) promptParts.push(selections.season.value);
+    
+    // 使用者自訂
+    if (customWord.trim()) promptParts.push(customWord.trim());
+
+    // 構圖優化
     promptParts.push("center composition");
+    
     const prompt = promptParts.join(", ");
 
-    const dynamicNegative = isRealistic
-      ? "illustration, painting, drawing, cartoon, anime, 3d render, sketch, text, font, chinese characters, watermark, logo, bad anatomy"
-      : "realistic photography, photo, realistic skin, real human, 3d render, text, font, chinese characters, watermark, logo, ugly";
+    const isRealistic = selections.style?.label === "寫真";
+    const clarityKeywords = isRealistic ? "sharp focus, high definition, crisp edges, highly detailed" : "";
+    const textNegatives = "text, font, chinese characters, hanzi, kanji, letters, alphabet, watermark, logo, sign, billboard, banner, typography, signature, brand, calligraphy, words, labels";
+    const qualityNegatives = "blur, blurry, out of focus, shaky, lowres, low quality, artifact, distorted, foggy, hazy, melted face, bad anatomy";
+    
+    let dynamicNegative = isRealistic
+      ? `illustration, painting, drawing, cartoon, anime, 3d render, sketch, ${textNegatives}, ${qualityNegatives}`
+      : `photorealistic, real photo, ${textNegatives}, ${qualityNegatives}`;
+
+    // 如果是寫真風格，加強相關描述
+    if (isRealistic) {
+      promptParts.push(clarityKeywords);
+    }
+
+    // 夜晚場景的負面提示詞補強
+    if (isNight) {
+      dynamicNegative += ", sun, daylight, bright sky, sun rays, sunlight";
+    }
 
     const payload = {
       prompt,

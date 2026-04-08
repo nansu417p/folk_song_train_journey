@@ -152,7 +152,7 @@ const LyricsGamePlay = ({ song, gameData, initialStickers, onHome, onLyricsGener
             <div className="flex flex-col">
               <div className="flex items-baseline gap-3">
                 <h2 className="text-[#F5F5F5] text-xl font-bold tracking-widest font-serif drop-shadow">{song.title}</h2>
-                <span className="text-white/80 text-sm font-serif tracking-wider">{song.singer}</span>
+                <span className="text-white/80 text-base font-serif tracking-wider">{song.singer}</span>
               </div>
             </div>
           </div>
@@ -175,7 +175,7 @@ const LyricsGamePlay = ({ song, gameData, initialStickers, onHome, onLyricsGener
               </div>
             ) : (
               <>
-                <h3 className="text-gray-500 font-bold tracking-widest text-sm bg-gray-100 px-6 py-2 rounded-full border border-gray-200 mb-2 shadow-sm">散落的字句</h3>
+                <h3 className="text-gray-500 font-bold tracking-widest text-base bg-gray-100 px-6 py-2 rounded-full border border-gray-200 mb-2 shadow-sm">散落的字句</h3>
                 {stickers.map((item) => <StickerItem key={item.id} id={item.id} word={item.text} />)}
               </>
             )}

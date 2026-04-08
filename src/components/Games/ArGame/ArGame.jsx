@@ -347,7 +347,7 @@ const ArGame = ({ onConfirmSong, onPreviewSong }) => {
                   <CassetteUI title={playingSong.title} size="normal" image={playingSong.cassetteImage} />
                 </div>
               ) : (
-                <div className="text-gray-400 font-bold text-xs tracking-widest flex flex-col items-center justify-center gap-1 w-full h-full border border-dashed border-gray-600 bg-black/60 rounded">
+                <div className="text-gray-400 font-bold text-sm tracking-widest flex flex-col items-center justify-center gap-1 w-full h-full border border-dashed border-gray-600 bg-black/60 rounded">
 
                 </div>
               )}

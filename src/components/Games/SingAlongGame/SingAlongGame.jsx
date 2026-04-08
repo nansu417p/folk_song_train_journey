@@ -438,7 +438,7 @@ const SingAlongGame = ({ song, onHome, onRecordingComplete }) => {
             <div className="flex flex-col">
               <div className="flex items-baseline gap-3">
                 <h2 className="text-[#F5F5F5] text-xl font-bold tracking-widest font-serif drop-shadow">{song.title}</h2>
-                <span className="text-white/80 text-sm font-serif tracking-wider">{song.singer}</span>
+                <span className="text-white/80 text-base font-serif tracking-wider">{song.singer}</span>
               </div>
             </div>
           </div>
@@ -515,11 +515,11 @@ const SingAlongGame = ({ song, onHome, onRecordingComplete }) => {
           <div className="flex flex-col flex-1 justify-center">
             <div className="w-full h-10 bg-[#111] rounded border-2 border-gray-600 shadow-inner flex items-center overflow-hidden px-4">
               {liveTranscript ? (
-                <span className="text-green-400 font-mono text-sm tracking-wider animate-fade-in truncate">
+                <span className="text-green-400 font-mono text-base tracking-wider animate-fade-in truncate">
                   &gt; {liveTranscript}
                 </span>
               ) : (
-                <span className="text-gray-600 font-mono text-sm tracking-wider">
+                <span className="text-gray-600 font-mono text-base tracking-wider">
                   {isListening ? '> (等待聲音輸入)' : '> 聲音紀錄'}
                 </span>
               )}

@@ -19,6 +19,20 @@ export default {
       fontFamily: {
         serif: ['"Noto Serif TC"', 'serif'], 
       },
+      fontSize: {
+        'xs': ['0.875rem', { lineHeight: '1.25rem' }], // 備用極小字 (14px)
+        'sm': ['1rem', { lineHeight: '1.5rem' }],     // Level 1: 標籤/輔助 (16px)
+        'base': ['1.125rem', { lineHeight: '1.75rem' }], // Level 2: 標準內文 (18px)
+        'lg': ['1.25rem', { lineHeight: '1.75rem' }],    // Level 3: 按鈕/強調 (20px)
+        'xl': ['1.5rem', { lineHeight: '2rem' }],       // Level 4: 小標題 (24px)
+        '2xl': ['1.875rem', { lineHeight: '2.25rem' }],  // Level 5: 重點標題 (30px)
+        '3xl': ['2.25rem', { lineHeight: '2.5rem' }],
+        '4xl': ['3rem', { lineHeight: '1' }],
+        '5xl': ['3.75rem', { lineHeight: '1' }],
+        '6xl': ['4.5rem', { lineHeight: '1' }],
+        '7xl': ['5rem', { lineHeight: '1' }],
+        '8xl': ['6rem', { lineHeight: '1' }],
+      },
       backgroundImage: {
         'paper-texture': "url('/assets/paper-texture.png')", // 預留紙質紋理位置
       }

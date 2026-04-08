@@ -120,7 +120,7 @@ const PostcardContent = ({ song, ticket, selectedCoverImg, customMessage, lyrics
           ) : (
             <div className="w-[450px] aspect-[16/9] flex items-center justify-center bg-gray-200 text-gray-500 font-bold tracking-widest text-2xl">無圖片紀錄</div>
           )}
-          <div className="absolute bottom-2 left-0 w-full text-center text-gray-500 text-sm font-bold tracking-widest pointer-events-none">民歌記憶．時光永存</div>
+          <div className="absolute bottom-2 left-0 w-full text-center text-gray-500 text-base font-bold tracking-widest pointer-events-none">民歌記憶．時光永存</div>
         </div>
       </CollageItem>
 
@@ -152,7 +152,7 @@ const PostcardContent = ({ song, ticket, selectedCoverImg, customMessage, lyrics
             <div className="absolute top-0 left-0 w-full h-[32px] leading-[32px] text-center block bg-gray-800 text-xs text-white font-bold tracking-widest">
               — 青春歌詞 —
             </div>
-            <div className="leading-loose tracking-widest whitespace-pre-wrap text-sm font-bold opacity-80 mt-10 h-full overflow-hidden text-gray-700 px-4 text-center">
+            <div className="leading-loose tracking-widest whitespace-pre-wrap text-base font-bold opacity-80 mt-10 h-full overflow-hidden text-gray-700 px-4 text-center">
               {lyrics ? lyrics.content : '歌詞尚未拼貼完成...'}
             </div>
           </div>
@@ -162,7 +162,7 @@ const PostcardContent = ({ song, ticket, selectedCoverImg, customMessage, lyrics
       <CollageItem initialX={680} initialY={530} initialRotate={7.5} initialScale={1} initialZ={40} isResetting={isResetting} bringToFront={bringToFront}>
         <div className="bg-[#FDFBF7] border-l-[6px] border-[#D2A679] p-4 pr-6 w-[380px] shadow-xl relative select-none inline-block">
           <h4 className="text-xs font-bold text-[#D2A679] mb-2 tracking-widest uppercase">旅程留言</h4>
-          <div className="text-sm leading-relaxed text-gray-700 font-bold italic pt-1">
+          <div className="text-base leading-relaxed text-gray-700 font-bold italic pt-1">
             「{customMessage || '這是一段專屬於民歌時代的美好回憶。'}」
           </div>
         </div>
@@ -258,24 +258,24 @@ const CapsuleGame = ({ song, ticket, cover, swapped, lyrics, recording, onHome }
                 <span className="transform -translate-y-[2px] leading-[0]">⟳</span>
               </button>
             </div>
-            <p className="text-gray-500 text-sm font-bold tracking-widest mt-2 leading-relaxed">輕輕拖曳與縮放<br />排版出獨一無二的回憶畫面</p>
+            <p className="text-gray-500 text-base font-bold tracking-widest mt-2 leading-relaxed">輕輕拖曳與縮放<br />排版出獨一無二的回憶畫面</p>
           </div>
 
           <div className="flex flex-col gap-2 mt-6 shrink-0">
             <div className="flex gap-4">
               <div onClick={() => !isCapturingImage && setSelectedCoverType('cover')} className={`flex-1 cursor-pointer rounded-sm overflow-hidden border-[3px] transition-all ${selectedCoverType === 'cover' ? 'border-red-600 shadow-[4px_4px_0_#7f1d1d] scale-[1.02]' : 'border-gray-400 opacity-60 hover:opacity-100'}`}>
-                {cover ? <img src={cover.image} className="w-full aspect-[16/9] object-cover bg-gray-200" alt="意境封面" draggable="false" /> : <div className="w-full aspect-[16/9] bg-gray-300 flex items-center justify-center text-xs font-bold tracking-widest">無相片</div>}
-                <div className="bg-gray-800 text-white text-center text-xs py-1.5 tracking-widest font-bold border-t-[2px] border-gray-600">時光畫筆</div>
+                {cover ? <img src={cover.image} className="w-full aspect-[16/9] object-cover bg-gray-200" alt="意境封面" draggable="false" /> : <div className="w-full aspect-[16/9] bg-gray-300 flex items-center justify-center text-sm font-bold tracking-widest">無相片</div>}
+                <div className="bg-gray-800 text-white text-center text-sm py-1.5 tracking-widest font-bold border-t-[2px] border-gray-600">時光畫筆</div>
               </div>
               <div onClick={() => !isCapturingImage && setSelectedCoverType('swapped')} className={`flex-1 cursor-pointer rounded-sm overflow-hidden border-[3px] transition-all ${selectedCoverType === 'swapped' ? 'border-red-600 shadow-[4px_4px_0_#7f1d1d] scale-[1.02]' : 'border-gray-400 opacity-60 hover:opacity-100'}`}>
-                {swapped ? <img src={swapped.image} className="w-full aspect-[16/9] object-cover bg-gray-200" alt="合照封面" draggable="false" /> : <div className="w-full aspect-[16/9] bg-gray-300 flex items-center justify-center text-xs font-bold tracking-widest">無合照</div>}
-                <div className="bg-gray-800 text-white text-center text-xs py-1.5 tracking-widest font-bold border-t-[2px] border-gray-600">歲月留影</div>
+                {swapped ? <img src={swapped.image} className="w-full aspect-[16/9] object-cover bg-gray-200" alt="合照封面" draggable="false" /> : <div className="w-full aspect-[16/9] bg-gray-300 flex items-center justify-center text-sm font-bold tracking-widest">無合照</div>}
+                <div className="bg-gray-800 text-white text-center text-sm py-1.5 tracking-widest font-bold border-t-[2px] border-gray-600">歲月留影</div>
               </div>
             </div>
           </div>
 
           <div className="flex flex-col mt-6">
-            <textarea disabled={isCapturingImage} value={customMessage} onChange={(e) => setCustomMessage(e.target.value)} placeholder="為這趟旅程留下一段文字紀念吧..." className="w-full h-32 md:h-40 bg-[#F4F1EA] border border-gray-300 rounded-xl p-4 font-serif text-gray-800 font-bold resize-none focus:outline-none focus:border-rose-400 shadow-inner leading-relaxed text-sm"></textarea>
+            <textarea disabled={isCapturingImage} value={customMessage} onChange={(e) => setCustomMessage(e.target.value)} placeholder="為這趟旅程留下一段文字紀念吧..." className="w-full h-32 md:h-40 bg-[#F4F1EA] border border-gray-300 rounded-xl p-4 font-serif text-gray-800 font-bold resize-none focus:outline-none focus:border-rose-400 shadow-inner leading-relaxed text-base"></textarea>
           </div>
 
           <div className="flex gap-4 mt-auto shrink-0 h-[56px] w-full items-center mb-4">

@@ -4,7 +4,6 @@ import {
   useSensor, useSensors, PointerSensor
 } from '@dnd-kit/core';
 import { useDraggable as useScrollDraggable } from 'react-use-draggable-scroll';
-import { lyricsData } from '../../../data/lyricsData';
 import { CARRIAGE_NAMES } from '../../../data/gameModes';
 
 function StickerItem({ id, word }) {
@@ -114,7 +113,7 @@ const LyricsGamePlay = ({ song, gameData, initialStickers, onHome, onLyricsGener
         if (newStickers.length === 0) {
           setTimeout(() => {
             setIsCompleted(true);
-            if (onLyricsGenerated) onLyricsGenerated({ title: song.title, content: lyricsData[song.id] });
+            if (onLyricsGenerated) onLyricsGenerated({ title: song.title, content: song.lyrics });
           }, 500);
         }
         return newStickers;
@@ -130,7 +129,7 @@ const LyricsGamePlay = ({ song, gameData, initialStickers, onHome, onLyricsGener
     setFilledGaps(allGaps);
     setStickers([]);
     setIsCompleted(true);
-    if (onLyricsGenerated) onLyricsGenerated({ title: song.title, content: lyricsData[song.id] });
+    if (onLyricsGenerated) onLyricsGenerated({ title: song.title, content: song.lyrics });
   };
 
   return (
@@ -216,7 +215,7 @@ const LyricsGame = ({ song, onHome, onLyricsGenerated }) => {
 
   useEffect(() => {
     if (song) {
-      const rawText = lyricsData[song.id];
+      const rawText = song.lyrics;
       if (rawText) {
         const allLines = rawText.split('\n')
           .map(l => l.trim())

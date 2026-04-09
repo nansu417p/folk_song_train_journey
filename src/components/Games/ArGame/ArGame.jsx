@@ -18,19 +18,23 @@ const ArGame = ({ onConfirmSong, onPreviewSong }) => {
   const fingerDomRef = useRef(null);
 
   const elementsDataRef = useRef(
-    folkSongs.map((song, index) => {
-      const angle = Math.random() * Math.PI * 2;
-      const speed = 0.175;
-      return {
-        id: song.id,
-        title: song.title,
-        cassetteImage: song.cassetteImage,
-        x: 15 + Math.random() * 70,
-        y: 15 + Math.random() * 40,
-        vx: Math.cos(angle) * speed,
-        vy: Math.sin(angle) * speed
-      };
-    })
+    [...folkSongs]
+      .sort(() => 0.5 - Math.random())
+      .slice(0, 5)
+      .map((song, index) => {
+        const angle = Math.random() * Math.PI * 2;
+        const speed = 0.175;
+        return {
+          id: song.id,
+          title: song.title,
+          cassetteImage: song.cassetteImage,
+          audioFileName: song.audioFileName, // 確保資料一致性
+          x: 15 + Math.random() * 70,
+          y: 15 + Math.random() * 40,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed
+        };
+      })
   );
 
   const grabbedIdRef = useRef(null);

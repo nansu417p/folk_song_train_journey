@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { lyricsData } from '../../../data/lyricsData';
 import { CARRIAGE_NAMES } from '../../../data/gameModes';
 
 const SingAlongGame = ({ song, onHome, onRecordingComplete }) => {
@@ -45,7 +44,7 @@ const SingAlongGame = ({ song, onHome, onRecordingComplete }) => {
 
   useEffect(() => {
     if (song) {
-      const rawText = lyricsData[song.id] || "找不到歌詞";
+      const rawText = song.lyrics || "找不到歌詞";
       const lines = rawText.split('\n').filter(line => line.trim().length > 0);
       setLyricsLines(lines);
       setActiveLineIndex(0);

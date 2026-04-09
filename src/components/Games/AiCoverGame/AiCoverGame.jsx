@@ -1,68 +1,11 @@
 import React, { useState, useRef, useMemo, useEffect } from 'react';
-import { lyricsData } from '../../../data/lyricsData';
+import { SUBJECT_CATEGORIES, SUBJECT_TRAITS, STYLES_BANK } from '../../../data/folkSongs';
 import { CARRIAGE_NAMES } from '../../../data/gameModes';
 
 const BASE_PROMPT = "high quality, masterpiece, best quality, 1980s vintage taiwanese aesthetic, pure visual art, pure background, strictly no text, completely textless, unlabeled, no lettering, nostalgic atmosphere, edge-to-edge, detailed, vibrant";
 
-const SUBJECT_CATEGORIES = [
-  { label: "男歌手", type: "male" },
-  { label: "女歌手", type: "female" },
-  { label: "風景照", type: "scenery" }
-];
-
-const SUBJECT_TRAITS = {
-  male: {
-    hair: ["retro 1980s hairstyle", "bowl cut", "neat short hair", "feathered hair", "mid-split hair", "retro perm"],
-    outfit: ["striped polo shirt", "v-neck knit sweater", "white linen shirt", "denim jacket", "colorful windbreaker", "checkered shirt", "classic suit"],
-    accessory: ["holding acoustic guitar", "wearing black rimmed glasses", "holding a vintage book", "wearing a red scarf", "holding a walkman", "holding a microphone"],
-    vibe: ["youthful student look", "mature folk singer", "cool rock star", "melancholic dreamer", "smiling and cheerful", "intellectual songwriter"]
-  },
-  female: {
-    hair: ["long hair with bangs", "wavy perm", "omega hairstyle", "straight black hair", "high ponytail", "short bob with headband"],
-    outfit: ["polka dot dress", "oversized wool sweater", "floral blouse", "denim overall", "graceful qipao", "trench coat", "school uniform"],
-    accessory: ["holding a sunflower", "wearing a beret", "playing acoustic guitar", "holding a cassette tape", "wearing a pearl necklace", "holding a folding fan"],
-    vibe: ["innocent girl next door", "elegant lady", "etherial singer-songwriter", "energetic pop idol", "contemplative artist", "cheerful student"]
-  },
-  scenery: {
-    landscape: ["empty landscape", "retro train cabin", "taiwanese old street", "sea side", "mountain view", "city park"],
-    object: ["an old bicycle", "a wooden bench", "a rusty gate", "a vintage lamp post", "fallen leaves", "blooming flowers"],
-    mood: ["nostalgic atmosphere", "peaceful vibe", "misty focus", "golden hour lighting", "retro film grain"]
-  }
-};
-
-const PROMPT_BANK = {
-  'visit_spring': {
-    seasons: [{ label: "春風", value: "spring breeze" }, { label: "微雨", value: "light rain" }, { label: "晨霧", value: "morning fog" }],
-    elements: [{ label: "小山丘", value: "small hills" }, { label: "長髮", value: "long hair" }, { label: "詩集", value: "poetry book" }]
-  },
-  'season_rain': {
-    seasons: [{ label: "黃昏", value: "sunset sky" }, { label: "陰天", value: "cloudy sky" }, { label: "霓虹光", value: "neon lights" }],
-    elements: [{ label: "緞帶", value: "colorful ribbons" }, { label: "撐傘", value: "holding umbrella" }, { label: "城市街景", value: "city street view" }]
-  },
-  'if': {
-    seasons: [{ label: "清晨", value: "early morning" }, { label: "藍天", value: "blue sky, white clouds" }, { label: "星空", value: "starry night sky" }],
-    elements: [{ label: "綠草", value: "green grass" }, { label: "細雨", value: "gentle rain" }, { label: "沙灘", value: "beach" }]
-  },
-  'morning_wind': {
-    seasons: [{ label: "破曉", value: "dawn" }, { label: "月亮", value: "moon" }, { label: "黎明", value: "first light of morning" }],
-    elements: [{ label: "窗戶", value: "window" }, { label: "海浪", value: "ocean waves" }, { label: "落葉", value: "falling leaves" }]
-  },
-  'kapok_road': {
-    seasons: [{ label: "盛夏", value: "summer day" }, { label: "夏夜", value: "summer night" }, { label: "夕陽", value: "sunset glow" }],
-    elements: [{ label: "木棉花", value: "kapok flowers" }, { label: "街道", value: "empty street" }, { label: "公路", value: "highway" }]
-  }
-};
-
-const STYLES_BANK = [
-  { label: "寫真", value: "hyper-realistic photography, sharp focus, 8k resolution, high contrast, ultra-detailed" },
-  { label: "水彩", value: "watercolor painting, soft brush strokes, artistic" },
-  { label: "油畫", value: "oil painting, thick impasto, vivid colors" },
-  { label: "復古", value: "vintage film photography, 1980s texture, film grain, nostalgic colors" },
-  { label: "極簡", value: "minimalist illustration, clean lines, flat colors" }
-];
-
 const AiCoverGame_zimage = ({ song, onHome, coverStatus, generatedCoverImg, onStartGenerate, onSetMockCover, onCoverGenerated, hasExistingCover, onCancelCover }) => {
-  const currentLyrics = useMemo(() => lyricsData[song.id] || "（找不到歌詞）", [song.id]);
+  const currentLyrics = useMemo(() => song.lyrics || "（找不到歌詞）", [song.lyrics]);
   const [isExtracted, setIsExtracted] = useState(false);
 
   const [currentOptions, setCurrentOptions] = useState({ subjects: [], seasons: [], elements: [], styles: [] });
@@ -72,7 +15,8 @@ const AiCoverGame_zimage = ({ song, onHome, coverStatus, generatedCoverImg, onSt
   const getRandomItems = (arr, num) => [...arr].sort(() => 0.5 - Math.random()).slice(0, num);
 
   const handleExtractLyrics = () => {
-    const bank = PROMPT_BANK[song.id] || PROMPT_BANK['kapok_road'];
+    // 從傳入的 song 物件中直接讀取 promptBank 選項
+    const bank = song.promptBank || { seasons: [], elements: [] };
     const newOptions = {
       subjects: SUBJECT_CATEGORIES,
       seasons: getRandomItems(bank.seasons, 3),
@@ -83,10 +27,10 @@ const AiCoverGame_zimage = ({ song, onHome, coverStatus, generatedCoverImg, onSt
 
     // Auto-select one item from each category randomly
     setSelections({
-      subject: newOptions.subjects[Math.floor(Math.random() * newOptions.subjects.length)],
-      season: newOptions.seasons[Math.floor(Math.random() * newOptions.seasons.length)],
-      element: newOptions.elements[Math.floor(Math.random() * newOptions.elements.length)],
-      style: newOptions.styles[Math.floor(Math.random() * newOptions.styles.length)]
+      subject: newOptions.subjects.length > 0 ? newOptions.subjects[Math.floor(Math.random() * newOptions.subjects.length)] : null,
+      season: newOptions.seasons.length > 0 ? newOptions.seasons[Math.floor(Math.random() * newOptions.seasons.length)] : null,
+      element: newOptions.elements.length > 0 ? newOptions.elements[Math.floor(Math.random() * newOptions.elements.length)] : null,
+      style: newOptions.styles.length > 0 ? newOptions.styles[Math.floor(Math.random() * newOptions.styles.length)] : null
     });
 
     setIsExtracted(true);

@@ -362,8 +362,8 @@ function App() {
 
             <div className="relative z-20 w-full max-w-4xl px-6 flex flex-col items-center justify-between h-[420px] md:h-[480px]">
               <div className="flex flex-col items-center text-center mt-20">
-                <h1 className="text-7xl md:text-8xl font-black tracking-[0.3em] mb-6 text-white drop-shadow-[0_4px_16px_rgba(255,255,255,0.4)] font-serif">民歌旅程</h1>
-                <p className="text-2xl md:text-3xl text-gray-100 tracking-[0.35em] drop-shadow-md font-serif font-medium">乘著歌聲，回到最純粹的年代</p>
+                <h1 className="text-7xl md:text-8xl font-black tracking-[0.3em] mb-6 text-white drop-shadow-[0_4px_4px_rgba(0,0,0,0.6)] font-serif">民歌旅程</h1>
+                <p className="text-2xl md:text-3xl text-gray-100 tracking-[0.35em] drop-shadow-[0_4px_4px_rgba(0,0,0,0.6)] font-serif font-medium">乘著歌聲，回到最純粹的年代</p>
               </div>
 
               <div className="flex flex-col items-center gap-5 pointer-events-auto w-full mb-10">
@@ -390,8 +390,8 @@ function App() {
 
             <div className="relative z-20 w-full max-w-4xl px-8 flex flex-col items-center justify-between h-[420px] md:h-[480px]">
               <div className="flex flex-col items-center text-center mt-2">
-                <h2 className="text-4xl md:text-5xl font-bold text-white tracking-widest mb-10 drop-shadow-lg font-serif">準備好開始這趟民歌旅程了嗎？</h2>
-                <div className="text-xl md:text-2xl text-gray-50 leading-loose tracking-[0.15em] text-center drop-shadow-md space-y-6 font-medium font-serif">
+                <h2 className="text-4xl md:text-5xl font-bold text-white tracking-widest mb-10 drop-shadow-[0_4px_4px_rgba(0,0,0,0.6)] font-serif">準備好開始民歌旅程了嗎？</h2>
+                <div className="text-xl md:text-2xl text-gray-50 leading-loose tracking-[0.15em] text-center drop-shadow-[0_4px_4px_rgba(0,0,0,0.6)] space-y-6 font-medium font-serif">
                   <p>這是一趟沒有喧囂，只有吉他與歌聲的旅程。</p>
                   <p>我們將穿梭於車廂之間，留下屬於您的獨特回憶。</p>
                   <p>跟著熟悉的旋律，放鬆心情，</p>
@@ -557,8 +557,8 @@ function App() {
             <div className="absolute inset-0 pointer-events-none opacity-50 z-0" style={getBgStyle('/home-bg_2.png')} />
             <div className="absolute inset-0 bg-black/30 z-0 pointer-events-none"></div>
             <div className="relative z-20 text-center flex flex-col items-center max-w-3xl px-8">
-              <h2 className="text-4xl md:text-5xl font-bold text-white tracking-widest mb-10 drop-shadow-lg">列車即將到站</h2>
-              <p className="text-xl md:text-2xl text-gray-100 leading-loose tracking-[0.15em] mb-16 drop-shadow-md text-center font-medium">
+              <h2 className="text-4xl md:text-5xl font-bold text-white tracking-widest mb-10 drop-shadow-[0_4px_4px_rgba(0,0,0,0.6)]">列車即將到站</h2>
+              <p className="text-xl md:text-2xl text-gray-100 leading-loose tracking-[0.15em] mb-16 drop-shadow-[0_4px_4px_rgba(0,0,0,0.6)] text-center font-medium">
                 這段專屬於您的民歌回憶已化作旋律，<br />希望這份溫暖的感動，能繼續在心中傳唱。
               </p>
               <div className="flex gap-6 w-full justify-center">

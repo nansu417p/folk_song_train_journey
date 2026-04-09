@@ -181,7 +181,7 @@ const MoodTrainGame = ({ onMoodDetected, onTicketGenerated }) => {
           </div>
 
           <div className="flex w-full gap-4 mt-6 h-14 shrink-0 flex-col justify-center relative">
-            {step === 'intro' && <button onClick={startScan} disabled={!cameraReady} className="btn-primary w-full text-lg py-4 h-full disabled:bg-gray-300 disabled:text-gray-500 disabled:shadow-none disabled:hover:translate-y-0 disabled:cursor-not-allowed">點擊拍攝，捕捉心情</button>}
+            {step === 'intro' && <button onClick={startScan} disabled={!cameraReady} className="btn-primary w-full text-lg py-4 h-full disabled:bg-gray-300 disabled:text-gray-500 disabled:shadow-none disabled:hover:translate-y-0 disabled:cursor-not-allowed">點擊拍攝</button>}
             {step === 'scanning' && <div className="w-full h-full flex items-center justify-center text-gray-600 font-bold animate-pulse tracking-widest bg-white rounded-full border border-gray-200 shadow-inner">正在為您印製專屬車票...</div>}
             {step === 'result' && (
               <button onClick={handleReScan} className="btn-secondary w-full h-full text-lg py-0 border-gray-300">重新拍攝</button>
@@ -191,7 +191,7 @@ const MoodTrainGame = ({ onMoodDetected, onTicketGenerated }) => {
 
         {/* 右側：車長廣播與領取車票 */}
         <div className="w-1/2 flex flex-col items-center bg-[#F9F7F1] rounded-3xl shadow-xl border border-gray-300 p-6 h-full relative">
-          
+
           <div className="w-full bg-white py-2 px-4 rounded-2xl shadow-md border border-gray-300 relative mb-4 shrink-0">
             <h3 className="font-bold text-gray-800 mb-1 tracking-widest text-base font-serif border-b-2 border-rose-300 pb-1 inline-block">車長廣播</h3>
             <p className="text-gray-800 leading-snug font-bold tracking-widest text-base px-1 py-1 flex items-start">
@@ -209,8 +209,8 @@ const MoodTrainGame = ({ onMoodDetected, onTicketGenerated }) => {
 
           <div className="flex h-14 mt-6 w-full shrink-0">
             {step === 'result' && (
-              <button 
-                onClick={() => { setIsCameraActive(false); onTicketGenerated(captureImg, moodResult); }} 
+              <button
+                onClick={() => { setIsCameraActive(false); onTicketGenerated(captureImg, moodResult); }}
                 className="btn-primary flex-1 text-lg h-full transition-all duration-700 opacity-100 translate-y-0"
               >
                 領取車票

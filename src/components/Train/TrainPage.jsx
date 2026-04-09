@@ -266,7 +266,7 @@ const TrainPage = forwardRef(({ onSelectMode, onBack, ticket, cover, coverStatus
                     </div>
 
                     <div className="w-full transition-all duration-300 relative flex items-center justify-center py-2">
-                      <h3 className={`text-4xl font-bold tracking-[0.2em] transition-colors duration-300 ml-2 translate-y-[-2px] ${isLocked ? 'text-gray-400 opacity-60' : 'text-[#FDFBF7] group-hover:text-white'}`}>
+                      <h3 className={`text-4xl font-bold tracking-[0.2em] transition-colors duration-300 ml-2 translate-y-[-0px] ${isLocked ? 'text-gray-400 opacity-60' : 'text-[#FDFBF7] group-hover:text-white'}`}>
                         {mode.title}
                       </h3>
                     </div>

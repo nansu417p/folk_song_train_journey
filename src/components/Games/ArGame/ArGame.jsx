@@ -332,7 +332,7 @@ const ArGame = ({ onConfirmSong, onPreviewSong }) => {
             ) : (
               <button
                 onClick={handleConfirmClick}
-                className="bg-red-600 text-white border border-red-500 px-8 py-4 rounded-full shadow-lg font-bold tracking-widest text-lg hover:bg-red-500 transition-colors pointer-events-auto"
+                className="btn-primary pointer-events-auto"
               >
                 點擊選擇
               </button>

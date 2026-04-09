@@ -289,7 +289,7 @@ const CapsuleGame = ({ song, ticket, cover, swapped, lyrics, recording, onHome }
               </div>
             )}
 
-            <button onClick={handleDownloadImage} disabled={isGenerating || isCapturingImage} className={`flex-1 h-full text-base md:text-lg flex items-center justify-center m-0 transition-opacity ${isGenerating || isCapturingImage ? 'bg-gray-400 text-white rounded-full font-bold tracking-widest cursor-wait shadow-sm' : 'btn-primary'}`} style={{ marginTop: '0', marginBottom: '0' }}>
+            <button onClick={handleDownloadImage} disabled={isGenerating || isCapturingImage} className={`flex-1 h-full flex items-center justify-center m-0 transition-opacity ${isGenerating || isCapturingImage ? 'bg-gray-400 text-white rounded-full font-bold tracking-widest cursor-wait shadow-sm' : 'btn-primary'}`} style={{ marginTop: '0', marginBottom: '0' }}>
               {isCapturingImage ? "正在為您印製..." : isGenerating ? "處理中..." : "下載回憶明信片"}
             </button>
           </div>

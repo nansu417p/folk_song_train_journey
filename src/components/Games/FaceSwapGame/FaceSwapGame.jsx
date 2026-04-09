@@ -109,14 +109,14 @@ const FaceSwapGame = ({ song, onHome, faceswapStatus, generatedSwappedImg, onSta
             <button
               onClick={() => { onSetMockSwap(`/images/${song.audioFileName.replace('.mp3', '.jpg')}`); onHome(); }}
               disabled={faceswapStatus === 'generating' || isScanning}
-              className="btn-secondary w-1/3 text-base disabled:opacity-50 font-bold tracking-widest disabled:cursor-not-allowed"
+              className="btn-secondary w-1/3 disabled:opacity-50 font-bold tracking-widest disabled:cursor-not-allowed"
             >
-              保留經典封面
+              經典封面
             </button>
             <button
               onClick={handleCaptureAndSwap}
               disabled={!isCameraReady || !base64Template || faceswapStatus === 'generating' || isScanning}
-              className="btn-primary flex-1 text-lg disabled:opacity-70 disabled:bg-gray-400 disabled:cursor-not-allowed"
+              className="btn-primary flex-1 disabled:opacity-70 disabled:bg-gray-400 disabled:cursor-not-allowed"
             >
               {isScanning ? '正在拍攝...' : '點擊拍攝，化身封面主角'}
             </button>
@@ -125,7 +125,7 @@ const FaceSwapGame = ({ song, onHome, faceswapStatus, generatedSwappedImg, onSta
 
         {/* 右側：成果展示與領取 */}
         <div className="w-1/2 flex flex-col items-center bg-[#F9F7F1] rounded-3xl shadow-xl border border-gray-300 p-6 h-full relative">
-          
+
           {/* 上方標籤區塊 */}
           <div className="flex h-12 w-full mb-4 items-center justify-center shrink-0">
             {faceswapStatus === 'done' && generatedSwappedImg ? (
@@ -179,7 +179,7 @@ const FaceSwapGame = ({ song, onHome, faceswapStatus, generatedSwappedImg, onSta
           <div className="flex h-14 mt-6 w-full shrink-0">
             {faceswapStatus === 'done' && generatedSwappedImg && (
               <div className="flex justify-center items-center gap-3 animate-fade-in-up w-full h-full">
-                <button onClick={handleClaim} disabled={isClaiming} className="btn-primary flex-1 text-lg h-full disabled:opacity-50 disabled:cursor-not-allowed">
+                <button onClick={handleClaim} disabled={isClaiming} className="btn-primary flex-1 h-full disabled:opacity-50 disabled:cursor-not-allowed">
                   {isClaiming ? "處理中..." : (hasExistingSwap ? "替換封面" : "領取專輯封面")}
                 </button>
                 <button

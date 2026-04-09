@@ -22,7 +22,7 @@
 @layer components {
   /* 統一按鈕樣式 */
   .btn-primary {
-    @apply px-10 py-4 bg-folk-red text-white font-bold text-xl rounded-full shadow-md tracking-widest cursor-pointer;
+    @apply flex items-center justify-center px-10 py-3 bg-folk-red text-white font-bold text-xl rounded-full shadow-md tracking-widest cursor-pointer;
     transition: background-color 200ms ease, transform 200ms ease, box-shadow 200ms ease;
   }
   .btn-primary:hover {
@@ -31,7 +31,7 @@
   }
   
   .btn-secondary {
-    @apply px-10 py-4 bg-folk-wood text-white font-bold text-xl rounded-full shadow-md tracking-widest cursor-pointer;
+    @apply flex items-center justify-center px-10 py-3 bg-folk-wood text-white font-bold text-xl rounded-full shadow-md tracking-widest cursor-pointer;
     transition: background-color 200ms ease, transform 200ms ease, box-shadow 200ms ease;
   }
   .btn-secondary:hover {

@@ -503,10 +503,10 @@ const SingAlongGame = ({ song, onHome, onRecordingComplete }) => {
                   handleFinishAndSave();
                 }
               }}
-              className={`transition-all duration-300 text-lg w-full max-w-[320px] truncate shrink-0
+              className={`transition-all duration-300 w-full max-w-[320px] truncate shrink-0
                    ${!hasStarted
-                  ? 'btn-primary py-4 '
-                  : 'bg-[#B83E2F] hover:bg-red-700 text-white py-4 rounded-full font-bold tracking-widest shadow-[0_4px_12px_rgba(0,0,0,0.6)] border border-red-900'}`}
+                  ? 'btn-primary'
+                  : 'btn-primary border-red-900 shadow-[0_4px_12px_rgba(0,0,0,0.6)]'}`}
             >
               {!hasStarted ? '開始錄音' : '錄音完成'}
             </button>

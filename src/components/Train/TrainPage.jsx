@@ -142,7 +142,7 @@ const TrainPage = forwardRef(({ onSelectMode, onBack, ticket, cover, coverStatus
         />
       </div>
 
-      <div className="w-full flex flex-col items-center absolute top-[80px] md:top-[120px] left-0 z-40 pointer-events-none shrink-0">
+      <div className="w-full flex flex-col items-center absolute top-[30px] md:top-[40px] left-0 z-30 pointer-events-none shrink-0">
         <div className="flex flex-row justify-center items-center gap-4 w-full max-w-[1500px] h-[290px] pointer-events-auto px-2">
           {ticket && (
             <motion.div initial={{ opacity: 0, y: -20, rotate: -5 }} animate={{ opacity: 1, y: 0, rotate: -2 }} whileHover={{ rotate: 0, scale: 1.05 }} onClick={() => setLightbox({ type: 'ticket', data: ticket })} className="cursor-pointer z-50 drop-shadow-md flex items-center justify-center w-[450px] h-[225px] shrink-0">
@@ -213,17 +213,17 @@ const TrainPage = forwardRef(({ onSelectMode, onBack, ticket, cover, coverStatus
       )}
 
       <div
-        className="absolute bottom-[25px] w-full h-[520px] overflow-hidden z-10 shrink-0"
+        className="absolute bottom-[25px] w-full h-[520px] overflow-hidden z-40 shrink-0 pointer-events-none"
       >
         <div
           ref={scrollRef}
-          className={`w-full h-[540px] overflow-x-scroll overflow-y-hidden no-scrollbar flex items-start pt-4 pb-10 ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
+          className={`w-full h-[540px] overflow-x-scroll overflow-y-hidden no-scrollbar flex items-start pt-4 pb-10 ${isDragging ? 'cursor-grabbing' : 'cursor-grab'} pointer-events-none`}
           onMouseDown={handleMouseDown}
           onMouseLeave={handleMouseLeave}
           onMouseUp={handleMouseUp}
           onMouseMove={handleMouseMove}
         >
-          <div className="flex items-end px-20 min-w-max h-[455px] relative">
+          <div className="flex items-end px-20 min-w-max h-[455px] relative pointer-events-auto">
             <div className="relative w-[682px] h-full flex items-center justify-center shrink-0 z-20 pointer-events-none">
               <img src="/images/train-head.png" alt="train head" className="absolute inset-0 w-full h-full object-contain drop-shadow-2xl" draggable="false" style={{ transform: 'translateY(-6px)' }} />
             </div>

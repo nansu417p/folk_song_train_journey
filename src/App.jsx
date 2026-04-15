@@ -331,7 +331,7 @@ function App() {
     <div className="folk-card">
       <h2 className="text-3xl font-bold text-folk-dark mb-6 tracking-widest pb-4">還沒選好這趟旅程的專屬歌曲呢</h2>
       <p className="text-gray-600 mb-10 text-xl leading-loose font-medium">
-        請先到「{CARRIAGE_NAMES.AR_CATCH}」挑選一首最觸動您的歌，<br />它將會化作旋律，陪伴我們走過接下來的每一個車廂。
+        請先到「{CARRIAGE_NAMES.AR_CATCH}」挑選一首歌，<br />它將會化作旋律，陪伴我們走過接下來的每一個車廂。
       </p>
       <button
         onClick={() => handleModeSelect({ id: 'ar', locked: false })}

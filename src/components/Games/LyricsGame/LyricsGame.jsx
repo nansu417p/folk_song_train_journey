@@ -142,7 +142,7 @@ const LyricsGamePlay = ({ song, gameData, initialStickers, onHome, onLyricsGener
         )}
       </div>
 
-      <div className="flex w-full max-w-[80vw] h-[82vh] bg-[#FDFBF7] flex-col rounded-3xl shadow-xl border border-gray-300 overflow-hidden relative z-30 mt-6">
+      <div className="flex w-full max-w-[1200px] w-[95vw] xl:w-[85vw] h-auto min-h-[500px] aspect-[16/10] max-h-[85vh] bg-[#FDFBF7] flex-col rounded-3xl shadow-xl border border-gray-300 overflow-hidden relative z-30 mt-6 justify-center">
         <div className="w-full bg-[#D64F3E] p-4 px-6 flex justify-between items-center shadow-md z-10 border-b-4 border-[#B83E2F]">
           <div className="flex items-center gap-4 min-w-[200px]">
             <div className="flex items-center justify-center mr-2">

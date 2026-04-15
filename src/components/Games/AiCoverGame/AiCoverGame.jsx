@@ -138,8 +138,8 @@ const AiCoverGame_zimage = ({ song, onHome, coverStatus, generatedCoverImg, onSt
 
   return (
     <div className="relative w-full h-full bg-transparent flex flex-col items-center justify-center p-8 overflow-hidden">
-      <div className="flex w-full max-w-[80vw] h-[82vh] gap-8 items-center justify-center mt-6">
-        
+      <div className="flex w-full max-w-[1200px] w-[95vw] xl:w-[85vw] h-auto min-h-[500px] aspect-[16/10] max-h-[85vh] gap-4 md:gap-8 items-center justify-center mt-6">
+
         {/* 左側：選項控制區 或 舊封面選擇區 */}
         {coverStatus === 'done' && generatedCoverImg && hasExistingCover ? (
           <div className="w-1/2 flex flex-col items-center bg-[#F9F7F1] rounded-3xl shadow-xl border border-gray-300 p-6 h-full relative">
@@ -147,12 +147,12 @@ const AiCoverGame_zimage = ({ song, onHome, coverStatus, generatedCoverImg, onSt
               <div className="font-bold tracking-widest text-[#D2A679] text-xl font-serif">原本的封面</div>
             </div>
             <div className="w-full relative shadow-inner border border-gray-300 bg-[#F4F1EA] rounded-xl flex-[1] flex flex-col items-center justify-center overflow-hidden" style={{ aspectRatio: '1024/720' }}>
-               <img src={existingCoverImg || song.coverImage || "/images/default_cover.jpg"} alt="Original Cover" className="absolute inset-0 w-full h-full object-cover animate-fade-in" crossOrigin="anonymous" />
+              <img src={existingCoverImg || song.coverImage || "/images/default_cover.jpg"} alt="Original Cover" className="absolute inset-0 w-full h-full object-cover animate-fade-in" crossOrigin="anonymous" />
             </div>
             <div className="flex h-14 mt-6 w-full shrink-0">
-               <button onClick={() => { if(onCoverGenerated) onCoverGenerated(existingCoverImg || song.coverImage); }} className="btn-secondary w-full h-full text-lg tracking-widest font-bold">
-                 選擇此封面
-               </button>
+              <button onClick={() => { if (onCoverGenerated) onCoverGenerated(existingCoverImg || song.coverImage); }} className="btn-secondary w-full h-full text-lg tracking-widest font-bold">
+                選擇此封面
+              </button>
             </div>
           </div>
         ) : (
@@ -200,11 +200,11 @@ const AiCoverGame_zimage = ({ song, onHome, coverStatus, generatedCoverImg, onSt
             </div>
 
             <div className="flex w-full gap-4 mt-6 h-14 shrink-0">
-              <button onClick={handleExtractLyrics} className="btn-secondary w-1/3 disabled:opacity-50" disabled={coverStatus === 'generating'}>
+              <button onClick={handleExtractLyrics} className="btn-secondary w-2.5/6 disabled:opacity-50" disabled={coverStatus === 'generating'}>
                 其他靈感
               </button>
               <button onClick={triggerGenerate} className="btn-primary flex-1 disabled:opacity-50" disabled={coverStatus === 'generating'}>
-                繪製專輯封面
+                繪製封面
               </button>
             </div>
           </div>
@@ -212,7 +212,7 @@ const AiCoverGame_zimage = ({ song, onHome, coverStatus, generatedCoverImg, onSt
 
         {/* 右側：預設提示或成果展示區 */}
         <div className="w-1/2 flex flex-col items-center bg-[#F9F7F1] rounded-3xl shadow-xl border border-gray-300 p-6 h-full relative">
-          
+
           <div className="w-full relative shadow-inner border border-gray-300 bg-[#F4F1EA] rounded-xl flex-[1] flex flex-col items-center justify-center overflow-hidden"
             style={(coverStatus === 'done' || coverStatus === 'generating') ? { aspectRatio: '1024/720' } : {}}
           >

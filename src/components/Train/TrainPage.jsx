@@ -128,14 +128,14 @@ const TrainPage = forwardRef(({ onSelectMode, onBack, ticket, cover, coverStatus
 
   return (
     <div className="w-full h-full bg-transparent overflow-hidden relative font-sans">
-      
+
       <div className="absolute inset-x-0 bottom-0 w-full min-h-[500px] pointer-events-none z-0">
         <div
           className="absolute inset-x-0 bottom-0 pointer-events-none z-0"
           style={{
             height: '400px',
             backgroundImage: "url('/rail.png')",
-            backgroundSize: 'auto 100%', 
+            backgroundSize: 'auto 100%',
             backgroundPosition: 'center bottom',
             backgroundRepeat: 'repeat-x',
           }}
@@ -189,7 +189,7 @@ const TrainPage = forwardRef(({ onSelectMode, onBack, ticket, cover, coverStatus
               <div className="relative w-full h-[220px]">
                 <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-16 h-5 bg-yellow-100/80 backdrop-blur-[2px] shadow-sm z-30 rotate-[-2deg] border border-yellow-300/50"></div>
                 <div className="bg-[#FCFBF4] p-3 border border-[#C0B8A3] w-full h-full flex flex-col relative overflow-hidden pointer-events-none mt-2 shadow-inner">
-                  
+
                   <img src="/images/note_1.png" alt="note" className="absolute top-4 left-2 w-4 h-4 opacity-40 -rotate-12" />
                   <img src="/images/note_2.png" alt="note" className="absolute bottom-6 right-2 w-5 h-5 opacity-30 rotate-12" />
 
@@ -265,7 +265,7 @@ const TrainPage = forwardRef(({ onSelectMode, onBack, ticket, cover, coverStatus
                     </div>
 
                     <div className="w-full transition-all duration-300 relative flex items-center justify-center py-2">
-                      <h3 className={`text-4xl font-bold tracking-[0.2em] transition-colors duration-300 ml-2 translate-y-[-0px] ${isLocked ? 'text-gray-400 opacity-60' : 'text-[#FDFBF7] group-hover:text-white'}`}>
+                      <h3 className={`text-4xl font-bold tracking-[0.2em] transition-colors duration-300 ml-2 translate-y-[3px] ${isLocked ? 'text-gray-400 opacity-60' : 'text-[#FDFBF7] group-hover:text-white'}`}>
                         {mode.title}
                       </h3>
                     </div>
@@ -319,10 +319,10 @@ const TrainPage = forwardRef(({ onSelectMode, onBack, ticket, cover, coverStatus
               {lightbox.type === 'lyrics' && (
                 <div className="relative flex flex-col items-center pt-4 w-[500px]">
                   <div className="absolute top-2 left-1/2 -translate-x-1/2 w-40 h-10 bg-yellow-100/90 backdrop-blur-[2px] shadow-sm z-[100] rotate-[-1deg] border border-yellow-300"></div>
-                  
+
                   {/* Lightbox 點開的大歌詞本：統一背景與設計 */}
                   <div className="bg-[#FCFBF4] p-10 pt-12 rounded-none shadow-xl border border-[#D2A679]/40 w-full max-h-[85vh] flex flex-col overflow-y-auto custom-scrollbar mt-2 relative overflow-hidden">
-                    
+
                     {/* 散落的音符裝飾 */}
                     <img src="/images/note_1.png" alt="note" className="absolute top-8 left-8 w-8 h-8 opacity-30 -rotate-12 pointer-events-none" />
                     <img src="/images/note_2.png" alt="note" className="absolute bottom-20 right-8 w-10 h-10 opacity-20 rotate-12 pointer-events-none" />
@@ -330,7 +330,7 @@ const TrainPage = forwardRef(({ onSelectMode, onBack, ticket, cover, coverStatus
 
                     {/* 加粗的分隔線 */}
                     <h2 className="text-3xl font-bold text-[#C09668] text-center border-b-[3px] border-[#C09668]/60 pb-3 mb-6 tracking-widest font-serif relative z-10">{lightbox.data.title}</h2>
-                    
+
                     <div className="text-lg text-gray-700 leading-loose font-serif whitespace-pre-wrap text-center px-4 custom-scrollbar font-bold relative z-10">
                       {lightbox.data.content}
                     </div>

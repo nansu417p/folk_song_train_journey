@@ -99,7 +99,7 @@ const FaceSwapGame = ({ song, onHome, faceswapStatus, generatedSwappedImg, onSta
 
   return (
     <div className="relative w-full h-full bg-transparent flex flex-col items-center justify-center p-8 overflow-hidden">
-      <div className="flex w-full max-w-[80vw] h-[82vh] gap-8 items-center justify-center mt-6">
+      <div className="flex w-full max-w-[1200px] w-[95vw] xl:w-[85vw] h-auto min-h-[500px] aspect-[16/10] max-h-[85vh] gap-4 md:gap-8 items-center justify-center mt-6">
         
         {/* 左側：相機與拍攝 */}
         {faceswapStatus === 'done' && generatedSwappedImg && hasExistingSwap ? (
@@ -168,7 +168,8 @@ const FaceSwapGame = ({ song, onHome, faceswapStatus, generatedSwappedImg, onSta
               {faceswapStatus === 'done' ? (
                 <button
                   onClick={handleReScan}
-                  className="btn-secondary w-full text-lg tracking-widest font-bold border-gray-300 hover:bg-gray-100"
+                  className="btn-secondary w-full text-lg tracking-widest font-bold disabled:opacity-50"
+                  disabled={faceswapStatus === 'generating'}
                 >
                   重新拍攝
                 </button>

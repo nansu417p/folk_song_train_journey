@@ -26,6 +26,23 @@ const MoodTrainGame = ({ onMoodDetected, onTicketGenerated, userName }) => {
   const [isCameraActive, setIsCameraActive] = useState(true);
   const [cameraReady, setCameraReady] = useState(false);
 
+  const ticketContainerRef = useRef(null);
+  const [ticketScale, setTicketScale] = useState(1);
+
+  useEffect(() => {
+    if (!ticketContainerRef.current) return;
+    const observer = new ResizeObserver((entries) => {
+      for (let entry of entries) {
+        const { width, height } = entry.contentRect;
+        const scaleW = width / 600;
+        const scaleH = height / 280;
+        setTicketScale(Math.min(1.1, scaleW, scaleH));
+      }
+    });
+    observer.observe(ticketContainerRef.current);
+    return () => observer.disconnect();
+  }, [step]);
+
   useEffect(() => {
     tempCanvasRef.current = document.createElement('canvas');
     maskCanvasRef.current = document.createElement('canvas');
@@ -163,7 +180,7 @@ const MoodTrainGame = ({ onMoodDetected, onTicketGenerated, userName }) => {
     <div className="relative w-full h-full bg-transparent flex flex-col items-center justify-center p-8 overflow-hidden font-sans">
       <div className={`absolute inset-0 bg-white z-[100] pointer-events-none transition-opacity duration-300 ${flash ? 'opacity-100' : 'opacity-0'}`}></div>
 
-      <div className="flex w-full max-w-[80vw] h-[82vh] gap-8 items-center justify-center mt-6">
+      <div className="flex w-full max-w-[1200px] w-[95vw] xl:w-[85vw] h-auto min-h-[500px] aspect-[16/10] max-h-[85vh] gap-4 md:gap-8 items-center justify-center mt-6">
         {/* 左側：相機與拍攝 */}
         <div className="w-1/2 flex flex-col items-center bg-white rounded-3xl shadow-xl border border-gray-300 p-6 h-full">
           <h3 className="text-xl font-bold text-gray-800 mb-4 w-full text-center tracking-widest font-serif">
@@ -222,10 +239,10 @@ const MoodTrainGame = ({ onMoodDetected, onTicketGenerated, userName }) => {
             </p>
           </div>
 
-          <div className={`transition-all duration-700 w-full relative shadow-inner border border-gray-300 bg-[#F4F1EA] rounded-xl flex-1 flex flex-col items-center justify-center overflow-hidden
-                ${step === 'result' ? 'opacity-100 scale-100 blur-[0px]' : 'opacity-40 scale-95 blur-[4px] pointer-events-none'}
+          <div ref={ticketContainerRef} className={`transition-all duration-700 w-full relative shadow-inner border border-gray-300 bg-[#F4F1EA] rounded-xl flex-1 flex flex-col items-center justify-center overflow-hidden
+                ${step === 'result' ? 'opacity-100 blur-[0px]' : 'opacity-40 blur-[4px] pointer-events-none'}
             `}>
-            <div className="drop-shadow-[0_10px_15px_rgba(0,0,0,0.5)] transform scale-[0.85]">
+            <div className="drop-shadow-[0_10px_15px_rgba(0,0,0,0.5)] transform origin-center transition-transform duration-100" style={{ transform: `scale(${ticketScale})` }}>
               <TicketCard captureImg={captureImg} moodResult={moodResult} size="large" />
             </div>
           </div>

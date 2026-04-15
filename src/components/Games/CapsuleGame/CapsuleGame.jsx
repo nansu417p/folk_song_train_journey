@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { toPng, toJpeg } from 'html-to-image';
 import { motion, useAnimation } from 'framer-motion';
 import { TicketCard } from '../../Shared/TicketCard';
@@ -196,6 +196,23 @@ const CapsuleGame = ({ song, ticket, cover, swapped, lyrics, recording, onHome }
   const [selectedCoverType, setSelectedCoverType] = useState('cover');
   const [resetTrigger, setResetTrigger] = useState(false);
 
+  const postcardContainerRef = useRef(null);
+  const [postcardScale, setPostcardScale] = useState(0.8);
+
+  useEffect(() => {
+    if (!postcardContainerRef.current) return;
+    const observer = new ResizeObserver((entries) => {
+      for (let entry of entries) {
+        const { width, height } = entry.contentRect;
+        const scaleW = width / 1340;
+        const scaleH = height / 760;
+        setPostcardScale(Math.min(0.95, scaleW, scaleH));
+      }
+    });
+    observer.observe(postcardContainerRef.current);
+    return () => observer.disconnect();
+  }, []);
+
   const selectedCoverImg = selectedCoverType === 'swapped' && swapped ? swapped.image : (cover ? cover.image : null);
 
   const handleResetLayout = () => {
@@ -243,7 +260,7 @@ const CapsuleGame = ({ song, ticket, cover, swapped, lyrics, recording, onHome }
   return (
     <div className="relative w-full h-full flex items-center justify-center overflow-hidden bg-transparent p-4 md:p-6 lg:p-8 font-sans">
 
-      <div className="w-full max-w-[98%] h-[88vh] bg-[#EAEAEA] rounded-xl shadow-2xl border-[4px] border-[#C0B8A3] flex overflow-hidden relative">
+      <div className="w-full max-w-[1500px] w-[95vw] xl:w-[95vw] h-auto min-h-[500px] aspect-[16/9] max-h-[85vh] bg-[#EAEAEA] rounded-xl shadow-2xl border-[4px] border-[#C0B8A3] flex overflow-hidden relative">
 
         {isCapturingImage && (
           <div className="fixed inset-0 bg-black/60 z-[9999] flex flex-col items-center justify-center backdrop-blur-sm pointer-events-auto">
@@ -285,8 +302,8 @@ const CapsuleGame = ({ song, ticket, cover, swapped, lyrics, recording, onHome }
           <div className="w-full shrink-0 relative z-50 flex justify-start mb-2"></div>
 
           {/* 中間：明信片區域 */}
-          <div className="w-full flex-1 relative z-10 my-2">
-            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-[52%] scale-[0.55] lg:scale-[0.62] xl:scale-[0.72] drop-shadow-[0_10px_20px_rgba(0,0,0,0.15)]">
+          <div ref={postcardContainerRef} className="w-full flex-1 relative z-10 my-2">
+            <div className="absolute top-1/2 left-1/2 origin-center drop-shadow-[0_10px_20px_rgba(0,0,0,0.15)] flex items-center justify-center transition-transform duration-100" style={{ transform: `translate(-50%, -52%) scale(${postcardScale})` }}>
               <PostcardContent
                 song={song}
                 ticket={ticket}
@@ -299,17 +316,18 @@ const CapsuleGame = ({ song, ticket, cover, swapped, lyrics, recording, onHome }
           </div>
 
           {/* 下方：所有按鈕群 (移到右邊底部) */}
-          <div className="w-full shrink-0 flex gap-4 justify-center items-center h-[64px] relative z-50 mt-4">
+          <div className="w-full shrink-0 flex gap-4 justify-center items-center h-[64px] relative z-50 mt-4 px-2">
             
             {/* 新位置：重新排版在左邊，綠色按鈕 */}
-            <button 
-              disabled={isCapturingImage} 
-              onClick={handleResetLayout} 
-              className="flex items-center justify-center px-8 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xl rounded-full shadow-md hover:shadow-lg transition-all duration-200 tracking-widest cursor-pointer"
-              style={{ transform: 'translateY(0)', ':hover': { transform: 'translateY(-2px)' } }}
-            >
-              <span className="text-2xl leading-none mr-2 -translate-y-[2px]">⟳</span> 重新排版
-            </button>
+            <div className="flex-1 max-w-[260px] h-full">
+              <button 
+                disabled={isCapturingImage} 
+                onClick={handleResetLayout} 
+                className="w-full h-full flex items-center justify-center px-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-lg rounded-full shadow-md hover:shadow-lg transition-all duration-200 tracking-widest cursor-pointer whitespace-nowrap"
+              >
+                <span className="text-xl leading-none mr-2 -translate-y-[2px]">⟳</span> 重新排版
+              </button>
+            </div>
 
             {/* 錄音下載按鈕 */}
             {recording ? (
@@ -323,9 +341,11 @@ const CapsuleGame = ({ song, ticket, cover, swapped, lyrics, recording, onHome }
             )}
 
             {/* 明信片下載按鈕 */}
-            <button onClick={handleDownloadImage} disabled={isGenerating || isCapturingImage} className={`w-[260px] h-full flex items-center justify-center m-0 text-xl transition-opacity ${isGenerating || isCapturingImage ? 'bg-gray-400 text-white rounded-full font-bold tracking-widest cursor-wait shadow-sm' : 'btn-primary'}`} style={{ marginTop: '0', marginBottom: '0' }}>
-              {isCapturingImage ? "正在為您印製..." : isGenerating ? "處理中..." : "下載明信片"}
-            </button>
+            <div className="flex-1 max-w-[260px] h-full">
+              <button onClick={handleDownloadImage} disabled={isGenerating || isCapturingImage} className={`w-full h-full flex items-center justify-center m-0 text-lg whitespace-nowrap transition-opacity ${isGenerating || isCapturingImage ? 'bg-gray-400 text-white rounded-full font-bold tracking-widest cursor-wait shadow-sm' : 'btn-primary'}`}>
+                {isCapturingImage ? "正在為您印製..." : isGenerating ? "處理中..." : "下載明信片"}
+              </button>
+            </div>
           </div>
 
         </div>

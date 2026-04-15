@@ -328,7 +328,8 @@ const ArGame = ({ onConfirmSong, onPreviewSong }) => {
           ></div>
         )}
 
-        <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-[600px] h-[300px]">
+        <div className="absolute inset-x-0 bottom-0 flex justify-center pointer-events-none">
+          <div className="w-[600px] h-[300px] pointer-events-auto origin-bottom" style={{ transform: 'scale(min(1, calc((100vw - 32px) / 600)))' }}>
 
           <div className="absolute top-[45px] left-1/2 transform -translate-x-1/2 flex items-center justify-center z-50 w-full text-center">
             {!playingSong ? (
@@ -356,6 +357,7 @@ const ArGame = ({ onConfirmSong, onPreviewSong }) => {
                 </div>
               )}
             </div>
+          </div>
           </div>
         </div>
 

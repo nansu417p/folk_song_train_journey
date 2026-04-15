@@ -385,8 +385,8 @@ function App() {
 
         {currentView === 'story' && (
           <motion.div key="story" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 1.3 }} className="absolute inset-0 w-full h-full flex flex-col items-center justify-center overflow-hidden">
-            <div className="absolute inset-0 pointer-events-none opacity-70 z-0" style={getBgStyle('/home-bg_2.png')} />
-            <div className="absolute inset-0 bg-black/30 z-0 pointer-events-none"></div>
+            <div className="absolute inset-0 pointer-events-none opacity-90 z-0" style={getBgStyle('/home-bg_2.png')} />
+            <div className="absolute inset-0 bg-black/55 z-0 pointer-events-none"></div>
 
             <div className="relative z-20 w-full max-w-4xl px-8 flex flex-col items-center justify-between h-[420px] md:h-[480px]">
               <div className="flex flex-col items-center text-center mt-2">
@@ -554,8 +554,8 @@ function App() {
 
         {currentView === 'outro' && (
           <motion.div key="outro" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 1.3 }} className="absolute inset-0 w-full h-full flex flex-col items-center justify-center overflow-hidden">
-            <div className="absolute inset-0 pointer-events-none opacity-50 z-0" style={getBgStyle('/home-bg_2.png')} />
-            <div className="absolute inset-0 bg-black/30 z-0 pointer-events-none"></div>
+            <div className="absolute inset-0 pointer-events-none opacity-80 z-0" style={getBgStyle('/home-bg_2.png')} />
+            <div className="absolute inset-0 bg-black/55 z-0 pointer-events-none"></div>
             <div className="relative z-20 text-center flex flex-col items-center max-w-3xl px-8">
               <h2 className="text-4xl md:text-5xl font-bold text-white tracking-widest mb-10 drop-shadow-[0_4px_4px_rgba(0,0,0,0.6)]">列車即將到站</h2>
               <p className="text-xl md:text-2xl text-gray-100 leading-loose tracking-[0.15em] mb-16 drop-shadow-[0_4px_4px_rgba(0,0,0,0.6)] text-center font-medium">

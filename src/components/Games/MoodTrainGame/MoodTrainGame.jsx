@@ -193,8 +193,8 @@ const MoodTrainGame = ({ onMoodDetected, onTicketGenerated }) => {
         <div className="w-1/2 flex flex-col items-center bg-[#F9F7F1] rounded-3xl shadow-xl border border-gray-300 p-6 h-full relative">
 
           <div className="w-full bg-white py-2 px-4 rounded-2xl shadow-md border border-gray-300 relative mb-4 shrink-0">
-            <h3 className="font-bold text-gray-800 mb-1 tracking-widest text-base font-serif border-b-2 border-rose-300 pb-1 inline-block">車長廣播</h3>
-            <p className="text-gray-800 leading-snug font-bold tracking-widest text-base px-1 py-1 flex items-start">
+            <h3 className="font-bold text-gray-800 mb-1 tracking-widest text-xl font-serif border-b-2 border-rose-300 pb-1 inline-block">車長廣播</h3>
+            <p className="text-gray-800 leading-snug font-bold tracking-widest text-xl px-1 py-1 flex items-start">
               {getConductorMessage()}
             </p>
           </div>

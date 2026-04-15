@@ -258,7 +258,6 @@ const SingAlongGame = ({ song, onHome, onRecordingComplete }) => {
       restartIntervalRef.current = setInterval(() => {
         if (isPlayingRef.current && recognitionRef.current) {
           try { recognitionRef.current.abort(); } catch (e) { }
-          // abort 會觸發 onend，我們在裡面加入了自動保存之前的句字並重啟的機制。
         }
       }, 20000);
     } else {
@@ -433,7 +432,6 @@ const SingAlongGame = ({ song, onHome, onRecordingComplete }) => {
 
             <div className="flex flex-col">
               <div className="flex items-baseline gap-3">
-                {/* 修改字體大小為 text-3xl */}
                 <h2 className="text-[#F5F5F5] text-3xl font-bold tracking-widest font-serif drop-shadow">{song.title}</h2>
                 <span className="text-white/80 text-xl font-serif tracking-wider">{song.singer}</span>
               </div>
@@ -453,7 +451,14 @@ const SingAlongGame = ({ song, onHome, onRecordingComplete }) => {
           </div>
         </div>
 
-        <div className="flex-1 w-full bg-[#F9F7F1] overflow-hidden relative flex flex-col items-center py-0 px-8 border-b border-gray-300">
+        {/* 歌詞顯示區域：改用淺米白 #FCFBF4 */}
+        <div className="flex-1 w-full bg-[#FCFBF4] overflow-hidden relative flex flex-col items-center py-0 px-8 border-b border-gray-300">
+
+          {/* 加入散落的音符裝飾 */}
+          <img src="/images/note_1.png" alt="note" className="absolute top-12 left-[15%] w-10 h-10 opacity-30 -rotate-12 pointer-events-none z-10" />
+          <img src="/images/note_2.png" alt="note" className="absolute bottom-20 right-[10%] w-12 h-12 opacity-20 rotate-12 pointer-events-none z-10" />
+          <img src="/images/note_3.png" alt="note" className="absolute top-1/3 right-[20%] w-10 h-10 opacity-25 rotate-45 pointer-events-none z-10" />
+          <img src="/images/note_1.png" alt="note" className="absolute bottom-1/3 left-[5%] w-8 h-8 opacity-20 -rotate-6 pointer-events-none z-10" />
 
           <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[80%] h-[4.5rem] border-y border-rose-300/40 bg-rose-50/20 pointer-events-none rounded-xl z-10 shadow-sm"></div>
 
@@ -485,13 +490,11 @@ const SingAlongGame = ({ song, onHome, onRecordingComplete }) => {
             <div className="w-full shrink-0 pointer-events-none" style={{ height: '40vh' }}></div>
           </div>
 
-          <div className="absolute top-0 left-0 w-full h-40 bg-gradient-to-b from-white via-white/80 to-transparent pointer-events-none z-20"></div>
-          <div className="absolute bottom-0 left-0 w-full h-40 bg-gradient-to-t from-white via-white/80 to-transparent pointer-events-none z-20"></div>
+          <div className="absolute top-0 left-0 w-full h-40 bg-gradient-to-b from-[#FCFBF4] via-[#FCFBF4]/80 to-transparent pointer-events-none z-20"></div>
+          <div className="absolute bottom-0 left-0 w-full h-40 bg-gradient-to-t from-[#FCFBF4] via-[#FCFBF4]/80 to-transparent pointer-events-none z-20"></div>
         </div>
 
-        {/* 下方控制列：左右交換位置 (flex-row-reverse) 並調整完成錄音的顏色 */}
         <div className="h-28 w-full bg-[#2A2A2A] flex flex-row-reverse items-center justify-between relative px-8 shadow-inner z-20 gap-8">
-
           <div className="flex items-center justify-center w-full max-w-sm">
             <button
               onClick={() => {
@@ -504,7 +507,7 @@ const SingAlongGame = ({ song, onHome, onRecordingComplete }) => {
               className={`transition-all duration-300 w-full max-w-[320px] truncate shrink-0 px-6 py-3 rounded-full text-lg tracking-widest font-bold text-white
                    ${!hasStarted
                   ? 'btn-primary'
-                  : 'btn-secondary'}`}
+                  : 'bg-emerald-600 hover:bg-emerald-500 border border-emerald-400 shadow-[0_4px_12px_rgba(16,185,129,0.4)]'}`}
             >
               {!hasStarted ? '開始錄音' : '錄音完成'}
             </button>

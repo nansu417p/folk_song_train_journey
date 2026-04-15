@@ -44,8 +44,11 @@ const FaceSwapGame = ({ song, onHome, faceswapStatus, generatedSwappedImg, onSta
     if (faceswapStatus === 'idle') {
       setIsCameraActive(true);
       setFrozenImage(null);
+      setIsClaiming(false);
+    } else if (faceswapStatus === 'done' && generatedSwappedImg) {
+      setIsCameraActive(false);
     }
-  }, [faceswapStatus]);
+  }, [faceswapStatus, generatedSwappedImg]);
 
   const handleCaptureAndSwap = async () => {
     if (!webcamRef.current || !base64Template || faceswapStatus === 'generating') return;
@@ -99,75 +102,92 @@ const FaceSwapGame = ({ song, onHome, faceswapStatus, generatedSwappedImg, onSta
       <div className="flex w-full max-w-[80vw] h-[82vh] gap-8 items-center justify-center mt-6">
         
         {/* 左側：相機與拍攝 */}
-        <div className="w-1/2 flex flex-col items-center bg-white rounded-3xl shadow-xl border border-gray-300 p-6 h-full">
-          <h3 className="text-xl font-bold text-gray-800 mb-4 w-full text-center tracking-widest font-serif">
-            復古寫真相機
-          </h3>
-
-          <div className="w-full relative shadow-inner border border-gray-300 bg-gray-200 flex-1 flex items-center justify-center overflow-hidden rounded-xl" style={{ aspectRatio: '1024/720' }}>
-            
-            {/* 根據狀態顯示鏡頭或定格照片，取消黑白濾鏡，使用與 MoodTrain 相同的透明與模糊度 */}
-            {isCameraActive ? (
-              <Webcam
-                ref={webcamRef}
-                audio={false}
-                screenshotFormat="image/jpeg"
-                width={1024}
-                height={720}
-                videoConstraints={{ aspectRatio: 1024 / 720, facingMode: "user" }}
-                className="absolute inset-0 w-full h-full object-cover"
-                mirrored={true}
-                onUserMedia={() => setIsCameraReady(true)}
-              />
-            ) : frozenImage ? (
-              <img src={frozenImage} alt="frozen frame" className="absolute inset-0 w-full h-full object-cover opacity-40 blur-[4px] transition-all duration-500" />
-            ) : null}
-
-            {!isCameraReady && isCameraActive && (
-              <div className="absolute inset-0 bg-gray-200 flex items-center justify-center text-gray-500 font-bold tracking-widest z-10">
-                相機準備中...
-              </div>
-            )}
-            
-            {isScanning && (
-              <div className="absolute inset-0 flex items-center justify-center z-30 pointer-events-none">
-                <div className="w-[28%] h-[65%] border-[4px] border-yellow-400 border-dashed rounded-[50%] animate-pulse shadow-[0_0_15px_rgba(250,204,21,0.6)]"></div>
-              </div>
-            )}
-            
-            {/* 處理中或完成時的提示文字 */}
-            {/* {faceswapStatus === 'generating' && (
-              <div className="absolute inset-0 z-20 flex items-center justify-center pointer-events-none">
-                <span className="text-gray-700 font-bold tracking-widest bg-white/70 px-4 py-2 rounded-full shadow-sm">照片處理中...</span>
-              </div>
-            )} */}
+        {faceswapStatus === 'done' && generatedSwappedImg && hasExistingSwap ? (
+          // 第二次以上的拍攝：左邊顯示原本的封面
+          <div className="w-1/2 flex flex-col items-center bg-[#F9F7F1] rounded-3xl shadow-xl border border-gray-300 p-6 h-full relative">
+            <div className="w-full flex justify-center mb-4 shrink-0 h-10 items-center border-[2px] border-dashed border-gray-300 rounded-full bg-white shadow-sm">
+              <div className="font-bold tracking-widest text-[#D2A679] text-xl font-serif">原本的封面</div>
+            </div>
+            <div className="w-full relative shadow-inner border border-gray-300 bg-[#F4F1EA] rounded-xl flex-[1] flex flex-col items-center justify-center overflow-hidden" style={{ aspectRatio: '1024/720' }}>
+               <img src={existingSwapImg || song.coverImage || "/images/default_cover.jpg"} alt="Original Swap" className="absolute inset-0 w-full h-full object-cover animate-fade-in" crossOrigin="anonymous" />
+            </div>
+            <div className="flex h-14 mt-6 w-full shrink-0">
+               <button onClick={() => { if(onSwapGenerated) onSwapGenerated(existingSwapImg); }} className="btn-secondary w-full h-full text-lg tracking-widest font-bold border-gray-300">
+                 選擇此封面
+               </button>
+            </div>
           </div>
+        ) : (
+          // 第一次拍攝，或正在拍攝/處理中：左邊顯示相機或定格畫面
+          <div className="w-1/2 flex flex-col items-center bg-white rounded-3xl shadow-xl border border-gray-300 p-6 h-full">
+            <h3 className="text-xl font-bold text-gray-800 mb-4 w-full text-center tracking-widest font-serif">
+              復古寫真相機
+            </h3>
 
-          <div className="flex w-full gap-4 mt-6 h-14 shrink-0">
-            {/* 根據狀態切換按鈕：拍攝中 / 重新拍攝 */}
-            {faceswapStatus === 'done' ? (
-              <button
-                onClick={handleReScan}
-                className="btn-secondary w-full text-lg tracking-widest font-bold border-gray-300"
-              >
-                重新拍攝
-              </button>
-            ) : (
-              <button
-                onClick={handleCaptureAndSwap}
-                disabled={!isCameraReady || !base64Template || faceswapStatus === 'generating' || isScanning}
-                className="btn-primary w-full disabled:opacity-70 disabled:bg-gray-400 disabled:cursor-not-allowed text-lg tracking-widest font-bold"
-              >
-                {isScanning ? '正在拍攝...' : faceswapStatus === 'generating' ? '處理中...' : '點擊拍攝，化身封面主角'}
-              </button>
-            )}
+            <div className="w-full relative shadow-inner border border-gray-300 bg-gray-200 flex-1 flex items-center justify-center overflow-hidden rounded-xl" style={{ aspectRatio: '1024/720' }}>
+              
+              {/* 根據狀態顯示鏡頭或定格照片，取消黑白濾鏡，使用與 MoodTrain 相同的透明與模糊度 */}
+              {isCameraActive ? (
+                <Webcam
+                  ref={webcamRef}
+                  audio={false}
+                  screenshotFormat="image/jpeg"
+                  width={1024}
+                  height={720}
+                  videoConstraints={{ aspectRatio: 1024 / 720, facingMode: "user" }}
+                  className="absolute inset-0 w-full h-full object-cover"
+                  mirrored={true}
+                  onUserMedia={() => setIsCameraReady(true)}
+                />
+              ) : frozenImage ? (
+                <img src={frozenImage} alt="frozen frame" className="absolute inset-0 w-full h-full object-cover opacity-40 blur-[4px] transition-all duration-500" />
+              ) : null}
+
+              {!isCameraReady && isCameraActive && (
+                <div className="absolute inset-0 bg-gray-200 flex items-center justify-center text-gray-500 font-bold tracking-widest z-10">
+                  相機準備中...
+                </div>
+              )}
+              
+              {isScanning && (
+                <div className="absolute inset-0 flex items-center justify-center z-30 pointer-events-none">
+                  <div className="w-[28%] h-[65%] border-[4px] border-yellow-400 border-dashed rounded-[50%] animate-pulse shadow-[0_0_15px_rgba(250,204,21,0.6)]"></div>
+                </div>
+              )}
+              
+              {/* 處理中或完成時的提示文字 */}
+              {faceswapStatus === 'generating' && (
+                <div className="absolute inset-0 z-20 flex items-center justify-center pointer-events-none">
+                  <span className="text-gray-700 font-bold tracking-widest bg-white/70 px-4 py-2 rounded-full shadow-sm">照片處理中...</span>
+                </div>
+              )}
+            </div>
+
+            <div className="flex w-full gap-4 mt-6 h-14 shrink-0">
+              {/* 根據狀態切換按鈕：拍攝中 / 重新拍攝 */}
+              {faceswapStatus === 'done' ? (
+                <button
+                  onClick={handleReScan}
+                  className="btn-secondary w-full text-lg tracking-widest font-bold border-gray-300 hover:bg-gray-100"
+                >
+                  重新拍攝
+                </button>
+              ) : (
+                <button
+                  onClick={handleCaptureAndSwap}
+                  disabled={!isCameraReady || !base64Template || faceswapStatus === 'generating' || isScanning}
+                  className="btn-primary w-full disabled:opacity-70 disabled:bg-gray-400 disabled:cursor-not-allowed text-lg tracking-widest font-bold"
+                >
+                  {isScanning ? '正在拍攝...' : faceswapStatus === 'generating' ? '處理中...' : '點擊拍攝，化身封面主角'}
+                </button>
+              )}
+            </div>
           </div>
-        </div>
+        )}
 
-        {/* 右側：成果展示與領取 (保持不變) */}
+        {/* 右側：成果展示與領取 */}
         <div className="w-1/2 flex flex-col items-center bg-[#F9F7F1] rounded-3xl shadow-xl border border-gray-300 p-6 h-full relative">
           
-          {/* 上方標籤區塊：只在還沒生成的狀態顯示原曲/AI選項 */}
           <div className="flex h-12 w-full mb-4 items-center justify-center shrink-0">
             {faceswapStatus === 'done' && generatedSwappedImg ? (
               <div className="font-bold tracking-widest text-[#D2A679] text-xl font-serif">
@@ -218,6 +238,7 @@ const FaceSwapGame = ({ song, onHome, faceswapStatus, generatedSwappedImg, onSta
           </div>
 
           <div className="flex h-14 mt-6 w-full shrink-0">
+            {/* 修正：只要是 done 且有圖，就顯示領取按鈕 (不論是不是第一次) */}
             {faceswapStatus === 'done' && generatedSwappedImg && (
               <div className="flex justify-center items-center gap-3 animate-fade-in-up w-full h-full">
                 <button onClick={handleClaim} disabled={isClaiming} className="btn-primary flex-1 h-full text-lg tracking-widest font-bold disabled:opacity-50 disabled:cursor-not-allowed">

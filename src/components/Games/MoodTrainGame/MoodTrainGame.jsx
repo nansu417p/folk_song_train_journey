@@ -198,7 +198,7 @@ const MoodTrainGame = ({ onMoodDetected, onTicketGenerated, userName }) => {
                 disabled 
                 className="btn-primary w-full h-full disabled:opacity-70 disabled:bg-gray-400 disabled:cursor-not-allowed text-lg tracking-widest font-bold animate-pulse"
               >
-                正在為您印製專屬車票...
+                正在印製專屬車票...
               </button>
             )}
             {step === 'result' && (

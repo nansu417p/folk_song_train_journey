@@ -55,7 +55,7 @@ const ArGame = ({ onConfirmSong, onPreviewSong }) => {
   useEffect(() => {
     let timer;
     if (playingSong) {
-      setCountdown(5);
+      setCountdown(10);
       timer = setInterval(() => {
         setCountdown((prev) => {
           if (prev <= 1) {

@@ -45,6 +45,7 @@ const ArGame = ({ onConfirmSong, onPreviewSong }) => {
 
   const [particles, setParticles] = useState([]);
   const [playingSong, setPlayingSong] = useState(null);
+  const playingSongIdRef = useRef(null);
   const [showHint, setShowHint] = useState(true);
   const [countdown, setCountdown] = useState(null);
   const [dropCount, setDropCount] = useState(0);
@@ -131,7 +132,7 @@ const ArGame = ({ onConfirmSong, onPreviewSong }) => {
       let currentGrab = grabbedIdRef.current;
 
       els.forEach(el => {
-        if (el.id === currentGrab) return;
+        if (el.id === currentGrab || el.id === playingSongIdRef.current) return;
         el.x += el.vx * speedScale;
         el.y += el.vy * speedScale;
 
@@ -153,6 +154,7 @@ const ArGame = ({ onConfirmSong, onPreviewSong }) => {
           let e1 = els[i];
           let e2 = els[j];
           if (e1.id === currentGrab || e2.id === currentGrab) continue;
+          if (e1.id === playingSongIdRef.current || e2.id === playingSongIdRef.current) continue;
 
           let dx = e2.x - e1.x;
           let dy = e2.y - e1.y;
@@ -189,6 +191,7 @@ const ArGame = ({ onConfirmSong, onPreviewSong }) => {
           const originalSong = folkSongs.find(s => s.id === currentGrab);
           if (originalSong) {
             setPlayingSong(originalSong);
+            playingSongIdRef.current = originalSong.id;
             setDropCount(prev => prev + 1);
             if (callbacksRef.current.onPreviewSong) {
               callbacksRef.current.onPreviewSong(originalSong);
@@ -207,7 +210,7 @@ const ArGame = ({ onConfirmSong, onPreviewSong }) => {
           }
         }
       } else {
-        const hitElement = els.find(el => Math.hypot(el.x - fX, el.y - fY) < 12);
+        const hitElement = els.find(el => el.id !== playingSongIdRef.current && Math.hypot(el.x - fX, el.y - fY) < 12);
         if (hitElement && fX !== 0) {
           grabbedIdRef.current = hitElement.id;
         }
@@ -215,11 +218,16 @@ const ArGame = ({ onConfirmSong, onPreviewSong }) => {
 
       els.forEach((el, i) => {
         if (cassetteRefs.current[i]) {
-          const isGrabbed = currentGrab === el.id;
-          cassetteRefs.current[i].style.left = `${el.x}%`;
-          cassetteRefs.current[i].style.top = `${el.y}%`;
-          cassetteRefs.current[i].style.transform = `translate(-50%, -50%) scale(${isGrabbed ? 1.2 : 1})`;
-          cassetteRefs.current[i].style.zIndex = isGrabbed ? 50 : 10;
+          if (el.id === playingSongIdRef.current) {
+            cassetteRefs.current[i].style.display = 'none';
+          } else {
+            cassetteRefs.current[i].style.display = '';
+            const isGrabbed = currentGrab === el.id;
+            cassetteRefs.current[i].style.left = `${el.x}%`;
+            cassetteRefs.current[i].style.top = `${el.y}%`;
+            cassetteRefs.current[i].style.transform = `translate(-50%, -50%) scale(${isGrabbed ? 1.2 : 1})`;
+            cassetteRefs.current[i].style.zIndex = isGrabbed ? 50 : 10;
+          }
         }
       });
 
@@ -298,8 +306,16 @@ const ArGame = ({ onConfirmSong, onPreviewSong }) => {
 
         {showHint && !isLoading && (
           <div className="absolute top-32 left-0 w-full text-center z-40">
-            <span className="bg-[#FDFBF7]/85 backdrop-blur-sm text-gray-800 border border-gray-200/50 px-8 py-4 rounded-full shadow-lg font-bold tracking-widest text-lg transition-all duration-300">
-              {playingSong && countdown !== null ? `選擇歌曲倒數 ${countdown}` : "將食指移入畫面中，拖曳卡帶放入播放器中"}
+            <span className="bg-[#FDFBF7]/85 backdrop-blur-sm text-gray-800 border border-gray-200/50 px-8 py-4 rounded-full shadow-lg font-bold tracking-widest text-lg transition-all duration-300 inline-flex items-center gap-1">
+              {playingSong && countdown !== null ? (
+                `選擇歌曲倒數 ${countdown}`
+              ) : (
+                <>
+                  將食指
+                  <img src="/images/finger.png" alt="食指" className="w-6 h-6 object-contain" />
+                  移入畫面中，拖曳卡帶放入播放器中
+                </>
+              )}
             </span>
           </div>
         )}
@@ -331,33 +347,33 @@ const ArGame = ({ onConfirmSong, onPreviewSong }) => {
         <div className="absolute inset-x-0 bottom-0 flex justify-center pointer-events-none">
           <div className="w-[600px] h-[300px] pointer-events-auto origin-bottom" style={{ transform: 'scale(min(1, calc((100vw - 32px) / 600)))' }}>
 
-          <div className="absolute top-[45px] left-1/2 transform -translate-x-1/2 flex items-center justify-center z-50 w-full text-center">
-            {!playingSong ? (
-              <img src="/images/arrow.png" alt="向下放入" className="w-14 h-14 object-contain animate-bounce opacity-80" />
-            ) : (
-              <button
-                onClick={handleConfirmClick}
-                className="btn-primary pointer-events-auto"
-              >
-                點擊選擇
-              </button>
-            )}
-          </div>
-
-          <div className="w-full h-full relative flex items-end justify-center drop-shadow-2xl">
-            <img src={radioPlayerUrl} alt="收音機" className="absolute bottom-[-20px] w-full object-contain pointer-events-none z-10" />
-            <div className="absolute bottom-[55px] w-[180px] h-[110px] z-20 flex items-center justify-center bg-transparent">
-              {playingSong ? (
-                <div className="animate-fade-in-up transform scale-[0.6] origin-center mt-2">
-                  <CassetteUI title={playingSong.title} size="normal" image={playingSong.cassetteImage} />
-                </div>
+            <div className="absolute top-[45px] left-1/2 transform -translate-x-1/2 flex items-center justify-center z-50 w-full text-center">
+              {!playingSong ? (
+                <img src="/images/arrow.png" alt="向下放入" className="w-14 h-14 object-contain animate-bounce opacity-80" />
               ) : (
-                <div className="text-gray-400 font-bold text-sm tracking-widest flex flex-col items-center justify-center gap-1 w-full h-full border border-dashed border-gray-600 bg-black/60 rounded">
-
-                </div>
+                <button
+                  onClick={handleConfirmClick}
+                  className="btn-primary pointer-events-auto"
+                >
+                  點擊選擇
+                </button>
               )}
             </div>
-          </div>
+
+            <div className="w-full h-full relative flex items-end justify-center drop-shadow-2xl">
+              <img src={radioPlayerUrl} alt="收音機" className="absolute bottom-[-20px] w-full object-contain pointer-events-none z-10" />
+              <div className="absolute bottom-[55px] w-[180px] h-[110px] z-20 flex items-center justify-center bg-transparent">
+                {playingSong ? (
+                  <div className="animate-fade-in-up transform scale-[0.6] origin-center mt-2">
+                    <CassetteUI title={playingSong.title} size="normal" image={playingSong.cassetteImage} />
+                  </div>
+                ) : (
+                  <div className="text-gray-400 font-bold text-sm tracking-widest flex flex-col items-center justify-center gap-1 w-full h-full border border-dashed border-gray-600 bg-black/60 rounded">
+
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
         </div>
 

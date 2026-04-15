@@ -478,6 +478,7 @@ function App() {
                       generatedCoverImg={generatedCoverImg}
                       onStartGenerate={handleStartGenerateCover}
                       hasExistingCover={!!coverData}
+                      existingCoverImg={coverData?.image}
                       onSetMockCover={(url) => {
                         if (!coverData) {
                           setCoverData({ image: url, title: mainSong?.title });

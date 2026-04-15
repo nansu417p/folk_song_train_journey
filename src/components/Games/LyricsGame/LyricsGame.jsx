@@ -9,7 +9,7 @@ import { CARRIAGE_NAMES } from '../../../data/gameModes';
 function StickerItem({ id, word }) {
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({ id, data: { word } });
   return (
-    <div ref={setNodeRef} {...listeners} {...attributes} className={`relative w-full px-4 py-3 bg-white text-gray-700 border border-gray-100 font-serif text-lg md:text-xl rounded-xl shadow-md cursor-grab touch-none select-none flex items-center justify-center text-center hover:-translate-y-1 hover:shadow-lg transition-all duration-300 ${isDragging ? 'opacity-0' : ''}`}>
+    <div ref={setNodeRef} {...listeners} {...attributes} className={`relative w-full px-4 py-3 bg-white text-gray-700 border border-gray-100 font-serif text-xl md:text-2xl rounded-xl shadow-md cursor-grab touch-none select-none flex items-center justify-center text-center hover:-translate-y-1 hover:shadow-lg transition-all duration-300 ${isDragging ? 'opacity-0' : ''}`}>
       <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 w-8 h-4 bg-yellow-100/60 backdrop-blur-sm border border-yellow-200/50 shadow-sm rotate-[-4deg]"></div>
       {word}
     </div>
@@ -20,7 +20,7 @@ function DropZone({ id, currentWord, correctWord, isHintActive }) {
   const { isOver, setNodeRef } = useDroppable({ id, data: { correctWord } });
   if (currentWord) {
     return (
-      <div className="relative inline-flex items-center justify-center px-4 py-1 mx-2 bg-white border border-gray-100 text-gray-700 shadow-md rounded-xl -rotate-1 font-bold text-xl transition-all z-10">
+      <div className="relative inline-flex items-center justify-center px-4 py-1 mx-2 bg-white border border-gray-100 text-gray-700 shadow-md rounded-xl -rotate-1 font-bold text-xl md:text-2xl transition-all z-10">
         <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 w-8 h-4 bg-yellow-100/60 backdrop-blur-sm border border-yellow-200/50 shadow-sm rotate-[-4deg]"></div>
         {currentWord}
       </div>
@@ -180,8 +180,8 @@ const LyricsGamePlay = ({ song, gameData, initialStickers, onHome, onLyricsGener
             )}
           </div>
 
-          <div ref={lyricsScrollRef} {...lyricsScrollEvents} className="flex-[2] bg-[#F9F7F1] p-8 overflow-y-auto custom-scrollbar relative">
-            <p className="text-center text-gray-500 font-bold tracking-widest mb-10 border-b border-dashed border-gray-200 pb-4">拖曳左側的句子，拼貼歌詞</p>
+          <div ref={lyricsScrollRef} {...lyricsScrollEvents} className="flex-[2] bg-[#F9F7F1] p-8 overflow-y-auto custom-scrollbar relative text-xl md:text-2xl">
+            <p className="text-center text-gray-500 font-bold tracking-widest text-base mb-10 border-b border-dashed border-gray-200 pb-4">拖曳左側的句子，拼貼歌詞</p>
             <div className="flex flex-col gap-6 text-center font-serif text-xl md:text-2xl text-gray-800 leading-loose font-bold">
               {gameData.lines.map((line) => {
                 if (!line.text) return <div key={line.id} className="h-4"></div>;

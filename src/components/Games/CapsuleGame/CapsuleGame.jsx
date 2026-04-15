@@ -53,11 +53,11 @@ const CollageItem = ({ children, initialX, initialY, initialRotate = 0, initialS
       onPointerDown={handlePointerDown}
       className="group"
     >
-      <div className="absolute -top-12 left-1/2 -translate-x-1/2 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-[#FDFBF7]/95 text-gray-700 rounded-full shadow-md z-[100] border border-gray-100 select-none overflow-hidden text-lg font-bold">
+      <div className="absolute -top-[72px] left-1/2 -translate-x-1/2 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-[#FDFBF7]/95 text-gray-700 rounded-full shadow-md z-[100] border border-gray-100 select-none overflow-hidden font-sans">
         <button
           onPointerDown={(e) => e.stopPropagation()}
           onClick={() => handleRotate(-1)}
-          className="hover:bg-white hover:text-rose-400 px-5 py-2 transition-colors border-r border-gray-200"
+          className="w-16 h-16 flex items-center justify-center hover:bg-white hover:text-rose-400 transition-colors border-r border-gray-200 text-4xl font-bold leading-none"
           title="向左轉正"
         >
           ↺
@@ -65,7 +65,7 @@ const CollageItem = ({ children, initialX, initialY, initialRotate = 0, initialS
         <button
           onPointerDown={(e) => e.stopPropagation()}
           onClick={() => handleScale(-0.05)}
-          className="hover:bg-white hover:text-rose-400 px-5 py-2 transition-colors border-r border-gray-200"
+          className="w-16 h-16 flex items-center justify-center hover:bg-white hover:text-rose-400 transition-colors border-r border-gray-200 text-4xl font-bold leading-none"
           title="縮小"
         >
           -
@@ -73,7 +73,7 @@ const CollageItem = ({ children, initialX, initialY, initialRotate = 0, initialS
         <button
           onPointerDown={(e) => e.stopPropagation()}
           onClick={() => handleScale(0.05)}
-          className="hover:bg-white hover:text-rose-400 px-5 py-2 transition-colors border-r border-gray-200"
+          className="w-16 h-16 flex items-center justify-center hover:bg-white hover:text-rose-400 transition-colors border-r border-gray-200 text-4xl font-bold leading-none"
           title="放大"
         >
           +
@@ -81,7 +81,7 @@ const CollageItem = ({ children, initialX, initialY, initialRotate = 0, initialS
         <button
           onPointerDown={(e) => e.stopPropagation()}
           onClick={() => handleRotate(1)}
-          className="hover:bg-white hover:text-rose-400 px-5 py-2 transition-colors"
+          className="w-16 h-16 flex items-center justify-center hover:bg-white hover:text-rose-400 transition-colors text-4xl font-bold leading-none"
           title="向右轉正"
         >
           ↻
@@ -138,21 +138,23 @@ const PostcardContent = ({ song, ticket, selectedCoverImg, customMessage, lyrics
       </CollageItem>
 
       <CollageItem initialX={760} initialY={40} initialRotate={-7.5} initialScale={1} initialZ={30} isResetting={isResetting} bringToFront={bringToFront}>
-        <div className="bg-white/95 backdrop-blur-md border border-[#D2A679] p-6 w-[440px] h-[480px] flex flex-col relative shadow-xl select-none inline-block rounded-sm">
+        {/* 統一的歌詞本設計：更淺的米白色 bg-[#FCFBF4] */}
+        <div className="bg-[#FCFBF4] border border-[#D2A679]/40 p-6 w-[440px] h-[480px] flex flex-col relative shadow-xl select-none inline-block rounded-sm overflow-hidden">
           <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-24 h-8 bg-yellow-200/90 shadow-sm rotate-3 z-50"></div>
+          
+          {/* 加入散落的音符裝飾 */}
+          <img src="/images/note_1.png" alt="note" className="absolute top-6 left-6 w-8 h-8 opacity-30 -rotate-12 pointer-events-none" />
+          <img src="/images/note_2.png" alt="note" className="absolute bottom-12 right-6 w-10 h-10 opacity-20 rotate-12 pointer-events-none" />
+          {/* <img src  ="/images/note_3.png" alt="note" className="absolute top-1/2 -right-3 w-8 h-8 opacity-25 rotate-45 pointer-events-none" /> */}
 
-          <div className="border-b-2 border-[#D2A679]/40 pb-4 mb-4 shrink-0 text-center">
+          {/* 移除青春歌詞方塊，並加粗分隔線 */}
+          <div className="border-b-[3px] border-[#C09668]/60 pb-3 mb-4 shrink-0 text-center relative z-10">
             <h1 className="text-3xl font-bold font-serif text-[#C09668] m-0 tracking-widest mb-2">{song.title}</h1>
             <p className="text-gray-500 font-serif tracking-wider font-bold text-lg">{song.singer}</p>
           </div>
 
-          <div className="absolute top-2 right-2 text-[10px] text-gray-400 tracking-widest font-bold"></div>
-
-          <div className="flex-1 overflow-hidden relative">
-            <div className="absolute top-0 left-0 w-full h-[32px] leading-[32px] text-center block bg-gray-800 text-xs text-white font-bold tracking-widest">
-              — 青春歌詞 —
-            </div>
-            <div className="leading-loose tracking-widest whitespace-pre-wrap text-base font-bold opacity-80 mt-10 h-full overflow-hidden text-gray-700 px-4 text-center">
+          <div className="flex-1 overflow-hidden relative z-10">
+            <div className="leading-loose tracking-widest whitespace-pre-wrap text-base font-bold opacity-80 h-full overflow-hidden text-gray-700 px-4 text-center">
               {lyrics ? lyrics.content : '歌詞尚未拼貼完成...'}
             </div>
           </div>
@@ -241,7 +243,7 @@ const CapsuleGame = ({ song, ticket, cover, swapped, lyrics, recording, onHome }
   return (
     <div className="relative w-full h-full flex items-center justify-center overflow-hidden bg-transparent p-4 md:p-6 lg:p-8 font-sans">
 
-      <div className="w-full max-w-[98%] h-[82vh] bg-[#EAEAEA] rounded-xl shadow-2xl border-[4px] border-[#C0B8A3] flex overflow-hidden relative">
+      <div className="w-full max-w-[98%] h-[88vh] bg-[#EAEAEA] rounded-xl shadow-2xl border-[4px] border-[#C0B8A3] flex overflow-hidden relative">
 
         {isCapturingImage && (
           <div className="fixed inset-0 bg-black/60 z-[9999] flex flex-col items-center justify-center backdrop-blur-sm pointer-events-auto">
@@ -254,9 +256,6 @@ const CapsuleGame = ({ song, ticket, cover, swapped, lyrics, recording, onHome }
           <div className="flex flex-col gap-2 shrink-0">
             <div className="flex items-center justify-between border-b-2 border-rose-400 pb-2">
               <h2 className="text-3xl font-bold text-gray-800 tracking-widest font-serif m-0">旅程回憶明信片</h2>
-              <button disabled={isCapturingImage} onClick={handleResetLayout} className="w-10 h-10 flex items-center justify-center rounded-full bg-white text-gray-600 shadow border border-gray-200 hover:bg-gray-100 transition-colors text-[24px] font-bold leading-[0] shrink-0" title="重新排版">
-                <span className="transform -translate-y-[2px] leading-[0]">⟳</span>
-              </button>
             </div>
             <p className="text-gray-500 text-base font-bold tracking-widest mt-2 leading-relaxed">輕輕拖曳與縮放<br />排版出獨一無二的回憶畫面</p>
           </div>
@@ -265,44 +264,29 @@ const CapsuleGame = ({ song, ticket, cover, swapped, lyrics, recording, onHome }
             <div className="flex gap-4">
               <div onClick={() => !isCapturingImage && setSelectedCoverType('cover')} className={`flex-1 cursor-pointer rounded-sm overflow-hidden border-[3px] transition-all ${selectedCoverType === 'cover' ? 'border-red-600 shadow-[4px_4px_0_#7f1d1d] scale-[1.02]' : 'border-gray-400 opacity-60 hover:opacity-100'}`}>
                 {cover ? <img src={cover.image} className="w-full aspect-[16/9] object-cover bg-gray-200" alt="意境封面" draggable="false" /> : <div className="w-full aspect-[16/9] bg-gray-300 flex items-center justify-center text-sm font-bold tracking-widest">無相片</div>}
-                <div className="bg-gray-800 text-white text-center text-sm py-1.5 tracking-widest font-bold border-t-[2px] border-gray-600">時光畫筆</div>
+                <div className="bg-gray-800 text-white text-center text-sm py-1.5 tracking-widest font-bold border-t-[2px] border-gray-600">封面繪製</div>
               </div>
               <div onClick={() => !isCapturingImage && setSelectedCoverType('swapped')} className={`flex-1 cursor-pointer rounded-sm overflow-hidden border-[3px] transition-all ${selectedCoverType === 'swapped' ? 'border-red-600 shadow-[4px_4px_0_#7f1d1d] scale-[1.02]' : 'border-gray-400 opacity-60 hover:opacity-100'}`}>
                 {swapped ? <img src={swapped.image} className="w-full aspect-[16/9] object-cover bg-gray-200" alt="合照封面" draggable="false" /> : <div className="w-full aspect-[16/9] bg-gray-300 flex items-center justify-center text-sm font-bold tracking-widest">無合照</div>}
-                <div className="bg-gray-800 text-white text-center text-sm py-1.5 tracking-widest font-bold border-t-[2px] border-gray-600">歲月留影</div>
+                <div className="bg-gray-800 text-white text-center text-sm py-1.5 tracking-widest font-bold border-t-[2px] border-gray-600">復古寫真</div>
               </div>
             </div>
           </div>
 
-          <div className="flex flex-col mt-6">
-            <textarea disabled={isCapturingImage} value={customMessage} onChange={(e) => setCustomMessage(e.target.value)} placeholder="為這趟旅程留下一段文字紀念吧..." className="w-full h-32 md:h-40 bg-[#F4F1EA] border border-gray-300 rounded-xl p-4 font-serif text-gray-800 font-bold resize-none focus:outline-none focus:border-rose-400 shadow-inner leading-relaxed text-base"></textarea>
-          </div>
-
-          <div className="flex gap-4 mt-auto shrink-0 h-[56px] w-full items-center mb-4">
-            {recording ? (
-              <button disabled={isCapturingImage} onClick={handleDownloadAudio} title="下載您的歌聲錄音" className="bg-[#6B5A4B] w-[72px] shrink-0 flex justify-center items-center h-[56px] rounded-full shadow-md hover:bg-gray-700 transition-all z-10 border border-white/20">
-                <img src={song.cassetteImage || "/images/cassette_1.png"} alt="錄音" className="w-[42px] h-[42px] object-contain drop-shadow-md pb-1" />
-              </button>
-            ) : (
-              <div title="無錄音紀錄" className="w-[72px] shrink-0 h-[56px] flex justify-center items-center bg-[#FDFBF7] border-[3px] border-gray-400 border-dashed rounded-[28px] opacity-60">
-                <img src={song.cassetteImage || "/images/cassette_1.png"} alt="無錄音" className="w-[38px] h-[38px] object-contain grayscale opacity-50 pb-1" />
-              </div>
-            )}
-
-            <button onClick={handleDownloadImage} disabled={isGenerating || isCapturingImage} className={`flex-1 h-full flex items-center justify-center m-0 transition-opacity ${isGenerating || isCapturingImage ? 'bg-gray-400 text-white rounded-full font-bold tracking-widest cursor-wait shadow-sm' : 'btn-primary'}`} style={{ marginTop: '0', marginBottom: '0' }}>
-              {isCapturingImage ? "正在為您印製..." : isGenerating ? "處理中..." : "下載回憶明信片"}
-            </button>
+          <div className="flex flex-col mt-6 flex-1">
+            <textarea disabled={isCapturingImage} value={customMessage} onChange={(e) => setCustomMessage(e.target.value)} placeholder="為這趟旅程留下一段文字紀念吧..." className="w-full h-full min-h-[160px] bg-[#F4F1EA] border border-gray-300 rounded-xl p-4 font-serif text-gray-800 font-bold resize-none focus:outline-none focus:border-rose-400 shadow-inner leading-relaxed text-base"></textarea>
           </div>
         </div>
 
-        <div className={`flex-1 flex flex-col items-center relative overflow-hidden px-4 md:px-8 py-6 transition-colors duration-300 ${isCapturingImage ? 'bg-gray-400/80 pointer-events-none' : 'bg-[#C0B8A3] pointer-events-auto'}`}>
+        {/* 右側區域 */}
+        <div className={`flex-1 flex flex-col justify-between relative overflow-hidden px-4 md:px-8 py-6 transition-colors duration-300 ${isCapturingImage ? 'bg-gray-400/80 pointer-events-none' : 'bg-[#C0B8A3] pointer-events-auto'}`}>
+          
+          {/* 移除右上角的重新排版按鈕 */}
+          <div className="w-full shrink-0 relative z-50 flex justify-start mb-2"></div>
 
-          <div className="w-full shrink-0 relative z-50">
-            {/* 已將重新排版移到左側標題旁 */}
-          </div>
-
-          <div className="w-full flex-1 flex justify-center items-start overflow-visible">
-            <div className="transform scale-[0.6] lg:scale-[0.7] xl:scale-[0.8] origin-top transition-all duration-500 drop-shadow-[0_10px_20px_rgba(0,0,0,0.075)] mt-[10px]">
+          {/* 中間：明信片區域 */}
+          <div className="w-full flex-1 relative z-10 my-2">
+            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-[52%] scale-[0.55] lg:scale-[0.62] xl:scale-[0.72] drop-shadow-[0_10px_20px_rgba(0,0,0,0.15)]">
               <PostcardContent
                 song={song}
                 ticket={ticket}
@@ -312,6 +296,36 @@ const CapsuleGame = ({ song, ticket, cover, swapped, lyrics, recording, onHome }
                 isResetting={resetTrigger}
               />
             </div>
+          </div>
+
+          {/* 下方：所有按鈕群 (移到右邊底部) */}
+          <div className="w-full shrink-0 flex gap-4 justify-center items-center h-[64px] relative z-50 mt-4">
+            
+            {/* 新位置：重新排版在左邊，綠色按鈕 */}
+            <button 
+              disabled={isCapturingImage} 
+              onClick={handleResetLayout} 
+              className="flex items-center justify-center px-8 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xl rounded-full shadow-md hover:shadow-lg transition-all duration-200 tracking-widest cursor-pointer"
+              style={{ transform: 'translateY(0)', ':hover': { transform: 'translateY(-2px)' } }}
+            >
+              <span className="text-2xl leading-none mr-2 -translate-y-[2px]">⟳</span> 重新排版
+            </button>
+
+            {/* 錄音下載按鈕 */}
+            {recording ? (
+              <button disabled={isCapturingImage} onClick={handleDownloadAudio} title="下載您的歌聲錄音" className="bg-[#6B5A4B] w-[80px] shrink-0 flex justify-center items-center h-full rounded-full shadow-md hover:bg-gray-700 transition-all z-10 border border-white/20">
+                <img src={song.cassetteImage || "/images/cassette_1.png"} alt="錄音" className="w-[48px] h-[48px] object-contain drop-shadow-md pb-1" />
+              </button>
+            ) : (
+              <div title="無錄音紀錄" className="w-[80px] shrink-0 h-full flex justify-center items-center bg-[#FDFBF7] border-[3px] border-gray-400 border-dashed rounded-full opacity-60">
+                <img src={song.cassetteImage || "/images/cassette_1.png"} alt="無錄音" className="w-[42px] h-[42px] object-contain grayscale opacity-50 pb-1" />
+              </div>
+            )}
+
+            {/* 明信片下載按鈕 */}
+            <button onClick={handleDownloadImage} disabled={isGenerating || isCapturingImage} className={`w-[260px] h-full flex items-center justify-center m-0 text-xl transition-opacity ${isGenerating || isCapturingImage ? 'bg-gray-400 text-white rounded-full font-bold tracking-widest cursor-wait shadow-sm' : 'btn-primary'}`} style={{ marginTop: '0', marginBottom: '0' }}>
+              {isCapturingImage ? "正在為您印製..." : isGenerating ? "處理中..." : "下載明信片"}
+            </button>
           </div>
 
         </div>

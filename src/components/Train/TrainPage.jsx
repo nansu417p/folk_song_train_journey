@@ -143,14 +143,6 @@ const TrainPage = forwardRef(({ onSelectMode, onBack, ticket, cover, coverStatus
       />
 
       <div className="w-full flex flex-col items-center absolute top-2 left-0 z-40 pointer-events-none shrink-0">
-        {/* 暫時隱藏旅程收集品文字區域
-        {(ticket || cover || recording || swapped || lyrics) && (
-          <h3 className="text-gray-700 font-bold tracking-widest text-sm mb-2 bg-white/80 px-8 py-2.5 rounded-full border border-white/60 backdrop-blur-md shadow-md pointer-events-auto">
-            旅程收集品
-          </h3>
-        )}
-        */}
-
         <div className="flex flex-row justify-center items-center gap-4 w-full max-w-[1500px] h-[290px] pointer-events-auto px-2">
           {ticket && (
             <motion.div initial={{ opacity: 0, y: -20, rotate: -5 }} animate={{ opacity: 1, y: 0, rotate: -2 }} whileHover={{ rotate: 0, scale: 1.05 }} onClick={() => setLightbox({ type: 'ticket', data: ticket })} className="cursor-pointer z-50 drop-shadow-md flex items-center justify-center w-[450px] h-[225px] shrink-0">
@@ -193,12 +185,24 @@ const TrainPage = forwardRef(({ onSelectMode, onBack, ticket, cover, coverStatus
           )}
 
           {lyrics && (
-            <motion.div initial={{ opacity: 0, y: -20, rotate: 4 }} animate={{ opacity: 1, y: 0, rotate: 2 }} whileHover={{ rotate: 0, scale: 1.05 }} onClick={() => setLightbox({ type: 'lyrics', data: lyrics })} className="cursor-pointer z-20 drop-shadow-md w-[175px] shrink-0 flex items-center justify-center">
-              <div className="relative w-full h-[190px]">
+            <motion.div initial={{ opacity: 0, y: -20, rotate: 4 }} animate={{ opacity: 1, y: 0, rotate: 2 }} whileHover={{ rotate: 0, scale: 1.05 }} onClick={() => setLightbox({ type: 'lyrics', data: lyrics })} className="cursor-pointer z-20 drop-shadow-md w-[185px] shrink-0 flex items-center justify-center">
+              <div className="relative w-full h-[220px]">
                 <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-16 h-5 bg-yellow-100/80 backdrop-blur-[2px] shadow-sm z-30 rotate-[-2deg] border border-yellow-300/50"></div>
-                <div className="bg-[#FDFBF7] p-3 border border-[#C0B8A3] w-full h-full flex flex-col relative overflow-hidden pointer-events-none mt-2">
-                  <div className="text-[10px] text-gray-500 leading-tight font-serif whitespace-pre-wrap opacity-70">{lyrics.content.substring(0, 100)}...</div>
-                  <div className="absolute bottom-0 left-0 w-full h-10 bg-gradient-to-t from-[#FDFBF7] to-transparent"></div>
+                {/* 統一的歌詞本設計：更淺的米白色 bg-[#FCFBF4]，加上歌名、分隔線與音符 */}
+                <div className="bg-[#FCFBF4] p-3 border border-[#C0B8A3] w-full h-full flex flex-col relative overflow-hidden pointer-events-none mt-2 shadow-inner">
+                  
+                  {/* 散落的音符裝飾 */}
+                  <img src="/images/note_1.png" alt="note" className="absolute top-4 left-2 w-4 h-4 opacity-40 -rotate-12" />
+                  <img src="/images/note_2.png" alt="note" className="absolute bottom-6 right-2 w-5 h-5 opacity-30 rotate-12" />
+                  {/* <img src="/images/note_3.png" alt="note" className="absolute top-[40%] -right-0 w-4 h-4 opacity-30 rotate-[30deg]" /> */}
+
+                  {/* 加入歌名與加粗分隔線 */}
+                  <div className="border-b-[2px] border-[#C09668]/60 pb-1 mb-2 shrink-0 text-center relative z-10">
+                    <h3 className="text-[14px] font-bold font-serif text-[#C09668] tracking-widest truncate">{lyrics.title}</h3>
+                  </div>
+
+                  <div className="text-[10px] text-gray-700 font-bold leading-tight font-serif whitespace-pre-wrap opacity-80 relative z-10">{lyrics.content.substring(0, 120)}...</div>
+                  <div className="absolute bottom-0 left-0 w-full h-8 bg-gradient-to-t from-[#FCFBF4] to-transparent z-20"></div>
                 </div>
               </div>
             </motion.div>
@@ -320,9 +324,19 @@ const TrainPage = forwardRef(({ onSelectMode, onBack, ticket, cover, coverStatus
               {lightbox.type === 'lyrics' && (
                 <div className="relative flex flex-col items-center pt-4 w-[500px]">
                   <div className="absolute top-2 left-1/2 -translate-x-1/2 w-40 h-10 bg-yellow-100/90 backdrop-blur-[2px] shadow-sm z-[100] rotate-[-1deg] border border-yellow-300"></div>
-                  <div className="bg-[#FDFBF7] p-10 pt-12 rounded-none shadow-xl border border-gray-200 w-full max-h-[85vh] flex flex-col overflow-y-auto custom-scrollbar mt-2">
-                    <h2 className="text-3xl font-bold text-gray-800 text-center border-b-2 border-gray-300 pb-4 mb-6 tracking-widest font-serif">{lightbox.data.title}</h2>
-                    <div className="text-lg text-gray-700 leading-loose font-serif whitespace-pre-wrap text-center px-4 custom-scrollbar">
+                  
+                  {/* Lightbox 點開的大歌詞本：統一背景與設計 */}
+                  <div className="bg-[#FCFBF4] p-10 pt-12 rounded-none shadow-xl border border-[#D2A679]/40 w-full max-h-[85vh] flex flex-col overflow-y-auto custom-scrollbar mt-2 relative overflow-hidden">
+                    
+                    {/* 散落的音符裝飾 */}
+                    <img src="/images/note_1.png" alt="note" className="absolute top-8 left-8 w-8 h-8 opacity-30 -rotate-12 pointer-events-none" />
+                    <img src="/images/note_2.png" alt="note" className="absolute bottom-20 right-8 w-10 h-10 opacity-20 rotate-12 pointer-events-none" />
+                    {/* <img src="/images/note_3.png" alt="note" className="absolute top-1/3 -right-2 w-8 h-8 opacity-25 rotate-45 pointer-events-none" /> */}
+
+                    {/* 加粗的分隔線 */}
+                    <h2 className="text-3xl font-bold text-[#C09668] text-center border-b-[3px] border-[#C09668]/60 pb-3 mb-6 tracking-widest font-serif relative z-10">{lightbox.data.title}</h2>
+                    
+                    <div className="text-lg text-gray-700 leading-loose font-serif whitespace-pre-wrap text-center px-4 custom-scrollbar font-bold relative z-10">
                       {lightbox.data.content}
                     </div>
                   </div>

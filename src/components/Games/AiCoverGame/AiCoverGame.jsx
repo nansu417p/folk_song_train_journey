@@ -226,7 +226,7 @@ const AiCoverGame_zimage = ({ song, onHome, coverStatus, generatedCoverImg, onSt
               <img src={generatedCoverImg} alt="AI Generated Cover" className="absolute inset-0 w-full h-full object-cover animate-fade-in" crossOrigin="anonymous" />
             ) : (
               <div className="absolute inset-0 w-full h-full overflow-hidden flex flex-col items-center justify-center">
-                <div className="text-2xl font-bold text-gray-400 tracking-widest font-serif">開始繪製後可以繼續體驗後續車廂，<br></br>完成後會自動顯示在上方</div>
+                <div className="text-2xl font-bold text-gray-400 tracking-widest font-serif">開始繪製後可以繼續體驗，<br></br>完成後會自動顯示在上方</div>
               </div>
             )}
           </div>

@@ -303,14 +303,16 @@ function App() {
       if (!response.ok) throw new Error(`合成錯誤 (狀態碼: ${response.status})`);
       const data = await response.json();
       const swappedBase64 = `data:image/png;base64,${data.image}`;
-      if (!swappedData) {
-        setSwappedData({ image: swappedBase64, title: mainSong?.title });
-        setGeneratedSwappedImg(null);
-        setFaceswapStatus('idle');
-      } else {
-        setGeneratedSwappedImg(swappedBase64);
-        setFaceswapStatus('done');
-      }
+      // if (!swappedData) {
+      //   setSwappedData({ image: swappedBase64, title: mainSong?.title });
+      //   setGeneratedSwappedImg(null);
+      //   setFaceswapStatus('idle');
+      // } else {
+      //   setGeneratedSwappedImg(swappedBase64);
+      //   setFaceswapStatus('done');
+      // }
+      setGeneratedSwappedImg(swappedBase64);
+      setFaceswapStatus('done');
     } catch (error) {
       console.error(error);
       alert(`照片合成失敗: ${error.message}\n請確認伺服器已正常開啟。`);
@@ -508,6 +510,7 @@ function App() {
                       onStartGenerate={handleStartFaceSwap}
                       generatedCoverImg={coverData ? coverData.image : generatedCoverImg}
                       hasExistingSwap={!!swappedData}
+                      existingSwapImg={swappedData?.image}
                       onSetMockSwap={(url) => {
                         if (!swappedData) {
                           setSwappedData({ image: url, title: mainSong?.title });

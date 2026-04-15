@@ -271,7 +271,7 @@ const SingAlongGame = ({ song, onHome, onRecordingComplete }) => {
       if (restartIntervalRef.current) {
         clearInterval(restartIntervalRef.current);
       }
-    };
+    }
   }, [isPlaying]);
 
 
@@ -425,19 +425,17 @@ const SingAlongGame = ({ song, onHome, onRecordingComplete }) => {
 
       <div className="flex w-full max-w-[80vw] h-[82vh] bg-[#FDFBF7] flex-col rounded-3xl shadow-xl border border-gray-300 overflow-hidden relative z-30 mt-6">
 
-        {/* 依要求移除原本點擊播放的提示文字 */}
-
         <div className="w-full bg-[#D64F3E] p-4 px-6 flex justify-between items-center shadow-md z-20 border-b-4 border-[#B83E2F]">
           <div className="flex items-center gap-4 min-w-[200px]">
-
             <div className="flex items-center justify-center mr-2">
               <img src={song.cassetteImage || "/images/cassette_1.png"} alt="Cassette" className="w-12 h-8 object-contain drop-shadow-[0_2px_2px_rgba(0,0,0,0.5)]" />
             </div>
 
             <div className="flex flex-col">
               <div className="flex items-baseline gap-3">
-                <h2 className="text-[#F5F5F5] text-xl font-bold tracking-widest font-serif drop-shadow">{song.title}</h2>
-                <span className="text-white/80 text-base font-serif tracking-wider">{song.singer}</span>
+                {/* 修改字體大小為 text-3xl */}
+                <h2 className="text-[#F5F5F5] text-3xl font-bold tracking-widest font-serif drop-shadow">{song.title}</h2>
+                <span className="text-white/80 text-xl font-serif tracking-wider">{song.singer}</span>
               </div>
             </div>
           </div>
@@ -491,7 +489,8 @@ const SingAlongGame = ({ song, onHome, onRecordingComplete }) => {
           <div className="absolute bottom-0 left-0 w-full h-40 bg-gradient-to-t from-white via-white/80 to-transparent pointer-events-none z-20"></div>
         </div>
 
-        <div className="h-28 w-full bg-[#2A2A2A] flex flex-row items-center justify-between relative px-8 shadow-inner z-20 gap-8">
+        {/* 下方控制列：左右交換位置 (flex-row-reverse) 並調整完成錄音的顏色 */}
+        <div className="h-28 w-full bg-[#2A2A2A] flex flex-row-reverse items-center justify-between relative px-8 shadow-inner z-20 gap-8">
 
           <div className="flex items-center justify-center w-full max-w-sm">
             <button
@@ -502,10 +501,10 @@ const SingAlongGame = ({ song, onHome, onRecordingComplete }) => {
                   handleFinishAndSave();
                 }
               }}
-              className={`transition-all duration-300 w-full max-w-[320px] truncate shrink-0
+              className={`transition-all duration-300 w-full max-w-[320px] truncate shrink-0 px-6 py-3 rounded-full text-lg tracking-widest font-bold text-white
                    ${!hasStarted
                   ? 'btn-primary'
-                  : 'btn-primary border-red-900 shadow-[0_4px_12px_rgba(0,0,0,0.6)]'}`}
+                  : 'btn-secondary'}`}
             >
               {!hasStarted ? '開始錄音' : '錄音完成'}
             </button>

@@ -1,7 +1,7 @@
 export const SUBJECT_CATEGORIES = [
   { label: "男歌手", type: "male" },
   { label: "女歌手", type: "female" },
-  { label: "風景照", type: "scenery" }
+  // { label: "風景照", type: "scenery" }
 ];
 
 export const SUBJECT_TRAITS = {

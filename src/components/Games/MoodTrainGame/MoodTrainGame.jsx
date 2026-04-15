@@ -147,8 +147,8 @@ const MoodTrainGame = ({ onMoodDetected, onTicketGenerated, userName }) => {
 
   // 結合 userName 的車長廣播
   const getConductorMessage = () => {
-    const greeting = userName ? `${userName} 乘客您好！` : '旅客您好！';
-    if (step === 'intro') return `${greeting}歡迎搭乘！請望向鏡頭，讓我們為您記錄此刻的心情，印製專屬車票，車票會依據旅客的表情有不同變化!`;
+    const greeting = userName ? `${userName} 乘客您好，` : '旅客您好，';
+    if (step === 'intro') return `${greeting}歡迎搭乘！請望向鏡頭，讓我們為您記錄此刻心情，依據表情印製專屬車票`;
     if (step === 'scanning') return `請看著鏡頭，為這趟旅程留下心情紀錄吧!`;
     switch (moodResult) {
       case 'happy': return `看來您今天心情不錯呢！就讓這份好心情陪伴您接下來的音樂旅程。`;
@@ -184,10 +184,30 @@ const MoodTrainGame = ({ onMoodDetected, onTicketGenerated, userName }) => {
           </div>
 
           <div className="flex w-full gap-4 mt-6 h-14 shrink-0 flex-col justify-center relative">
-            {step === 'intro' && <button onClick={startScan} disabled={!cameraReady} className="btn-primary w-full h-full disabled:bg-gray-300 disabled:text-gray-500 disabled:shadow-none disabled:hover:translate-y-0 disabled:cursor-not-allowed">點擊拍攝</button>}
-            {step === 'scanning' && <div className="w-full h-full flex items-center justify-center text-gray-600 font-bold animate-pulse tracking-widest bg-white rounded-full border border-gray-200 shadow-inner">正在為您印製專屬車票...</div>}
+            {step === 'intro' && (
+              <button 
+                onClick={startScan} 
+                disabled={!cameraReady} 
+                className="btn-primary w-full h-full disabled:opacity-70 disabled:bg-gray-400 disabled:cursor-not-allowed text-lg tracking-widest font-bold"
+              >
+                點擊拍攝
+              </button>
+            )}
+            {step === 'scanning' && (
+              <button 
+                disabled 
+                className="btn-primary w-full h-full disabled:opacity-70 disabled:bg-gray-400 disabled:cursor-not-allowed text-lg tracking-widest font-bold animate-pulse"
+              >
+                正在為您印製專屬車票...
+              </button>
+            )}
             {step === 'result' && (
-              <button onClick={handleReScan} className="btn-secondary w-full h-full border-gray-300">重新拍攝</button>
+              <button 
+                onClick={handleReScan} 
+                className="btn-secondary w-full h-full border-gray-300 text-lg tracking-widest font-bold"
+              >
+                重新拍攝
+              </button>
             )}
           </div>
         </div>
@@ -214,7 +234,7 @@ const MoodTrainGame = ({ onMoodDetected, onTicketGenerated, userName }) => {
             {step === 'result' && (
               <button
                 onClick={() => { setIsCameraActive(false); onTicketGenerated(captureImg, moodResult); }}
-                className="btn-primary flex-1 h-full transition-all duration-700 opacity-100 translate-y-0"
+                className="btn-primary flex-1 h-full transition-all duration-700 opacity-100 translate-y-0 text-lg tracking-widest font-bold"
               >
                 領取車票
               </button>

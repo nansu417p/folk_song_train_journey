@@ -150,8 +150,9 @@ const LyricsGamePlay = ({ song, gameData, initialStickers, onHome, onLyricsGener
             </div>
             <div className="flex flex-col">
               <div className="flex items-baseline gap-3">
-                <h2 className="text-[#F5F5F5] text-xl font-bold tracking-widest font-serif drop-shadow">{song.title}</h2>
-                <span className="text-white/80 text-base font-serif tracking-wider">{song.singer}</span>
+                {/* 修改字體大小為 text-3xl */}
+                <h2 className="text-[#F5F5F5] text-3xl font-bold tracking-widest font-serif drop-shadow">{song.title}</h2>
+                <span className="text-white/80 text-xl font-serif tracking-wider">{song.singer}</span>
               </div>
             </div>
           </div>
@@ -274,8 +275,6 @@ const LyricsGame = ({ song, onHome, onLyricsGenerated }) => {
 
   return (
     <div className="relative w-full h-full flex flex-col items-center justify-center overflow-hidden bg-transparent pt-16 pb-8 px-8">
-      {/* 已移除車廂標題 */}
-
       <audio ref={audioRef} src={`/music/${song.audioFileName}`} autoPlay onTimeUpdate={handleTimeUpdate} className="hidden" />
       <LyricsGamePlay
         song={song}

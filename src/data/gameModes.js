@@ -1,7 +1,7 @@
 // ★ 中央控制：在此統一修改所有車廂的名稱（加入溫度的文案）
 export const CARRIAGE_NAMES = {
   MOOD_TRAIN: "1 心情車票",
-  AR_CATCH: "2 復古卡帶",
+  AR_CATCH: "2 卡帶選歌",
   AI_COVER: "3 封面繪製",
   LYRICS: "4 歌詞拼貼",
   SING_ALONG: "5 民歌卡拉OK",

@@ -456,7 +456,7 @@ function App() {
               {activeMode === 'mood-train' && (
                 <div className="w-full h-full relative">
                   <UnifiedBackButton onClick={handleLeaveGame} text="" />
-                  <MoodTrainGame onMoodDetected={(mood) => setGlobalMood(mood)} onTicketGenerated={(img, finalMood) => { setTicketData({ image: img, mood: finalMood }); handleLeaveGame(); }} />
+                  <MoodTrainGame  userName={trackerSessionName} onMoodDetected={(mood) => setGlobalMood(mood)} onTicketGenerated={(img, finalMood) => { setTicketData({ image: img, mood: finalMood }); handleLeaveGame(); }} />
                 </div>
               )}
 

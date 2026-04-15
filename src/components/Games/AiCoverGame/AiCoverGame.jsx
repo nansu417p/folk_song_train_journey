@@ -163,7 +163,7 @@ const AiCoverGame_zimage = ({ song, onHome, coverStatus, generatedCoverImg, onSt
 
             <div className="w-full relative shadow-inner border border-gray-300 bg-[#F9F7F1] flex flex-col flex-1 overflow-hidden rounded-xl p-4">
               <div className="w-full flex-1 overflow-y-auto pr-3 pb-4 custom-scrollbar">
-                <p className="text-lg text-gray-500 mb-4 tracking-wider font-bold text-center">選項為歌詞中繪圖的靈感，您可以自由更換選擇</p>
+                <p className="text-lg text-gray-500 mb-4 tracking-wider font-bold text-center">選項為繪圖的靈感，您可以自由選擇</p>
 
                 {[
                   { id: 'subjects', title: '相片主角' },
@@ -193,7 +193,7 @@ const AiCoverGame_zimage = ({ song, onHome, coverStatus, generatedCoverImg, onSt
                 ))}
 
                 <div className="mb-4 w-full mt-4">
-                  <h3 className="text-gray-700 font-bold mb-3 text-lg uppercase tracking-widest border-l-4 border-stone-400 pl-3">有什麼特別想留下的畫面嗎？</h3>
+                  <h3 className="text-gray-700 font-bold mb-3 text-lg uppercase tracking-widest border-l-4 border-stone-400 pl-3">有什麼想加入的元素嗎？</h3>
                   <input type="text" value={customWord} onChange={(e) => setCustomWord(e.target.value)} placeholder="例如：吉他、腳踏車..." className="w-full p-4 border border-gray-300 shadow-inner rounded-xl font-serif text-lg focus:outline-none focus:border-rose-400 bg-white" />
                 </div>
               </div>
@@ -226,7 +226,7 @@ const AiCoverGame_zimage = ({ song, onHome, coverStatus, generatedCoverImg, onSt
               <img src={generatedCoverImg} alt="AI Generated Cover" className="absolute inset-0 w-full h-full object-cover animate-fade-in" crossOrigin="anonymous" />
             ) : (
               <div className="absolute inset-0 w-full h-full overflow-hidden flex flex-col items-center justify-center">
-                <div className="text-2xl font-bold text-gray-400 tracking-widest font-serif">等待繪製...</div>
+                <div className="text-2xl font-bold text-gray-400 tracking-widest font-serif">開始繪製後可以繼續體驗後續車廂，<br></br>完成後會自動顯示在上方</div>
               </div>
             )}
           </div>

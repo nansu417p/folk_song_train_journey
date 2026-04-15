@@ -6,7 +6,8 @@ import { CARRIAGE_NAMES } from '../../../data/gameModes';
 
 const BACKGROUND_IMAGE_SRC = '/images/MoodTrainGame.png';
 
-const MoodTrainGame = ({ onMoodDetected, onTicketGenerated }) => {
+// 加上 userName prop 接收從 App 傳來的名稱
+const MoodTrainGame = ({ onMoodDetected, onTicketGenerated, userName }) => {
   const webcamRef = useRef(null);
   const canvasRef = useRef(null);
   const tempCanvasRef = useRef(null);
@@ -144,13 +145,15 @@ const MoodTrainGame = ({ onMoodDetected, onTicketGenerated }) => {
     }, 2000);
   };
 
+  // 結合 userName 的車長廣播
   const getConductorMessage = () => {
-    if (step === 'intro') return "歡迎搭乘！請望向鏡頭，讓我們為您記錄此刻的心情，印製專屬車票，車票會依據旅客的表情有不同變化!";
-    if (step === 'scanning') return "請看著鏡頭，為這趟旅程留下心情紀錄吧!";
+    const greeting = userName ? `${userName} 乘客您好！` : '旅客您好！';
+    if (step === 'intro') return `${greeting}歡迎搭乘！請望向鏡頭，讓我們為您記錄此刻的心情，印製專屬車票，車票會依據旅客的表情有不同變化!`;
+    if (step === 'scanning') return `請看著鏡頭，為這趟旅程留下心情紀錄吧!`;
     switch (moodResult) {
-      case 'happy': return "看來您今天心情不錯呢！就讓這份好心情陪伴您接下來的音樂旅程。";
-      case 'sad': return "今天似乎有些疲憊呢。沒關係，讓輕柔的民歌旋律為您洗去煩勞，放鬆享受旅程吧。";
-      default: return "旅途的風景正美，請放鬆心情，悠閒享受這段純粹的民歌時光。";
+      case 'happy': return `看來您今天心情不錯呢！就讓這份好心情陪伴您接下來的音樂旅程。`;
+      case 'sad': return `今天似乎有些疲憊呢。沒關係，讓輕柔的民歌旋律為您洗去煩勞，放鬆享受旅程吧。`;
+      default: return `旅途的風景正美，請放鬆心情，悠閒享受這段純粹的民歌時光。`;
     }
   };
 

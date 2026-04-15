@@ -127,22 +127,22 @@ const TrainPage = forwardRef(({ onSelectMode, onBack, ticket, cover, coverStatus
   const hintModeId = getHintModeId();
 
   return (
-    <div className="w-full h-full bg-transparent flex flex-col justify-between overflow-hidden relative pt-6 pb-6">
+    <div className="w-full h-full bg-transparent overflow-hidden relative font-sans">
+      
+      <div className="absolute inset-x-0 bottom-0 w-full min-h-[500px] pointer-events-none z-0">
+        <div
+          className="absolute inset-x-0 bottom-0 pointer-events-none z-0"
+          style={{
+            height: '400px',
+            backgroundImage: "url('/rail.png')",
+            backgroundSize: 'auto 100%', 
+            backgroundPosition: 'center bottom',
+            backgroundRepeat: 'repeat-x',
+          }}
+        />
+      </div>
 
-      <div
-        className="absolute inset-x-0 bottom-0 pointer-events-none z-0"
-        style={{
-          height: '100vh',
-          backgroundImage: "url('/rail.png')",
-          backgroundSize: 'cover',
-          backgroundPosition: layoutConfig?.BG_POSITION || 'center bottom',
-          backgroundRepeat: 'no-repeat',
-          transform: `translateY(${layoutConfig?.RAIL_Y_OFFSET || '0px'}) scale(${layoutConfig?.RAIL_SCALE || 1})`,
-          transformOrigin: 'bottom center',
-        }}
-      />
-
-      <div className="w-full flex flex-col items-center absolute top-2 left-0 z-40 pointer-events-none shrink-0">
+      <div className="w-full flex flex-col items-center absolute top-[80px] md:top-[120px] left-0 z-40 pointer-events-none shrink-0">
         <div className="flex flex-row justify-center items-center gap-4 w-full max-w-[1500px] h-[290px] pointer-events-auto px-2">
           {ticket && (
             <motion.div initial={{ opacity: 0, y: -20, rotate: -5 }} animate={{ opacity: 1, y: 0, rotate: -2 }} whileHover={{ rotate: 0, scale: 1.05 }} onClick={() => setLightbox({ type: 'ticket', data: ticket })} className="cursor-pointer z-50 drop-shadow-md flex items-center justify-center w-[450px] h-[225px] shrink-0">
@@ -188,15 +188,11 @@ const TrainPage = forwardRef(({ onSelectMode, onBack, ticket, cover, coverStatus
             <motion.div initial={{ opacity: 0, y: -20, rotate: 4 }} animate={{ opacity: 1, y: 0, rotate: 2 }} whileHover={{ rotate: 0, scale: 1.05 }} onClick={() => setLightbox({ type: 'lyrics', data: lyrics })} className="cursor-pointer z-20 drop-shadow-md w-[185px] shrink-0 flex items-center justify-center">
               <div className="relative w-full h-[220px]">
                 <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-16 h-5 bg-yellow-100/80 backdrop-blur-[2px] shadow-sm z-30 rotate-[-2deg] border border-yellow-300/50"></div>
-                {/* 統一的歌詞本設計：更淺的米白色 bg-[#FCFBF4]，加上歌名、分隔線與音符 */}
                 <div className="bg-[#FCFBF4] p-3 border border-[#C0B8A3] w-full h-full flex flex-col relative overflow-hidden pointer-events-none mt-2 shadow-inner">
                   
-                  {/* 散落的音符裝飾 */}
                   <img src="/images/note_1.png" alt="note" className="absolute top-4 left-2 w-4 h-4 opacity-40 -rotate-12" />
                   <img src="/images/note_2.png" alt="note" className="absolute bottom-6 right-2 w-5 h-5 opacity-30 rotate-12" />
-                  {/* <img src="/images/note_3.png" alt="note" className="absolute top-[40%] -right-0 w-4 h-4 opacity-30 rotate-[30deg]" /> */}
 
-                  {/* 加入歌名與加粗分隔線 */}
                   <div className="border-b-[2px] border-[#C09668]/60 pb-1 mb-2 shrink-0 text-center relative z-10">
                     <h3 className="text-[14px] font-bold font-serif text-[#C09668] tracking-widest truncate">{lyrics.title}</h3>
                   </div>
@@ -217,8 +213,7 @@ const TrainPage = forwardRef(({ onSelectMode, onBack, ticket, cover, coverStatus
       )}
 
       <div
-        className="w-full h-[520px] overflow-hidden relative z-10 shrink-0"
-        style={{ transform: `translateY(${layoutConfig?.TRAIN_Y_OFFSET || '0px'})` }}
+        className="absolute bottom-[25px] w-full h-[520px] overflow-hidden z-10 shrink-0"
       >
         <div
           ref={scrollRef}

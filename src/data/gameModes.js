@@ -1,12 +1,12 @@
 // ★ 中央控制：在此統一修改所有車廂的名稱（加入溫度的文案）
 export const CARRIAGE_NAMES = {
-  MOOD_TRAIN: "1 啟程售票處",
-  AR_CATCH: "2 旋律播放器",
-  AI_COVER: "3 時光畫筆",
-  LYRICS: "4 青春歌詞本",
-  FACE_SWAP: "6 歲月留影",
-  SING_ALONG: "5 金曲錄音室",
-  CAPSULE: "7 旅程回憶"
+  MOOD_TRAIN: "1 心情車票",
+  AR_CATCH: "2 復古卡帶",
+  AI_COVER: "3 封面繪製",
+  LYRICS: "4 歌詞拼貼",
+  SING_ALONG: "5 民歌卡拉OK",
+  FACE_SWAP: "6 復古寫真",
+  CAPSULE: "7 旅程明信片"
 };
 
 // ★ 中央控制：在此統一修改所有車廂的副標題（增添感性語氣）

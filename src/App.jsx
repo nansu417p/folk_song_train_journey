@@ -320,12 +320,22 @@ function App() {
     }
   };
 
-  const UnifiedBackButton = ({ onClick, text = "" }) => (
-    <button onClick={onClick} className={`btn-back flex items-center justify-center min-h-[48px] px-5 py-2 ${text ? 'gap-2' : ''}`}>
-      <span className="inline-block transform scale-[1.3] origin-center leading-[0] mt-[-1px]">⬅</span>
-      {text && <span className="pt-[1px]">{text}</span>}
-    </button>
-  );
+  const UnifiedBackButton = ({ onClick, text = "" }) => {
+    const handleClick = (e) => {
+      const now = Date.now();
+      // 使用 window 全域變數防止不同元件間的連點穿透
+      if (window.lastBackClickTime && now - window.lastBackClickTime < 1000) return;
+      window.lastBackClickTime = now;
+      onClick(e);
+    };
+
+    return (
+      <button onClick={handleClick} className={`btn-back flex items-center justify-center min-h-[48px] px-5 py-2 ${text ? 'gap-2' : ''}`}>
+        <span className="inline-block transform scale-[1.3] origin-center leading-[0] mt-[-1px]">⬅</span>
+        {text && <span className="pt-[1px]">{text}</span>}
+      </button>
+    );
+  };
 
   const RequireMainSongPrompt = () => (
     <div className="folk-card">

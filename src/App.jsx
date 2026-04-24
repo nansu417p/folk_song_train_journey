@@ -431,7 +431,7 @@ function App() {
                     <img src={mainSong ? mainSong.cassetteImage : "/images/cassette_1.png"} alt="Cassette" className="w-12 h-8 object-contain drop-shadow-sm" />
                   </div>
                   <div className="flex flex-col mr-8 min-w-[120px]">
-                    <span className="text-lg text-folk-dark font-bold tracking-wider truncate max-w-[150px]">
+                    <span className="text-lg text-folk-dark font-bold font-serif tracking-wider truncate max-w-[150px]">
                       {mainSong ? mainSong.title : (currentTrackName === 'bg_music.mp3' ? '經典民歌播放中' : (currentTrackName || '').replace('.mp3', ''))}
                     </span>
                   </div>

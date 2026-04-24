@@ -17,7 +17,8 @@ export default {
         'folk-wood-dark': '#C09668', // 木質 hover 狀態
       },
       fontFamily: {
-        serif: ['"Noto Serif TC"', 'serif'], 
+        sans: ['"Noto Serif TC"', 'serif'],
+        serif: ['"Noto Serif TC"', 'serif'],
       },
       fontSize: {
         'xs': ['0.875rem', { lineHeight: '1.25rem' }], // 備用極小字 (14px)

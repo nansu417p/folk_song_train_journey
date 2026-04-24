@@ -127,7 +127,7 @@ const TrainPage = forwardRef(({ onSelectMode, onBack, ticket, cover, coverStatus
   const hintModeId = getHintModeId();
 
   return (
-    <div className="w-full h-full bg-transparent overflow-hidden relative font-sans">
+    <div className="w-full h-full bg-transparent overflow-hidden relative font-serif">
 
       <div className="absolute inset-x-0 bottom-0 w-full min-h-[500px] pointer-events-none z-0">
         <div
@@ -264,9 +264,17 @@ const TrainPage = forwardRef(({ onSelectMode, onBack, ticket, cover, coverStatus
                       {isFaceSwap && mainSong && !mainSong.hasFace && faceswapStatus === 'idle' && <div className="bg-gray-800 text-white px-5 py-2 text-base rounded-full font-bold shadow-md border border-gray-600">這首歌的封面不適用此體驗喔</div>}
                     </div>
 
-                    <div className="w-full transition-all duration-300 relative flex items-center justify-center py-2">
-                      <h3 className={`text-4xl font-bold tracking-[0.2em] transition-colors duration-300 ml-2 translate-y-[3px] ${isLocked ? 'text-gray-400 opacity-60' : 'text-[#FDFBF7] group-hover:text-white'}`}>
-                        {mode.title}
+                    <div className="w-full transition-all duration-300 relative flex items-center justify-center py-2 gap-3">
+                      {/* 實心圓外框數字 */}
+                      <div className={`mr-2 w-[44px] h-[44px] shrink-0 rounded-full border-[3px] border-solid flex items-center justify-center relative -translate-y-[-3px] transition-colors duration-300 shadow-sm ${isLocked ? 'border-gray-400 opacity-60 bg-gray-500/20' : 'border-[#FCECAE] bg-[#FCECAE]/10'}`}>
+                        <span className={`text-2xl font-black relative z-10 -translate-y-[2px] transition-colors duration-300 pr-[1px] ${isLocked ? 'text-gray-400' : 'text-[#FCECAE]'}`}>
+                          {mode.title.split(' ')[0]}
+                        </span>
+                      </div>
+
+                      {/* 車廂名稱 */}
+                      <h3 className={`text-4xl font-black tracking-[0.2em] transition-colors duration-300 -translate-y-[-1px] ${isLocked ? 'text-gray-400 opacity-60' : 'text-[#FCECAE]'}`}>
+                        {mode.title.split(' ').slice(1).join(' ')}
                       </h3>
                     </div>
                   </div>

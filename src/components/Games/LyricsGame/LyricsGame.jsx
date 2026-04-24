@@ -169,8 +169,20 @@ const LyricsGamePlay = ({ song, gameData, initialStickers, onHome, onLyricsGener
         <div className="flex flex-1 overflow-hidden relative">
           <div ref={stickersScrollRef} {...stickersScrollEvents} className="flex-[1] bg-white p-6 overflow-y-auto custom-scrollbar border-r border-gray-300 shadow-inner flex flex-col items-center gap-6">
             {isCompleted ? (
-              <div className="text-center flex flex-col items-center justify-center animate-fade-in-up w-full px-4 mt-20">
+              <div className="text-center flex flex-col items-center justify-center animate-fade-in-up w-full px-4 mt-12">
                 <h3 className="text-2xl font-bold text-gray-800 mb-6 font-serif tracking-widest">歌詞已完整重現</h3>
+                <div className="relative w-[185px] h-[220px] shrink-0 mx-auto drop-shadow-md rotate-2 mb-8 pointer-events-none">
+                  <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-16 h-5 bg-yellow-100/80 backdrop-blur-[2px] shadow-sm z-30 rotate-[-2deg] border border-yellow-300/50"></div>
+                  <div className="bg-[#FCFBF4] p-3 border border-[#C0B8A3] w-full h-full flex flex-col relative overflow-hidden mt-2 shadow-inner">
+                    <img src="/images/note_1.png" alt="note" className="absolute top-4 left-2 w-4 h-4 opacity-40 -rotate-12" />
+                    <img src="/images/note_2.png" alt="note" className="absolute bottom-6 right-2 w-5 h-5 opacity-30 rotate-12" />
+                    <div className="border-b-[2px] border-[#C09668]/60 pb-1 mb-2 shrink-0 text-center relative z-10">
+                      <h3 className="text-[14px] font-bold font-serif text-[#C09668] tracking-widest truncate">{song.title}</h3>
+                    </div>
+                    <div className="text-[10px] text-gray-700 font-bold leading-tight font-serif whitespace-pre-wrap opacity-80 relative z-10 text-left">{song.lyrics ? song.lyrics.substring(0, 120) : ""}...</div>
+                    <div className="absolute bottom-0 left-0 w-full h-8 bg-gradient-to-t from-[#FCFBF4] to-transparent z-20"></div>
+                  </div>
+                </div>
                 <button onClick={onHome} className="btn-secondary w-[80%]">返回火車</button>
               </div>
             ) : (

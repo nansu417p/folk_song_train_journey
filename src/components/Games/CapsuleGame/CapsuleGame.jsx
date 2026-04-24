@@ -108,78 +108,75 @@ const PostcardContent = ({ song, ticket, selectedCoverImg, customMessage, lyrics
   return (
     <div
       id="postcard-actual-content"
-      className="w-[1280px] h-[720px] bg-[#F4F1EA] overflow-hidden border-[8px] border-white shadow-2xl font-serif relative box-border bg-[url('/images/Capsule_bg.png')] bg-cover bg-center rounded-sm"
+      className="w-[1280px] h-[720px] bg-transparent overflow-hidden border-[8px] border-[#edece8] shadow-2xl font-serif relative box-border bg-[url('/home-bg.png')] bg-cover bg-center rounded-sm"
     >
-      <div className="absolute inset-0 bg-white/50 pointer-events-none"></div>
+      {/* 輕微調淡背景 */}
+      <div className="absolute inset-0 bg-white/30 backdrop-blur-[1px] pointer-events-none z-0"></div>
 
-      <CollageItem initialX={60} initialY={50} initialRotate={-7.5} initialScale={1} initialZ={10} isResetting={isResetting} bringToFront={bringToFront}>
-        <div className="p-3 pb-10 bg-white shadow-2xl border border-gray-200 relative select-none inline-block">
-          <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-20 h-6 bg-red-200/90 shadow-sm rotate-2"></div>
+      <CollageItem initialX={80} initialY={60} initialRotate={-6} initialScale={1} initialZ={10} isResetting={isResetting} bringToFront={bringToFront}>
+        <div className="p-3 pb-4 bg-[#FDFDF9] shadow-[0_15px_30px_rgba(0,0,0,0.5)] border border-gray-200 relative select-none inline-block rounded-sm transform transition-transform">
+          {/* 紙膠帶 */}
+          <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-24 h-7 bg-white/60 backdrop-blur-sm shadow-[0_2px_4px_rgba(0,0,0,0.1)] rotate-3 border border-white/40 mix-blend-overlay"></div>
           {selectedCoverImg ? (
-            <img src={selectedCoverImg} className="w-[450px] aspect-[16/9] object-cover pointer-events-none" draggable="false" alt="封面" />
+            <img src={selectedCoverImg} className="w-[420px] aspect-[16/9] object-cover pointer-events-none rounded-sm brightness-95 contrast-[1.05]" draggable="false" alt="封面" />
           ) : (
-            <div className="w-[450px] aspect-[16/9] flex items-center justify-center bg-gray-200 text-gray-500 font-bold tracking-widest text-2xl">無圖片紀錄</div>
+            <div className="w-[420px] aspect-[16/9] flex items-center justify-center bg-gray-200 text-gray-500 font-bold tracking-widest text-2xl rounded-sm">無圖片紀錄</div>
           )}
-          <div className="absolute bottom-2 left-0 w-full text-center text-gray-500 text-base font-bold tracking-widest pointer-events-none">民歌記憶．時光永存</div>
         </div>
       </CollageItem>
 
-      <CollageItem initialX={60} initialY={400} initialRotate={7.5} initialScale={0.8} initialZ={20} isResetting={isResetting} bringToFront={bringToFront}>
-        <div className="relative select-none drop-shadow-2xl inline-block">
-          <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-16 h-5 bg-blue-200/90 shadow-sm -rotate-2 z-50"></div>
-          <div className="pointer-events-none">
+      <CollageItem initialX={110} initialY={410} initialRotate={5} initialScale={0.8} initialZ={20} isResetting={isResetting} bringToFront={bringToFront}>
+        <div className="relative select-none drop-shadow-[0_15px_25px_rgba(0,0,0,0.5)] inline-block">
+          <div className="absolute -top-4 -left-4 w-14 h-14 bg-white/40 shadow-[0_2px_6px_rgba(0,0,0,0.1)] -rotate-6 z-50 backdrop-blur-sm border border-white/30 rounded-sm mix-blend-overlay"></div>
+          <div className="pointer-events-none opacity-[0.98]">
             {ticket ? (
               <TicketCard captureImg={ticket.image} moodResult={ticket.mood} size="normal" />
             ) : (
-              <div className="w-[560px] h-[240px] bg-gray-100 border-[4px] border-dashed border-gray-400 flex items-center justify-center text-gray-500 font-bold tracking-widest text-xl rounded">無心情車票</div>
+              <div className="w-[560px] h-[240px] bg-[#FDFBF7] border-[4px] border-dashed border-gray-300 flex items-center justify-center text-gray-400 font-bold tracking-widest text-xl rounded-sm">無心情車票</div>
             )}
           </div>
         </div>
       </CollageItem>
 
-      <CollageItem initialX={760} initialY={40} initialRotate={-7.5} initialScale={1} initialZ={30} isResetting={isResetting} bringToFront={bringToFront}>
-        {/* 統一的歌詞本設計：更淺的米白色 bg-[#FCFBF4] */}
-        <div className="bg-[#FCFBF4] border border-[#D2A679]/40 p-6 w-[440px] h-[480px] flex flex-col relative shadow-xl select-none inline-block rounded-sm overflow-hidden">
-          <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-24 h-8 bg-yellow-200/90 shadow-sm rotate-3 z-50"></div>
+      <CollageItem initialX={680} initialY={60} initialRotate={3} initialScale={1} initialZ={30} isResetting={isResetting} bringToFront={bringToFront}>
+        <div className="w-[480px] h-[460px] flex flex-col relative select-none inline-block p-2 text-[#2b1b12] drop-shadow-md">
+          {/* 音符裝飾：均勻散佈 */}
+          <img src="/images/note_1.png" alt="note" className="absolute top-8 left-4 w-8 h-8 opacity-70 -rotate-12 pointer-events-none mix-blend-multiply" />
+          <img src="/images/note_3.png" alt="note" className="absolute top-[180px] right-2 w-8 h-8 opacity-70 rotate-45 pointer-events-none mix-blend-multiply" />
+          <img src="/images/note_2.png" alt="note" className="absolute bottom-10 left-8 w-10 h-10 opacity-60 rotate-12 pointer-events-none mix-blend-multiply" />
 
-          {/* 加入散落的音符裝飾 */}
-          <img src="/images/note_1.png" alt="note" className="absolute top-6 left-6 w-8 h-8 opacity-30 -rotate-12 pointer-events-none" />
-          <img src="/images/note_2.png" alt="note" className="absolute bottom-12 right-6 w-10 h-10 opacity-20 rotate-12 pointer-events-none" />
-          {/* <img src  ="/images/note_3.png" alt="note" className="absolute top-1/2 -right-3 w-8 h-8 opacity-25 rotate-45 pointer-events-none" /> */}
-
-          {/* 移除青春歌詞方塊，並加粗分隔線 */}
-          <div className="border-b-[3px] border-[#C09668]/60 pb-3 mb-4 shrink-0 text-center relative z-10">
-            <h1 className="text-3xl font-bold font-serif text-[#C09668] m-0 tracking-widest mb-2">{song.title}</h1>
-            <p className="text-gray-500 font-serif tracking-wider font-bold text-lg">{song.singer}</p>
+          <div className="pb-3 mb-2 mt-4 shrink-0 text-center relative z-10 border-b-[3px] border-dashed border-[#2b1b12]/60">
+            <h1 className="text-5xl font-black font-serif m-0 tracking-[0.15em] mb-3 text-[#2b1b12]" style={{ textShadow: '2px 2px 0 #fff, -2px -2px 0 #fff, 2px -2px 0 #fff, -2px 2px 0 #fff, 0 2px 0 #fff, 0 -2px 0 #fff, 2px 0 0 #fff, -2px 0 0 #fff, 3px 4px 5px rgba(0,0,0,0.4)' }}>{song.title}</h1>
+            <p className="opacity-100 font-serif tracking-widest font-bold text-[20px] text-[#2b1b12]" style={{ textShadow: '2px 2px 0 #fff, -2px -2px 0 #fff, 2px -2px 0 #fff, -2px 2px 0 #fff, 0 2px 0 #fff, 0 -2px 0 #fff, 2px 0 0 #fff, -2px 0 0 #fff, 2px 3px 4px rgba(0,0,0,0.3)' }}>- {song.singer} -</p>
           </div>
 
-          <div className="flex-1 overflow-hidden relative z-10">
-            <div className="leading-loose tracking-widest whitespace-pre-wrap text-base font-bold opacity-80 h-full overflow-hidden text-gray-700 px-4 text-center">
+          <div className="flex-1 overflow-hidden relative z-10 mt-3">
+            <div className="leading-[2.5em] tracking-[0.2em] whitespace-pre-wrap text-[20px] font-black h-full overflow-hidden text-center text-[#2b1b12]" style={{ textShadow: '2px 2px 0 #fff, -2px -2px 0 #fff, 2px -2px 0 #fff, -2px 2px 0 #fff, 0 2px 0 #fff, 0 -2px 0 #fff, 2px 0 0 #fff, -2px 0 0 #fff, 2px 3px 4px rgba(0,0,0,0.2)' }}>
               {lyrics ? lyrics.content : '歌詞尚未拼貼完成...'}
             </div>
           </div>
         </div>
       </CollageItem>
 
-      <CollageItem initialX={680} initialY={530} initialRotate={7.5} initialScale={1} initialZ={40} isResetting={isResetting} bringToFront={bringToFront}>
-        <div className="bg-[#FDFBF7] border-l-[6px] border-[#D2A679] p-4 pr-6 w-[380px] shadow-xl relative select-none inline-block">
-          <h4 className="text-xs font-bold text-[#D2A679] mb-2 tracking-widest uppercase">旅程留言</h4>
-          <div className="text-base leading-relaxed text-gray-700 font-bold italic pt-1">
+      <CollageItem initialX={680} initialY={520} initialRotate={-4} initialScale={1} initialZ={40} isResetting={isResetting} bringToFront={bringToFront}>
+        <div className="p-4 w-[420px] relative select-none inline-block drop-shadow-md text-[#2b1b12]">
+          <h4 className="text-[18px] font-black text-[#8c5a35] mb-2 tracking-[0.2em] border-b-[2px] border-[#8c5a35]/60 pb-1 inline-block" style={{ textShadow: '2px 2px 0 #fff, -2px -2px 0 #fff, 2px -2px 0 #fff, -2px 2px 0 #fff, 0 2px 0 #fff, 0 -2px 0 #fff, 2px 0 0 #fff, -2px 0 0 #fff, 2px 2px 3px rgba(0,0,0,0.2)' }}>專屬回憶</h4>
+          <div className="text-[22px] leading-[1.8em] font-black italic pt-2 tracking-widest opacity-100" style={{ textShadow: '2px 2px 0 #fff, -2px -2px 0 #fff, 2px -2px 0 #fff, -2px 2px 0 #fff, 0 2px 0 #fff, 0 -2px 0 #fff, 2px 0 0 #fff, -2px 0 0 #fff, 3px 4px 5px rgba(0,0,0,0.3)' }}>
             「{customMessage || '這是一段專屬於民歌時代的美好回憶。'}」
           </div>
         </div>
       </CollageItem>
 
-      <CollageItem initialX={1080} initialY={540} initialRotate={-7.5} initialScale={1} initialZ={15} isResetting={isResetting} bringToFront={bringToFront}>
-        <div className="relative w-36 h-36 flex flex-col items-center justify-center text-red-700/70 mix-blend-multiply pointer-events-none select-none inline-block font-sans">
-          <div className="absolute inset-0 border-[3px] border-red-700/70 rounded-full"></div>
-          <div className="absolute inset-1.5 border-[1px] border-red-700/60 rounded-full"></div>
+      <CollageItem initialX={1080} initialY={530} initialRotate={-12} initialScale={0.9} initialZ={15} isResetting={isResetting} bringToFront={bringToFront}>
+        <div className="relative w-[150px] h-[150px] flex flex-col items-center justify-center text-[#8c5a35] pointer-events-none select-none inline-block drop-shadow-lg opacity-90 scale-[1.1]">
+          <div className="absolute inset-0 border-[3px] border-[#8c5a35] rounded-full border-dashed shadow-sm bg-white/40 backdrop-blur-[1px]"></div>
+          <div className="absolute inset-2 border-[1px] border-[#8c5a35]/80 rounded-full"></div>
 
-          <div className="flex flex-col items-center justify-center w-full h-full bg-white/30 backdrop-blur-sm rounded-full pt-1">
-            <span className="font-bold text-[18px] tracking-[0.2em] ml-1 mb-0.5">民歌旅程</span>
-            <div className="w-[80%] border-t-[2px] border-red-700/60 mb-1"></div>
-            <span className="font-bold text-[12px] tracking-[0.1em] mb-0.5">NCUE</span>
-            <span className="text-[10px] font-bold tracking-widest transform scale-90">{todayDate}</span>
+          <div className="flex flex-col items-center justify-center w-full h-full bg-transparent p-4 text-center z-10">
+            <span className="font-black text-[20px] tracking-[0.1em] mb-1 text-[#8c5a35]" style={{ textShadow: '1px 1px 0 #fff, -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff' }}>民歌旅程</span>
+            <div className="w-[80%] border-t-[2px] border-[#8c5a35]/80 mb-1 mt-1"></div>
+            <span className="font-bold text-[14px] tracking-[0.1em] mb-1 text-[#8c5a35]" style={{ textShadow: '1px 1px 0 #fff, -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff' }}>NCUE</span>
+            <span className="text-[11px] font-bold tracking-widest text-[#8c5a35]" style={{ textShadow: '1px 1px 0 #fff, -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff' }}>{todayDate.replace(/年|月/g, '.').replace('日', '')}</span>
           </div>
         </div>
       </CollageItem>

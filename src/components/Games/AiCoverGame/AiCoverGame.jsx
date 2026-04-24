@@ -112,7 +112,7 @@ const AiCoverGame_zimage = ({ song, onHome, coverStatus, generatedCoverImg, onSt
     const payload = {
       prompt,
       negative_prompt: dynamicNegative,
-      steps: 1,
+      steps: 8,
       sampler_name: "Euler",
       scheduler: "Beta",
       cfg_scale: 4.5,

@@ -151,7 +151,7 @@ const FaceSwapGame = ({ song, onHome, faceswapStatus, generatedSwappedImg, onSta
               
               {isScanning && (
                 <div className="absolute inset-0 flex items-center justify-center z-30 pointer-events-none">
-                  <div className="w-[28%] h-[65%] border-[4px] border-yellow-400 border-dashed rounded-[50%] animate-pulse shadow-[0_0_15px_rgba(250,204,21,0.6)]"></div>
+                  <div className="w-[45%] h-[70%] border-[4px] border-yellow-400 border-dashed rounded-[50%] animate-pulse shadow-[0_0_15px_rgba(250,204,21,0.6)]"></div>
                 </div>
               )}
               

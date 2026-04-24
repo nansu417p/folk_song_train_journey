@@ -141,7 +141,7 @@ const PostcardContent = ({ song, ticket, selectedCoverImg, customMessage, lyrics
         {/* 統一的歌詞本設計：更淺的米白色 bg-[#FCFBF4] */}
         <div className="bg-[#FCFBF4] border border-[#D2A679]/40 p-6 w-[440px] h-[480px] flex flex-col relative shadow-xl select-none inline-block rounded-sm overflow-hidden">
           <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-24 h-8 bg-yellow-200/90 shadow-sm rotate-3 z-50"></div>
-          
+
           {/* 加入散落的音符裝飾 */}
           <img src="/images/note_1.png" alt="note" className="absolute top-6 left-6 w-8 h-8 opacity-30 -rotate-12 pointer-events-none" />
           <img src="/images/note_2.png" alt="note" className="absolute bottom-12 right-6 w-10 h-10 opacity-20 rotate-12 pointer-events-none" />
@@ -197,16 +197,16 @@ const CapsuleGame = ({ song, ticket, cover, swapped, lyrics, recording, onHome }
   const [resetTrigger, setResetTrigger] = useState(false);
 
   const postcardContainerRef = useRef(null);
-  const [postcardScale, setPostcardScale] = useState(0.8);
+  const [postcardScale, setPostcardScale] = useState(0.88);
 
   useEffect(() => {
     if (!postcardContainerRef.current) return;
     const observer = new ResizeObserver((entries) => {
       for (let entry of entries) {
         const { width, height } = entry.contentRect;
-        const scaleW = width / 1340;
-        const scaleH = height / 760;
-        setPostcardScale(Math.min(0.95, scaleW, scaleH));
+        const scaleW = (width / 1340) * 1.1;
+        const scaleH = (height / 760) * 1.1;
+        setPostcardScale(Math.min(1.045, scaleW, scaleH));
       }
     });
     observer.observe(postcardContainerRef.current);
@@ -297,7 +297,7 @@ const CapsuleGame = ({ song, ticket, cover, swapped, lyrics, recording, onHome }
 
         {/* 右側區域 */}
         <div className={`flex-1 flex flex-col justify-between relative overflow-hidden px-4 md:px-8 py-6 transition-colors duration-300 ${isCapturingImage ? 'bg-gray-400/80 pointer-events-none' : 'bg-[#C0B8A3] pointer-events-auto'}`}>
-          
+
           {/* 移除右上角的重新排版按鈕 */}
           <div className="w-full shrink-0 relative z-50 flex justify-start mb-2"></div>
 
@@ -317,12 +317,12 @@ const CapsuleGame = ({ song, ticket, cover, swapped, lyrics, recording, onHome }
 
           {/* 下方：所有按鈕群 (移到右邊底部) */}
           <div className="w-full shrink-0 flex gap-4 justify-center items-center h-[64px] relative z-50 mt-4 px-2">
-            
+
             {/* 新位置：重新排版在左邊，綠色按鈕 */}
             <div className="flex-1 max-w-[260px] h-full">
-              <button 
-                disabled={isCapturingImage} 
-                onClick={handleResetLayout} 
+              <button
+                disabled={isCapturingImage}
+                onClick={handleResetLayout}
                 className="w-full h-full flex items-center justify-center px-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-lg rounded-full shadow-md hover:shadow-lg transition-all duration-200 tracking-widest cursor-pointer whitespace-nowrap"
               >
                 <span className="text-xl leading-none mr-2 -translate-y-[2px]">⟳</span> 重新排版

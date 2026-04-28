@@ -152,20 +152,20 @@ const PostcardContent = ({ song, ticket, selectedCoverImg, customMessage, lyrics
             <p className="opacity-90 font-serif tracking-widest font-bold text-[20px] text-[#2b1b12] drop-shadow-sm">- {song.singer} -</p>
           </div>
 
-          <div className="flex-1 overflow-hidden relative z-10 mt-3">
-            <div className="leading-[2.5em] tracking-[0.2em] whitespace-pre-wrap text-[20px] font-black h-full overflow-hidden text-center text-[#2b1b12] drop-shadow-sm">
-              {lyrics ? lyrics.content : '歌詞尚未拼貼完成...'}
+          <div className="flex-1 overflow-hidden relative z-10 mt-3 w-full">
+            <div className="leading-[2.5em] tracking-[0.2em] whitespace-pre-wrap break-words text-[20px] font-black h-full overflow-hidden text-center text-[#2b1b12] drop-shadow-sm">
+              {lyrics ? lyrics.content.split('\n').filter(line => line.trim() !== '').join('\n') : '歌詞尚未拼貼完成...'}
             </div>
           </div>
         </div>
       </CollageItem>
 
       <CollageItem initialX={680} initialY={520} initialRotate={-4} initialScale={1} initialZ={40} isResetting={isResetting} bringToFront={bringToFront}>
-        <div className="p-5 w-[420px] relative select-none inline-block drop-shadow-[0_10px_20px_rgba(0,0,0,0.15)] text-[#2b1b12] bg-[#FDFDF9]/90 backdrop-blur-sm border border-white/60 rounded-sm">
+        <div className="p-5 w-auto max-w-[460px] min-w-[280px] relative select-none inline-block drop-shadow-[0_10px_20px_rgba(0,0,0,0.15)] text-[#2b1b12] bg-[#FDFDF9]/90 backdrop-blur-sm border border-white/60 rounded-sm">
           {/* 紙膠帶 */}
           <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-16 h-6 bg-white/80 backdrop-blur-sm shadow-[0_2px_4px_rgba(0,0,0,0.1)] rotate-3 border border-white/40"></div>
           <h4 className="text-[18px] font-black text-[#8c5a35] mb-2 tracking-[0.2em] border-b-[2px] border-[#8c5a35]/40 pb-1 inline-block drop-shadow-sm">旅程留言</h4>
-          <div className="text-[22px] leading-[1.8em] font-black italic pt-2 tracking-widest opacity-90 drop-shadow-sm">
+          <div className="text-[22px] leading-[1.8em] font-black italic pt-2 tracking-widest opacity-90 drop-shadow-sm whitespace-pre-wrap break-words w-full">
             「{customMessage || '這是一趟充滿回憶的民歌旅程。'}」
           </div>
         </div>
